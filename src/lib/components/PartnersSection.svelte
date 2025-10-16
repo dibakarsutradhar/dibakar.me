@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { onMount, onDestroy } from 'svelte';
+	import invoicelab from '$lib/assets/invoicelab.png';
 	import mc2finance from '$lib/assets/mc2finance.png';
 	import dolpin from '$lib/assets/dolpin.svg';
 	import dosier from '$lib/assets/dosier.png';
@@ -26,7 +27,7 @@
 
 	function updateScrollState() {
 		const partnersSectionStart = window.innerHeight * 2;
-		const partnersSectionMiddle = window.innerHeight * 2 + (window.innerHeight / 2);
+		const partnersSectionMiddle = window.innerHeight * 2 + window.innerHeight / 2;
 		isScrolled = window.scrollY > partnersSectionMiddle;
 	}
 
@@ -40,46 +41,54 @@
 	});
 
 	const partners = [
-		{ 
-			name: 'mc² finance', 
-			years: '2023 - present', 
+		{
+			name: 'invoice lab',
+			years: '2025 - present',
+			url: 'https://staging.invoicelab.live/',
+			logo: invoicelab
+		},
+		{
+			name: 'mc² finance',
+			years: '2023 - present',
 			url: 'https://www.mc2.fi/',
 			logo: mc2finance
 		},
-		{ 
-			name: 'dolpin', 
-			years: '2022 - 2023', 
+		{
+			name: 'dolpin',
+			years: '2022 - 2023',
 			url: 'https://www.dolpin.io/',
 			logo: dolpin
 		},
-		{ 
-			name: 'dosier', 
-			years: '2022 - 2023', 
+		{
+			name: 'dosier',
+			years: '2022 - 2023',
 			url: 'https://www.dosier.ai/',
 			logo: dosier
 		},
-		{ 
-			name: 'quickdesk academy', 
-			years: '2021 - 2022', 
+		{
+			name: 'quickdesk academy',
+			years: '2021 - 2022',
 			url: 'https://theqdacademy.com/',
 			logo: qdacademy
 		},
-		{ 
-			name: 'signup.cash', 
-			years: '2020 - 2021', 
+		{
+			name: 'signup.cash',
+			years: '2020 - 2021',
 			url: 'https://github.com/signupcash',
 			logo: signupcash
 		},
-		{ 
-			name: 'devsonket', 
-			years: '2018 - present', 
+		{
+			name: 'devsonket',
+			years: '2018 - present',
 			url: 'https://devsonket.com/',
 			logo: devsonket
-		},
+		}
 	];
 </script>
 
-<section class="mx-auto flex min-h-screen w-full flex-col items-center justify-center px-8 relative">
+<section
+	class="mx-auto flex min-h-screen w-full flex-col items-center justify-center px-8 relative"
+>
 	<h2 class="mb-12 text-center text-sm font-medium tracking-widest lowercase opacity-60">
 		partners
 	</h2>
@@ -97,7 +106,11 @@
 					class="flex min-w-[280px] flex-col items-center rounded-xl px-8 py-12 transition-all duration-300 hover:-translate-y-1 hover:opacity-80"
 				>
 					<div class="mb-6 flex h-32 w-32 items-center justify-center">
-						<div class="h-full w-full rounded-xl p-4 {darkMode ? 'bg-[rgba(255,207,160,0.08)]' : 'bg-[rgba(0,0,0,0.1)]'}">
+						<div
+							class="h-full w-full rounded-xl p-4 {darkMode
+								? 'bg-[rgba(255,207,160,0.08)]'
+								: 'bg-[rgba(0,0,0,0.1)]'}"
+						>
 							<img
 								src={partner.logo}
 								alt="{partner.name} logo"

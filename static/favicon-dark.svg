@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="32" height="32">
+  <!-- Dark theme hexagon -->
+  <path fill="#0f1419" d="M16 2L28 8v16L16 30L4 24V8L16 2z"/>
+  <path fill="none" stroke="#e4e6eb" stroke-width="1.5" d="M16 2L28 8v16L16 30L4 24V8L16 2z"/>
+  
+  <!-- Inner accent line -->
+  <path d="M16 6L24 10v12L16 26L8 22V10L16 6z" fill="none" stroke="#e4e6eb" stroke-width="0.8" opacity="0.6"/>
+</svg>
