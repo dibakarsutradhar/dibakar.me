@@ -15,6 +15,7 @@
 
 	let { darkMode }: Props = $props();
 	let isScrolled = $state(false);
+	let hoveredPartnerIndex = $state(-1);
 
 	function handleScrollClick() {
 		if (isScrolled) {
@@ -46,49 +47,58 @@
 			name: 'yieldfinder.ai',
 			years: '2025 - present',
 			url: 'https://yieldfinder.ai/',
-			logo: yieldfinder
+			logo: yieldfinder,
+			description: 'Intelligent, AI-Powered DeFi Yield\nusing AI Agents & MCP Server'
 		},
 		{
 			name: 'invoice lab',
 			years: '2025 - present',
 			url: 'https://staging.invoicelab.live/',
-			logo: invoicelab
+			logo: invoicelab,
+			description: 'AI-powered invoice management.\nIntelligent, customizable, and professional.'
 		},
 		{
 			name: 'mc² finance',
 			years: '2023 - present',
 			url: 'https://www.mc2.fi/',
-			logo: mc2finance
+			logo: mc2finance,
+			description: 'The First Regulated DeFi ETPs \nDeliver 15% SOL, 10% USD, and 7% CHF Yields.'
 		},
 		{
 			name: 'dolpin',
 			years: '2022 - 2023',
 			url: 'https://www.dolpin.io/',
-			logo: dolpin
+			logo: dolpin,
+			description: 'A decentralized & encrypted storage layer\nbuilt with IPFS / Filecoin.'
 		},
 		{
 			name: 'dosier',
 			years: '2022 - 2023',
 			url: 'https://www.dosier.ai/',
-			logo: dosier
+			logo: dosier,
+			description:
+				'Decentralized Content Delivery, Harnessing\nthe Power of Data DAOs and zk-SNARK Transactions,\nBacked by LonghashX & ProtocolLabs'
 		},
 		{
 			name: 'quickdesk academy',
 			years: '2021 - 2022',
 			url: 'https://theqdacademy.com/',
-			logo: qdacademy
+			logo: qdacademy,
+			description: 'Professional training and\nskill development academy'
 		},
 		{
 			name: 'signup.cash',
 			years: '2020 - 2021',
 			url: 'https://github.com/signupcash',
-			logo: signupcash
+			logo: signupcash,
+			description: 'Non-Custodial Wallet &\nSLP/NFT Storage for Bitcoin Cash'
 		},
 		{
 			name: 'devsonket',
 			years: '2018 - present',
 			url: 'https://devsonket.com/',
-			logo: devsonket
+			logo: devsonket,
+			description: 'Open Source Developer community and\ntechnical resource platform'
 		}
 	];
 </script>
@@ -97,20 +107,24 @@
 	class="mx-auto flex min-h-screen w-full flex-col items-center justify-center px-8 relative"
 >
 	<h2 class="mb-12 text-center text-sm font-medium tracking-widest lowercase opacity-60">
-		partners
+		partners & projects
 	</h2>
 	<div
-		class="w-full scrollbar-thin overflow-x-auto overflow-y-hidden py-4 {darkMode
+		class="w-full scrollbar-thin overflow-x-auto overflow-y-visible py-4 {darkMode
 			? 'scrollbar-track-[rgba(255,255,255,0.05)] scrollbar-thumb-[rgba(255,255,255,0.2)]'
 			: 'scrollbar-track-[rgba(0,0,0,0.05)] scrollbar-thumb-[rgba(0,0,0,0.2)]'}"
 	>
 		<div class="flex w-max gap-8 px-8">
-			{#each partners as partner}
+			{#each partners as partner, index}
 				<a
 					href={partner.url}
 					target="_blank"
 					rel="noopener noreferrer"
-					class="flex min-w-[280px] flex-col items-center rounded-xl px-8 py-12 transition-all duration-300 hover:-translate-y-1 hover:opacity-80"
+					class="flex min-w-[280px] flex-col items-center rounded-xl px-8 py-12 transition-all duration-500 ease-out hover:-translate-y-2 hover:opacity-90 {darkMode
+						? 'hover:bg-[rgba(255,207,160,0.05)]'
+						: 'hover:bg-[rgba(0,0,0,0.03)]'}"
+					onmouseenter={() => (hoveredPartnerIndex = index)}
+					onmouseleave={() => (hoveredPartnerIndex = -1)}
 				>
 					<div class="mb-6 flex h-32 w-32 items-center justify-center">
 						<div
@@ -131,6 +145,18 @@
 					<p class="m-0 text-sm opacity-50">
 						{partner.years}
 					</p>
+
+					<!-- Expandable Description -->
+					<div
+						class="overflow-hidden transition-all duration-300 ease-out {hoveredPartnerIndex ===
+						index
+							? 'max-h-20 opacity-100 mt-1'
+							: 'max-h-0 opacity-0'}"
+					>
+						<p class="text-center text-xs opacity-60 leading-relaxed px-1 whitespace-pre-line">
+							{partner.description}
+						</p>
+					</div>
 				</a>
 			{/each}
 		</div>
