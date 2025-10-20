@@ -7,6 +7,7 @@
 	import qdacademy from '$lib/assets/qdacademy.png';
 	import signupcash from '$lib/assets/signupcash.png';
 	import devsonket from '$lib/assets/devsonket.png';
+	import yieldfinder from '$lib/assets/yieldfinder.png';
 
 	interface Props {
 		darkMode: boolean;
@@ -41,6 +42,12 @@
 	});
 
 	const partners = [
+		{
+			name: 'yieldfinder.ai',
+			years: '2025 - present',
+			url: 'https://yieldfinder.ai/',
+			logo: yieldfinder
+		},
 		{
 			name: 'invoice lab',
 			years: '2025 - present',
