@@ -4,6 +4,8 @@
 	}
 
 	let { darkMode }: Props = $props();
+
+	const currentYear = new Date().getFullYear();
 </script>
 
 <footer
@@ -11,5 +13,5 @@
 		? 'border-[rgba(255,255,255,0.08)]'
 		: 'border-[rgba(0,0,0,0.08)]'}"
 >
-	<p class="m-0 text-sm opacity-60">© 2025 Dibakar. Crafted with precision and passion.</p>
+	<p class="m-0 text-sm opacity-60">© {currentYear} Dibakar. Crafted with precision and passion.</p>
 </footer>
