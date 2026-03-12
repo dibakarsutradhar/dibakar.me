@@ -8,10 +8,9 @@
 </script>
 
 <button
-	class="fixed top-8 right-8 z-[100] flex h-12 w-12 items-center justify-center rounded-full transition-all duration-300 hover:scale-110
-       {darkMode
-			? 'bg-[rgba(255,255,255,0.08)] text-[#e4e6eb]'
-			: 'bg-[rgba(0,0,0,0.06)] text-[#1a1a1a]'}"
+	class="fixed top-8 right-8 z-[100] flex h-14 w-14 items-center justify-center rounded-full transition-all duration-500 hover:scale-110 shadow-lg backdrop-blur-md {darkMode
+			? 'bg-white/10 text-[#e4e6eb] border border-white/20 hover:bg-white/20 hover:shadow-[0_0_20px_rgba(255,255,255,0.2)]'
+			: 'bg-white/60 text-[#1a1a1a] border border-black/10 hover:bg-white/90 hover:shadow-[0_0_20px_rgba(0,0,0,0.1)]'}"
 	onclick={onToggle}
 	aria-label="Toggle theme"
 >

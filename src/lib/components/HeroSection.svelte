@@ -34,21 +34,31 @@
 </script>
 
 <div
-	class="mx-auto flex min-h-screen max-w-[800px] flex-1 flex-col items-center justify-center px-8 text-center relative"
+	class="mx-auto flex min-h-screen max-w-[800px] flex-1 flex-col items-center justify-center px-8 text-center relative z-10"
 >
-	<h1 class="m-0 text-4xl leading-tight font-bold tracking-tight whitespace-nowrap sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl">
-		dibakar sutra dhar
-	</h1>
-	<p class="mt-6 mb-12 text-lg font-normal tracking-wide opacity-70 md:text-xl lg:text-2xl">
-		software engineer & web3 security ops
+	<div class="relative inline-block animate-[fadeIn_1s_ease-out_0.2s_both]">
+		<!-- Soft glow behind the text -->
+		<div class="absolute -inset-2 blur-3xl opacity-30 mix-blend-screen transition-all duration-1000 {darkMode ? 'bg-gradient-to-r from-orange-500/50 via-purple-500/40 to-blue-500/50' : 'bg-gradient-to-r from-orange-400/40 via-purple-400/30 to-blue-400/40'}"></div>
+		
+		<h1 class="relative m-0 text-5xl leading-tight font-bold tracking-tight whitespace-nowrap sm:text-6xl md:text-7xl lg:text-8xl">
+			<span class="text-gradient {darkMode ? 'bg-gradient-to-r from-gray-100 via-[#ffcfa0] to-white' : 'bg-gradient-to-r from-gray-900 via-[#d97706] to-gray-800'} animate-gradient bg-[length:200%_auto]">
+				dibakar sutra dhar
+			</span>
+		</h1>
+	</div>
+
+	<p class="mt-8 mb-12 text-lg font-medium tracking-wide opacity-80 md:text-xl lg:text-2xl animate-[fadeIn_1s_ease-out_0.5s_both]">
+		software engineer <span class="{darkMode ? 'text-[#ffcfa0]' : 'text-[#d97706]'}">&</span> web3 security ops
 	</p>
 
-	<SocialLinks {darkMode} />
+	<div class="animate-[fadeIn_1s_ease-out_0.8s_both] w-full flex justify-center">
+		<SocialLinks {darkMode} />
+	</div>
 
 	<!-- Scroll indicator -->
-	<div class="absolute bottom-8 left-1/2 transform -translate-x-1/2 animate-bounce">
+	<div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce animate-[fadeIn_1s_ease-out_1.2s_both]">
 		<svg
-			class="w-6 h-6 opacity-60 hover:opacity-100 transition-opacity duration-300 cursor-pointer"
+			class="w-8 h-8 opacity-50 hover:opacity-100 transition-all duration-300 cursor-pointer {darkMode ? 'text-[#ffcfa0]' : 'text-[#d97706]'}"
 			fill="none"
 			stroke="currentColor"
 			viewBox="0 0 24 24"

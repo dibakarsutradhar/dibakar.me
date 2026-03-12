@@ -32,29 +32,30 @@
 	});
 </script>
 
-<section class="mx-auto flex min-h-screen max-w-[800px] flex-1 flex-col items-center justify-center px-8 text-center relative">
-	<h2 class="mb-8 text-4xl font-bold tracking-tight sm:text-5xl md:text-6xl lg:text-7xl">
+<section class="mx-auto flex min-h-screen max-w-[800px] flex-1 flex-col items-center justify-center px-8 text-center relative z-10">
+	<h2 class="mb-8 text-5xl font-bold tracking-tight sm:text-6xl md:text-7xl lg:text-8xl animate-[fadeIn_0.8s_ease-out_both]">
 		let's work together
 	</h2>
-	<p class="mb-12 text-lg font-normal tracking-wide opacity-70 md:text-xl lg:text-2xl max-w-2xl">
+	<p class="mb-14 text-lg font-medium tracking-wide opacity-80 md:text-xl lg:text-2xl max-w-2xl animate-[fadeIn_0.8s_ease-out_0.2s_both]">
 		i'm always interested in new opportunities and collaborations. whether you have a project in mind or just want to chat about technology, feel free to reach out.
 	</p>
 	
-	<div class="flex flex-col sm:flex-row gap-4 mb-16">
+	<div class="flex flex-col sm:flex-row gap-6 mb-16 animate-[fadeIn_0.8s_ease-out_0.4s_both]">
 		<a
 			href="mailto:iamdibakardipu@gmail.com"
-			class="px-8 py-4 rounded-lg font-medium transition-all duration-300 hover:-translate-y-1 {darkMode 
-				? 'bg-[#ffcf9f] text-[#0f1419] hover:bg-[#ffb366]' 
-				: 'bg-[#1a1a1a] text-[#f0f0f0] hover:bg-[#333]'}"
+			class="relative group px-10 py-4 rounded-xl font-bold text-lg transition-all duration-300 hover:scale-105 overflow-hidden shadow-lg {darkMode 
+				? 'bg-[#ffcf9f] text-[#0f1419]' 
+				: 'bg-[#1a1a1a] text-[#f0f0f0]'}"
 		>
+			<div class="absolute inset-0 w-full h-full bg-gradient-to-r from-transparent via-white/30 to-transparent -translate-x-full group-hover:animate-shimmer mix-blend-overlay"></div>
 			get in touch
 		</a>
 		<a
 			href="/Dibakar_SWE_Mar26.pdf"
 			download
-			class="px-8 py-4 rounded-lg font-medium transition-all duration-300 hover:-translate-y-1 border-2 {darkMode 
-				? 'border-[#ffcf9f] text-[#ffcf9f] hover:bg-[#ffcf9f] hover:text-[#0f1419]' 
-				: 'border-[#1a1a1a] text-[#1a1a1a] hover:bg-[#1a1a1a] hover:text-[#f0f0f0]'}"
+			class="px-10 py-4 rounded-xl font-bold text-lg transition-all duration-300 hover:scale-105 {darkMode 
+				? 'glass-dark text-[#ffcf9f] ring-1 ring-[#ffcf9f]/50 hover:bg-[#ffcf9f]/10' 
+				: 'glass-light text-[#1a1a1a] ring-1 ring-[#1a1a1a]/50 hover:bg-black/5'}"
 		>
 			download resume
 		</a>

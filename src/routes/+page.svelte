@@ -35,14 +35,15 @@
 </svelte:head>
 
 <div
-	class="min-h-screen transition-colors duration-300 {darkMode
+	class="min-h-screen relative overflow-hidden transition-colors duration-500 {darkMode
 		? 'bg-[#0f1419] text-[#e4e6eb]'
 		: 'bg-[#f0f0f0] text-[#1a1a1a] bg-grainy'}"
 >
+
 	{#if loading}
 		<SkillLoader />
 	{:else}
-		<main class="flex min-h-screen animate-[fadeIn_0.6s_ease] flex-col">
+		<main class="relative z-10 flex min-h-screen animate-[fadeIn_0.8s_ease-out] flex-col">
 			<ThemeToggle {darkMode} onToggle={toggleTheme} />
 
 			<HeroSection {darkMode} />

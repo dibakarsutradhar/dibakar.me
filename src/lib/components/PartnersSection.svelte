@@ -149,7 +149,7 @@
 </script>
 
 <section
-	class="mx-auto flex min-h-screen w-full flex-col items-center justify-center px-8 relative"
+	class="mx-auto flex min-h-screen w-full flex-col items-center justify-center px-8 relative z-10"
 >
 	<h2 class="mb-12 text-center text-sm font-medium tracking-widest lowercase opacity-60">
 		partners & projects
@@ -172,40 +172,43 @@
 						href={partner.url}
 						target="_blank"
 						rel="noopener noreferrer"
-						class="flex w-[320px] flex-shrink-0 flex-col items-center rounded-xl px-8 py-12 transition-all duration-500 ease-out hover:-translate-y-2 hover:opacity-90 {darkMode
-							? 'hover:bg-[rgba(255,207,160,0.05)]'
-							: 'hover:bg-[rgba(0,0,0,0.03)]'}"
+						class="group flex w-[320px] flex-shrink-0 flex-col items-center rounded-2xl px-8 py-10 transition-all duration-500 ease-out hover:-translate-y-3 hover:shadow-2xl relative overflow-hidden backdrop-blur-md border {darkMode
+							? 'bg-black/20 border-white/10 hover:border-[#ffcf9f]/40 hover:bg-black/40'
+							: 'bg-white/40 border-black/10 hover:border-[#d97706]/40 hover:bg-white/60'}"
 						onmouseenter={() => (hoveredPartnerIndex = index)}
 						onmouseleave={() => (hoveredPartnerIndex = -1)}
 					>
-						<div class="mb-6 flex h-32 w-32 items-center justify-center">
+						<!-- Soft hover glow -->
+						<div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none mix-blend-screen" style="background: radial-gradient(circle at top, {darkMode ? 'rgba(255,207,159,0.15)' : 'rgba(217,119,6,0.1)'} 0%, transparent 70%);"></div>
+
+						<div class="mb-6 flex h-32 w-32 items-center justify-center relative z-10 transition-transform duration-500 group-hover:scale-110">
 							<div
-								class="h-full w-full rounded-xl p-4 {darkMode
-									? 'bg-[rgba(255,207,160,0.08)]'
-									: 'bg-[rgba(0,0,0,0.1)]'}"
+								class="h-full w-full rounded-2xl p-4 shadow-sm backdrop-blur-sm border {darkMode
+									? 'bg-white/5 border-white/10'
+									: 'bg-black/5 border-black/10'}"
 							>
 								<img
 									src={partner.logo}
 									alt="{partner.name} logo"
-									class="h-full w-full object-contain"
+									class="h-full w-full object-contain drop-shadow-sm"
 								/>
 							</div>
 						</div>
-						<p class="my-3 text-center text-lg font-medium">
+						<p class="my-3 text-center text-xl font-bold tracking-tight relative z-10 group-hover:scale-105 transition-transform duration-300">
 							{partner.name}
 						</p>
-						<p class="m-0 text-sm opacity-50">
+						<p class="m-0 text-sm font-medium opacity-60 relative z-10">
 							{partner.years}
 						</p>
 
 						<!-- Expandable Description -->
 						<div
-							class="w-full overflow-hidden transition-all duration-300 ease-out {hoveredPartnerIndex ===
+							class="w-full overflow-hidden transition-all duration-500 ease-in-out relative z-10 {hoveredPartnerIndex ===
 							index
-								? 'max-h-24 opacity-100 mt-2'
+								? 'max-h-32 opacity-100 mt-4'
 								: 'max-h-0 opacity-0'}"
 						>
-							<p class="text-center text-xs opacity-60 leading-relaxed px-2 whitespace-pre-line">
+							<p class="text-center text-sm font-medium opacity-80 leading-relaxed px-2 whitespace-pre-line">
 								{partner.description}
 							</p>
 						</div>
@@ -310,15 +313,15 @@
 		mask-image: linear-gradient(
 			to right,
 			transparent,
-			black 10%,
-			black 90%,
+			black 15%,
+			black 85%,
 			transparent
 		);
 		-webkit-mask-image: linear-gradient(
 			to right,
 			transparent,
-			black 10%,
-			black 90%,
+			black 15%,
+			black 85%,
 			transparent
 		);
 	}

@@ -54,26 +54,25 @@
 	});
 </script>
 
-<section class="mx-auto flex min-h-screen max-w-[1200px] flex-1 flex-col items-center justify-center px-8 text-center relative">
+<section class="mx-auto flex min-h-screen max-w-[1200px] flex-1 flex-col items-center justify-center px-8 text-center relative z-10">
 	<h2 class="mb-12 text-center text-sm font-medium tracking-widest lowercase opacity-60">
 		skills
 	</h2>
 	
 	<div class="w-full max-w-4xl mb-16">
 		{#each Object.entries(groupedSkills) as [category, categorySkills]}
-			<div class="mb-6">
-				<h3 class="mb-3 text-lg font-semibold" style="color: {categoryColors[category]};">
+			<div class="mb-10 animate-[fadeIn_0.8s_ease-out_both] p-6 rounded-2xl {darkMode ? 'glass-dark' : 'glass-light'} transition-all duration-500 hover:shadow-xl">
+				<h3 class="mb-5 text-xl font-bold tracking-tight" style="color: {categoryColors[category]}; text-shadow: 0 0 20px {categoryColors[category]}40;">
 					{categoryLabels[category]}
 				</h3>
-				<div class="flex flex-wrap gap-2 justify-center">
+				<div class="flex flex-wrap gap-3 justify-center">
 					{#each categorySkills as skill}
 						<span
-							class="px-3 py-1.5 rounded-full text-sm font-medium transition-all duration-300 hover:scale-105 {darkMode 
-								? 'bg-opacity-10' 
-								: 'bg-opacity-5'}"
-							style="background-color: {categoryColors[skill.category]}20; color: {categoryColors[skill.category]};"
+							class="relative px-4 py-2 rounded-xl text-sm font-medium transition-all duration-300 hover:scale-110 hover:-translate-y-1 overflow-hidden group cursor-default {darkMode ? 'backdrop-blur-md' : 'backdrop-blur-sm'}"
+							style="background-color: {categoryColors[skill.category]}{darkMode ? '15' : '10'}; color: {darkMode ? '#e4e6eb' : categoryColors[skill.category]}; border: 1px solid {categoryColors[skill.category]}40; box-shadow: 0 4px 15px -3px {categoryColors[skill.category]}20;"
 						>
-							{skill.name}
+							<div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none mix-blend-screen" style="background: radial-gradient(circle at center, {categoryColors[skill.category]}40 0%, transparent 70%);"></div>
+							<span class="relative z-10 text-shadow-sm">{skill.name}</span>
 						</span>
 					{/each}
 				</div>
