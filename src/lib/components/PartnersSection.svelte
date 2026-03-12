@@ -110,6 +110,42 @@
 			description: 'Open Source Developer community and\ntechnical resource platform'
 		}
 	];
+
+	let scrollContainer: HTMLDivElement | undefined = $state();
+	let isPaused = $state(false);
+	let animationFrameId: number;
+
+	function startAutoScroll() {
+		if (!scrollContainer) return;
+
+		const scroll = () => {
+			if (!isPaused && scrollContainer) {
+				scrollContainer.scrollLeft += 0.8;
+
+				// Seamless loop: check if we've scrolled past the first set
+				const halfWidth = scrollContainer.scrollWidth / 2;
+				if (scrollContainer.scrollLeft >= halfWidth) {
+					scrollContainer.scrollLeft = 0;
+				}
+			}
+			animationFrameId = requestAnimationFrame(scroll);
+		};
+
+		animationFrameId = requestAnimationFrame(scroll);
+	}
+
+	onMount(() => {
+		window.addEventListener('scroll', updateScrollState);
+		updateScrollState();
+		startAutoScroll();
+		// Ensure it starts at the first item
+		if (scrollContainer) scrollContainer.scrollLeft = 0;
+	});
+
+	onDestroy(() => {
+		window.removeEventListener('scroll', updateScrollState);
+		cancelAnimationFrame(animationFrameId);
+	});
 </script>
 
 <section
@@ -119,55 +155,110 @@
 		partners & projects
 	</h2>
 	<div
-		class="w-full scrollbar-thin overflow-x-auto overflow-y-visible py-4 {darkMode
-			? 'scrollbar-track-[rgba(255,255,255,0.05)] scrollbar-thumb-[rgba(255,255,255,0.2)]'
-			: 'scrollbar-track-[rgba(0,0,0,0.05)] scrollbar-thumb-[rgba(0,0,0,0.2)]'}"
+		bind:this={scrollContainer}
+		class="w-full overflow-x-auto overflow-y-visible py-4 marquee-mask scrollbar-hide flex items-center"
+		role="region"
+		aria-label="Partners list marquee"
+		onmouseenter={() => (isPaused = true)}
+		onmouseleave={() => (isPaused = false)}
+		ontouchstart={() => (isPaused = true)}
+		ontouchend={() => (isPaused = false)}
 	>
-		<div class="flex w-max gap-8 px-8">
-			{#each partners as partner, index}
-				<a
-					href={partner.url}
-					target="_blank"
-					rel="noopener noreferrer"
-					class="flex min-w-[280px] flex-col items-center rounded-xl px-8 py-12 transition-all duration-500 ease-out hover:-translate-y-2 hover:opacity-90 {darkMode
-						? 'hover:bg-[rgba(255,207,160,0.05)]'
-						: 'hover:bg-[rgba(0,0,0,0.03)]'}"
-					onmouseenter={() => (hoveredPartnerIndex = index)}
-					onmouseleave={() => (hoveredPartnerIndex = -1)}
-				>
-					<div class="mb-6 flex h-32 w-32 items-center justify-center">
-						<div
-							class="h-full w-full rounded-xl p-4 {darkMode
-								? 'bg-[rgba(255,207,160,0.08)]'
-								: 'bg-[rgba(0,0,0,0.1)]'}"
-						>
-							<img
-								src={partner.logo}
-								alt="{partner.name} logo"
-								class="h-full w-full object-contain"
-							/>
-						</div>
-					</div>
-					<p class="my-3 text-center text-lg font-medium">
-						{partner.name}
-					</p>
-					<p class="m-0 text-sm opacity-50">
-						{partner.years}
-					</p>
-
-					<!-- Expandable Description -->
-					<div
-						class="overflow-hidden transition-all duration-300 ease-out {hoveredPartnerIndex ===
-						index
-							? 'max-h-20 opacity-100 mt-1'
-							: 'max-h-0 opacity-0'}"
+		<div class="flex w-max">
+			<!-- First set of partners -->
+			<div class="flex gap-8 px-8">
+				{#each partners as partner, index}
+					<a
+						href={partner.url}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="flex w-[320px] flex-shrink-0 flex-col items-center rounded-xl px-8 py-12 transition-all duration-500 ease-out hover:-translate-y-2 hover:opacity-90 {darkMode
+							? 'hover:bg-[rgba(255,207,160,0.05)]'
+							: 'hover:bg-[rgba(0,0,0,0.03)]'}"
+						onmouseenter={() => (hoveredPartnerIndex = index)}
+						onmouseleave={() => (hoveredPartnerIndex = -1)}
 					>
-						<p class="text-center text-xs opacity-60 leading-relaxed px-1 whitespace-pre-line">
-							{partner.description}
+						<div class="mb-6 flex h-32 w-32 items-center justify-center">
+							<div
+								class="h-full w-full rounded-xl p-4 {darkMode
+									? 'bg-[rgba(255,207,160,0.08)]'
+									: 'bg-[rgba(0,0,0,0.1)]'}"
+							>
+								<img
+									src={partner.logo}
+									alt="{partner.name} logo"
+									class="h-full w-full object-contain"
+								/>
+							</div>
+						</div>
+						<p class="my-3 text-center text-lg font-medium">
+							{partner.name}
 						</p>
-					</div>
-				</a>
-			{/each}
+						<p class="m-0 text-sm opacity-50">
+							{partner.years}
+						</p>
+
+						<!-- Expandable Description -->
+						<div
+							class="w-full overflow-hidden transition-all duration-300 ease-out {hoveredPartnerIndex ===
+							index
+								? 'max-h-24 opacity-100 mt-2'
+								: 'max-h-0 opacity-0'}"
+						>
+							<p class="text-center text-xs opacity-60 leading-relaxed px-2 whitespace-pre-line">
+								{partner.description}
+							</p>
+						</div>
+					</a>
+				{/each}
+			</div>
+			<!-- Duplicate set for seamless looping -->
+			<div class="flex gap-8 pr-8">
+				{#each partners as partner, index}
+					<a
+						href={partner.url}
+						target="_blank"
+						rel="noopener noreferrer"
+						class="flex w-[320px] flex-shrink-0 flex-col items-center rounded-xl px-8 py-12 transition-all duration-500 ease-out hover:-translate-y-2 hover:opacity-90 {darkMode
+							? 'hover:bg-[rgba(255,207,160,0.05)]'
+							: 'hover:bg-[rgba(0,0,0,0.03)]'}"
+						onmouseenter={() => (hoveredPartnerIndex = index)}
+						onmouseleave={() => (hoveredPartnerIndex = -1)}
+					>
+						<div class="mb-6 flex h-32 w-32 items-center justify-center">
+							<div
+								class="h-full w-full rounded-xl p-4 {darkMode
+									? 'bg-[rgba(255,207,160,0.08)]'
+									: 'bg-[rgba(0,0,0,0.1)]'}"
+							>
+								<img
+									src={partner.logo}
+									alt="{partner.name} logo"
+									class="h-full w-full object-contain"
+								/>
+							</div>
+						</div>
+						<p class="my-3 text-center text-lg font-medium">
+							{partner.name}
+						</p>
+						<p class="m-0 text-sm opacity-50">
+							{partner.years}
+						</p>
+
+						<!-- Expandable Description -->
+						<div
+							class="w-full overflow-hidden transition-all duration-300 ease-out {hoveredPartnerIndex ===
+							index
+								? 'max-h-24 opacity-100 mt-2'
+								: 'max-h-0 opacity-0'}"
+						>
+							<p class="text-center text-xs opacity-60 leading-relaxed px-2 whitespace-pre-line">
+								{partner.description}
+							</p>
+						</div>
+					</a>
+				{/each}
+			</div>
 		</div>
 	</div>
 
@@ -180,6 +271,7 @@
 			viewBox="0 0 24 24"
 			xmlns="http://www.w3.org/2000/svg"
 			role="button"
+			aria-label={isScrolled ? 'Scroll to top' : 'Scroll to contact section'}
 			tabindex="0"
 			onclick={handleScrollClick}
 			onkeydown={(e) => e.key === 'Enter' && handleScrollClick()}
@@ -206,8 +298,28 @@
 </section>
 
 <style>
-	/* Custom scrollbar for webkit browsers */
-	.scrollbar-thin::-webkit-scrollbar {
-		height: 6px;
+	.scrollbar-hide::-webkit-scrollbar {
+		display: none;
+	}
+	.scrollbar-hide {
+		-ms-overflow-style: none; /* IE and Edge */
+		scrollbar-width: none; /* Firefox */
+	}
+
+	.marquee-mask {
+		mask-image: linear-gradient(
+			to right,
+			transparent,
+			black 10%,
+			black 90%,
+			transparent
+		);
+		-webkit-mask-image: linear-gradient(
+			to right,
+			transparent,
+			black 10%,
+			black 90%,
+			transparent
+		);
 	}
 </style>
