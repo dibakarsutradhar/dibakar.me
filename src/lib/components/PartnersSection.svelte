@@ -8,6 +8,7 @@
 	import signupcash from '$lib/assets/signupcash.png';
 	import devsonket from '$lib/assets/devsonket.png';
 	import yieldfinder from '$lib/assets/yieldfinder.png';
+	import raisolo from '$lib/assets/raisolo.png';
 
 	interface Props {
 		darkMode: boolean;
@@ -44,8 +45,16 @@
 
 	const partners = [
 		{
+			name: 'raisolo',
+			years: '2025 - 2026',
+			url: 'https://raisolo.com/',
+			logo: raisolo,
+			description:
+				'An AI-driven product built to automate research, insights, content workflows, and orchestrate personal hivemind'
+		},
+		{
 			name: 'yieldfinder.ai',
-			years: '2025 - present',
+			years: '2025 - 2025',
 			url: 'https://yieldfinder.ai/',
 			logo: yieldfinder,
 			description: 'Intelligent, AI-Powered DeFi Yield\nusing AI Agents & MCP Server'
@@ -59,7 +68,7 @@
 		},
 		{
 			name: 'mc² finance',
-			years: '2023 - present',
+			years: '2023 - 2026',
 			url: 'https://www.mc2.fi/',
 			logo: mc2finance,
 			description: 'The First Regulated DeFi ETPs \nDeliver 15% SOL, 10% USD, and 7% CHF Yields.'
