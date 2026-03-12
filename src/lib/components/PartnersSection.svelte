@@ -50,7 +50,7 @@
 			url: 'https://raisolo.com/',
 			logo: raisolo,
 			description:
-				'An AI-driven product built to automate research, insights, content workflows, and orchestrate personal hivemind'
+				'An AI-driven product built to\nautomate research, insights, content workflows,\nand orchestrate personal hivemind'
 		},
 		{
 			name: 'yieldfinder.ai',
