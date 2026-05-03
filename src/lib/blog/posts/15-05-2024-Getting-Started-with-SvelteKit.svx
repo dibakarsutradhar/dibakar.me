@@ -1,0 +1,65 @@
+<script context="module">
+    export const metadata = {
+        title: "Getting Started with SvelteKit",
+        category: "tutorial",
+        tags: ["svelte", "web development", "javascript"],
+        headerImage: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200&h=600&fit=crop",
+        date: "2024-05-15",
+        excerpt: "A comprehensive guide to building modern web applications with SvelteKit, from setup to deployment."
+    };
+</script>
+
+# Getting Started with SvelteKit
+
+SvelteKit is a powerful framework for building web applications with Svelte. In this guide, we'll explore the core concepts and get you up and running quickly.
+
+## Why SvelteKit?
+
+SvelteKit offers several advantages:
+
+- **Fast performance** - No virtual DOM overhead
+- **Developer experience** - Hot module replacement and instant feedback
+- **Versatile routing** - File-based routing with dynamic parameters
+- **SSR/SSG support** - Server-side rendering and static site generation
+
+## Installation
+
+```bash
+npm create svelte@latest my-app
+cd my-app
+npm install
+npm run dev
+```
+
+## File-Based Routing
+
+SvelteKit uses a file-based routing system. Each `+page.svelte` file becomes a route:
+
+```
+src/routes/
+├── +page.svelte        → /
+├── about/
+│   └── +page.svelte    → /about
+└── blog/
+    └── [slug]/
+        └── +page.svelte → /blog/:slug
+```
+
+## Server-Side Data Loading
+
+Use `+page.server.ts` to fetch data on the server:
+
+```typescript
+export async function load({ fetch }) {
+    const response = await fetch('/api/posts');
+    return { posts: await response.json() };
+}
+```
+
+## Deployment
+
+SvelteKit supports multiple deployment targets including Vercel, Netlify, and static hosting.
+
+---
+
+*Happy coding!*

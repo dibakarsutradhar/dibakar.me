@@ -1,0 +1,67 @@
+<script context="module">
+    export const metadata = {
+        title: "Web3 Security Best Practices",
+        category: "security",
+        tags: ["web3", "blockchain", "security", "smart-contracts"],
+        headerImage: "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=1200&h=600&fit=crop",
+        date: "2024-06-20",
+        excerpt: "Essential security practices for Web3 development, covering smart contracts, wallet integration, and common vulnerabilities."
+    };
+</script>
+
+# Web3 Security Best Practices
+
+Security is paramount in Web3 development. This guide covers essential practices to keep your applications and users safe.
+
+## Smart Contract Security
+
+### Reentrancy Attacks
+
+Always follow the Checks-Effects-Interactions pattern:
+
+```solidity
+// Unsafe
+function withdraw(uint256 amount) {
+    require(balances[msg.sender] >= amount);
+    msg.sender.call{value: amount}("");
+    balances[msg.sender] -= amount;
+}
+
+// Safe
+function withdraw(uint256 amount) {
+    require(balances[msg.sender] >= amount);
+    balances[msg.sender] -= amount;
+    (bool success, ) = msg.sender.call{value: amount}("");
+    require(success);
+}
+```
+
+### Use Established Libraries
+
+Leverage battle-tested libraries like OpenZeppelin for common patterns.
+
+## Wallet Integration
+
+### Never Store Private Keys
+
+- Use wallet connectors (WalletConnect, MetaMask)
+- Implement proper key management
+- Always require user confirmation for transactions
+
+### Validate All Inputs
+
+```typescript
+function isValidAddress(address: string): boolean {
+    return /^0x[a-fA-F0-9]{40}$/.test(address);
+}
+```
+
+## Common Vulnerabilities
+
+1. **Front-running** - Use commit-reveal schemes for sensitive operations
+2. **Oracle manipulation** - Use multiple data sources
+3. **Integer overflow** - Use SafeMath or Solidity 0.8+
+
+---
+
+Stay secure, stay vigilant!

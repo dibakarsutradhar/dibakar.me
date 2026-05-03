@@ -1,0 +1,67 @@
+<script context="module">
+    export const metadata = {
+        title: "Building a Modern Portfolio Website",
+        category: "project",
+        tags: ["portfolio", "web development", "design", "css"],
+        headerImage: "https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=1200&h=600&fit=crop",
+        date: "2024-07-10",
+        excerpt: "My journey in creating a personal portfolio website with modern web technologies, featuring animations and dark mode."
+    };
+</script>
+
+# Building a Modern Portfolio Website
+
+Creating a portfolio that stands out requires careful consideration of design, performance, and user experience.
+
+## Design Philosophy
+
+I wanted a portfolio that was:
+- **Minimal but expressive** - Clean design with subtle animations
+- **Fast loading** - Optimized assets and lazy loading
+- **Accessible** - Works on all devices and screen readers
+- **Dark mode support** - Seamless theme switching
+
+## Tech Stack
+
+- **SvelteKit** - For the framework
+- **Tailwind CSS** - For styling
+- **Vite** - For build tooling
+- **Static adapter** - For deployment
+
+## Key Features
+
+### Theme Toggle
+
+```svelte
+<script>
+    let darkMode = $state(true);
+
+    function toggleTheme() {
+        darkMode = !darkMode;
+        document.documentElement.classList.toggle('dark', darkMode);
+    }
+</script>
+```
+
+### Smooth Animations
+
+Using CSS animations and transitions for:
+- Page load sequences
+- Scroll indicators
+- Hover effects
+- Theme transitions
+
+## Performance Optimizations
+
+1. Image optimization with proper sizing
+2. Font subsetting
+3. CSS purging
+4. Lazy loading images
+
+## Deployment
+
+Static sites can be deployed anywhere. I use a simple CI/CD pipeline with GitHub Actions.
+
+---
+
+*Your portfolio is your first impression - make it count!*

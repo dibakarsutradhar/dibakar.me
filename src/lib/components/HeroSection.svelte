@@ -56,7 +56,7 @@
 	</div>
 
 	<!-- Scroll indicator -->
-	<div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce animate-[fadeIn_1s_ease-out_1.2s_both]">
+	<div class="absolute bottom-10 left-1/2 transform -translate-x-1/2 animate-bounce animate-[fadeIn_1s_ease-out_1.5s_both]">
 		<svg
 			class="w-8 h-8 opacity-50 hover:opacity-100 transition-all duration-300 cursor-pointer {darkMode ? 'text-[#ffcfa0]' : 'text-[#d97706]'}"
 			fill="none"
