@@ -1,12 +1,12 @@
 /**
- * Builds src/lib/blog/image-manifest.js from the files in static/images/blog/.
+ * Builds lib/blog/image-manifest.js from the files in public/images/blog/.
  *
  * Blog posts reference images by URL ("/images/blog/foo.jpg"). Reading each
  * image's real dimensions at build time lets the markdown pipeline emit
  * width/height attributes, which is what stops images from shifting the page
  * as they load. Runs automatically before `dev` and `build`, or on demand:
  *
- *   node scripts/generate-image-manifest.mjs
+ *   bun scripts/generate-image-manifest.mjs
  */
 import { readdir, writeFile } from 'node:fs/promises';
 import { dirname, join, relative, sep } from 'node:path';
@@ -25,8 +25,8 @@ try {
 }
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const imageDir = join(root, 'static/images/blog');
-const target = join(root, 'src/lib/blog/image-manifest.js');
+const imageDir = join(root, 'public/images/blog');
+const target = join(root, 'lib/blog/image-manifest.js');
 const IMAGE_RE = /\.(avif|gif|jpe?g|png|svg|webp)$/i;
 
 /** @param {string} dir @returns {Promise<string[]>} */
@@ -77,4 +77,4 @@ export default imageManifest;
 `;
 
 await writeFile(target, body, 'utf8');
-console.log(`Wrote ${Object.keys(manifest).length} entries to src/lib/blog/image-manifest.js`);
+console.log(`Wrote ${Object.keys(manifest).length} entries to lib/blog/image-manifest.js`);
