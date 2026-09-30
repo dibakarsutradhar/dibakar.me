@@ -1,13 +1,16 @@
 import adapter from '@sveltejs/adapter-static';
 import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import { mdsvex } from 'mdsvex';
+import { rehypePictures } from './src/lib/blog/rehype-pictures.js';
 
 const config = {
 	extensions: ['.svelte', '.md', '.svx'],
 	preprocess: [
 		vitePreprocess(),
 		mdsvex({
-			extensions: ['.md', '.svx']
+			extensions: ['.md', '.svx'],
+			// Upgrades markdown images into captioned figures and galleries.
+			rehypePlugins: [rehypePictures]
 		})
 	],
 	kit: {
@@ -15,7 +18,10 @@ const config = {
 			// optional: you can set your output directory
 			pages: 'build',
 			assets: 'build',
-			fallback: 'index.html', // important for SPAs
+			// Must NOT be index.html: that would overwrite the prerendered home
+			// page with an empty SPA shell. GitHub Pages serves 404.html for
+			// unknown routes, so this still works as the client-side fallback.
+			fallback: '404.html',
 			precompress: false
 		}),
 		prerender: {

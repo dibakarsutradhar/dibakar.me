@@ -3,7 +3,9 @@
         title: "Web3 Security Best Practices",
         category: "security",
         tags: ["web3", "blockchain", "security", "smart-contracts"],
-        headerImage: "https://images.unsplash.com/photo-1639762681485-074b7f938ba0?w=1200&h=600&fit=crop",
+        headerImage: "/images/blog/cover-web3-security.webp",
+        headerImageAlt: "Article cover: Web3 Security Best Practices",
+        headerImageCaption: "Once a contract holds value, every assumption becomes an attack surface.",
         date: "2024-06-20",
         excerpt: "Essential security practices for Web3 development, covering smart contracts, wallet integration, and common vulnerabilities."
     };
@@ -40,6 +42,8 @@ function withdraw(uint256 amount) {
 
 Leverage battle-tested libraries like OpenZeppelin for common patterns.
 
+![The lifecycle of a contract that holds value](/images/blog/diagrams/diagram-web3-lifecycle.webp "Security is a process, not a one-time audit — the last step feeds back into the first | full")
+
 ## Wallet Integration
 
 ### Never Store Private Keys
@@ -55,6 +59,8 @@ function isValidAddress(address: string): boolean {
     return /^0x[a-fA-F0-9]{40}$/.test(address);
 }
 ```
+
+![A short pre-deployment checklist](/images/blog/diagrams/diagram-web3-checklist.webp "The three questions that catch most high-severity bugs | half")
 
 ## Common Vulnerabilities
 

@@ -1,5 +1,5 @@
 import type { PageServerLoad } from './$types';
-import { getAllPosts } from '$lib/blog';
+import { getAllPosts } from '$lib/blog/posts.server';
 
 export const prerender = true;
 

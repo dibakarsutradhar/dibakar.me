@@ -1,21 +1,10 @@
-<script lang="ts">
-	interface Props {
-		darkMode: boolean;
-	}
-
-	let { darkMode }: Props = $props();
-</script>
-
 <div class="mt-8 flex items-center gap-6">
 	<a
 		href="https://github.com/dibakarsutradhar"
 		target="_blank"
 		rel="noopener noreferrer"
 		aria-label="GitHub"
-		class="flex h-12 w-12 items-center justify-center rounded-full transition-all duration-300 hover:-translate-y-1
-           {darkMode
-				? 'bg-[rgba(255,255,255,0.05)] text-[#e4e6eb] hover:bg-[rgba(255,255,255,0.1)]'
-				: 'bg-[rgba(0,0,0,0.04)] text-[#1a1a1a] hover:bg-[rgba(0,0,0,0.08)]'}"
+		class="flex h-12 w-12 items-center justify-center rounded-full bg-card text-fg transition-all duration-300 hover:-translate-y-1 hover:bg-hover"
 	>
 		<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
 			<path
@@ -29,10 +18,7 @@
 		target="_blank"
 		rel="noopener noreferrer"
 		aria-label="LinkedIn"
-		class="flex h-12 w-12 items-center justify-center rounded-full transition-all duration-300 hover:-translate-y-1
-           {darkMode
-				? 'bg-[rgba(255,255,255,0.05)] text-[#e4e6eb] hover:bg-[rgba(255,255,255,0.1)]'
-				: 'bg-[rgba(0,0,0,0.04)] text-[#1a1a1a] hover:bg-[rgba(0,0,0,0.08)]'}"
+		class="flex h-12 w-12 items-center justify-center rounded-full bg-card text-fg transition-all duration-300 hover:-translate-y-1 hover:bg-hover"
 	>
 		<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
 			<path
@@ -46,10 +32,7 @@
 		target="_blank"
 		rel="noopener noreferrer"
 		aria-label="Medium"
-		class="flex h-12 w-12 items-center justify-center rounded-full transition-all duration-300 hover:-translate-y-1
-           {darkMode
-				? 'bg-[rgba(255,255,255,0.05)] text-[#e4e6eb] hover:bg-[rgba(255,255,255,0.1)]'
-				: 'bg-[rgba(0,0,0,0.04)] text-[#1a1a1a] hover:bg-[rgba(0,0,0,0.08)]'}"
+		class="flex h-12 w-12 items-center justify-center rounded-full bg-card text-fg transition-all duration-300 hover:-translate-y-1 hover:bg-hover"
 	>
 		<svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
 			<path
@@ -59,41 +42,11 @@
 	</a>
 
 	<a
-		href="/blogs"
-		aria-label="Blog"
-		class="flex h-12 w-12 items-center justify-center rounded-full transition-all duration-300 hover:-translate-y-1
-           {darkMode
-				? 'bg-[rgba(255,255,255,0.05)] text-[#e4e6eb] hover:bg-[rgba(255,255,255,0.1)]'
-				: 'bg-[rgba(0,0,0,0.04)] text-[#1a1a1a] hover:bg-[rgba(0,0,0,0.08)]'}"
-	>
-		<svg
-			width="24"
-			height="24"
-			viewBox="0 0 24 24"
-			fill="none"
-			stroke="currentColor"
-			stroke-width="2"
-		>
-			<path d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9.5a2 2 0 00-2-2h-2"></path>
-		</svg>
-	</a>
-
-	<a
 		href="mailto:iamdibakardipu@gmail.com"
 		aria-label="Email"
-		class="flex h-12 w-12 items-center justify-center rounded-full transition-all duration-300 hover:-translate-y-1
-           {darkMode
-				? 'bg-[rgba(255,255,255,0.05)] text-[#e4e6eb] hover:bg-[rgba(255,255,255,0.1)]'
-				: 'bg-[rgba(0,0,0,0.04)] text-[#1a1a1a] hover:bg-[rgba(0,0,0,0.08)]'}"
+		class="flex h-12 w-12 items-center justify-center rounded-full bg-card text-fg transition-all duration-300 hover:-translate-y-1 hover:bg-hover"
 	>
-		<svg
-			width="24"
-			height="24"
-			viewBox="0 0 24 24"
-			fill="none"
-			stroke="currentColor"
-			stroke-width="2"
-		>
+		<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
 			<path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
 			<polyline points="22,6 12,13 2,6"></polyline>
 		</svg>

@@ -1,6 +1,103 @@
 @import "tailwindcss";
 
-@theme {
+/* Self-hosted Space Grotesk (latin subset, from Google Fonts). Local copies
+   in /fonts remove the render-blocking fonts.googleapis.com request and the
+   third-party connection entirely. */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url('/fonts/space-grotesk-300.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/space-grotesk-400.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/space-grotesk-500.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/space-grotesk-600.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/space-grotesk-700.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
+/* Theme palette. Values live on :root / [data-theme] so a single attribute
+   switch (set before first paint in app.html) re-skins every page. */
+:root,
+[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #0f1419;
+  --fg: #e4e6eb;
+  --muted: #a6adba;
+  --accent: #ffcfa0;
+  --accent-ink: #0f1419;
+  --card: rgba(255, 255, 255, 0.05);
+  --hover: rgba(255, 255, 255, 0.1);
+  --border: rgba(255, 255, 255, 0.14);
+  --border-soft: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme='light'] {
+  color-scheme: light;
+  --bg: #f0f0f0;
+  --fg: #1a1a1a;
+  --muted: #55565a;
+  --accent: #b45309;
+  --accent-ink: #ffffff;
+  --card: rgba(255, 255, 255, 0.55);
+  --hover: rgba(0, 0, 0, 0.07);
+  --border: rgba(0, 0, 0, 0.16);
+  --border-soft: rgba(0, 0, 0, 0.1);
+}
+
+/* Expose the palette to Tailwind as standard color utilities
+   (bg-bg, text-fg, text-muted, text-accent, border-line, ...).
+   `inline` keeps the utilities pointing at the runtime vars so they
+   follow the theme attribute instead of being baked in at build time. */
+@theme inline {
+  --color-bg: var(--bg);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-card: var(--card);
+  --color-hover: var(--hover);
+  --color-line: var(--border);
+  --color-line-soft: var(--border-soft);
+
   --animate-gradient: gradient 15s ease infinite;
   --animate-shimmer: shimmer 2s linear infinite;
 
@@ -26,29 +123,32 @@
   }
 }
 
-/* Glassmorphism utility */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Shared entrance animation, referenced as animate-[fadeIn_...] utilities. */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Glassmorphism utility. Deliberately no backdrop-filter: the blur forces
+   continuous re-rasterization while content moves (marquee) and showed up as
+   multi-hundred-ms main-thread tasks in Lighthouse. */
 @utility glass {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  background: var(--card);
+  border: 1px solid var(--border-soft);
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-}
-
-@utility glass-dark {
-  background: rgba(0, 0, 0, 0.2);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
-}
-
-@utility glass-light {
-  background: rgba(255, 255, 255, 0.4);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.3);
-  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.05);
 }
 
 /* Utility for text gradient */
@@ -56,4 +156,48 @@
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
+}
+
+/* Skip layout/paint of below-fold sections until they approach the viewport.
+   Only the height gets a placeholder estimate (width must size normally, or
+   off-screen sections force a phantom 1000px page width on mobile). */
+@utility cv-auto {
+  content-visibility: auto;
+  contain-intrinsic-width: auto;
+  contain-intrinsic-height: auto 1000px;
+}
+
+/* Scroll-reveal: sections start slightly shifted down and fade in the
+   first time they enter the viewport (driven by $lib/actions/reveal). */
+.reveal {
+  opacity: 0;
+  translate: 0 16px;
+  transition:
+    opacity 0.7s ease-out,
+    translate 0.7s ease-out;
+}
+
+.reveal.is-visible {
+  opacity: 1;
+  translate: 0 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .reveal {
+    opacity: 1;
+    translate: none;
+    transition: none;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }

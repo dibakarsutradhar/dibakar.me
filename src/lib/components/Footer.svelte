@@ -1,17 +1,9 @@
 <script lang="ts">
-	interface Props {
-		darkMode: boolean;
-	}
-
-	let { darkMode }: Props = $props();
-
 	const currentYear = new Date().getFullYear();
 </script>
 
-<footer
-	class="border-t px-8 py-12 text-center {darkMode
-		? 'border-[rgba(255,255,255,0.08)]'
-		: 'border-[rgba(0,0,0,0.08)]'}"
->
-	<p class="m-0 text-sm opacity-60">© {currentYear} Dibakar. Crafted with precision and passion.</p>
+<footer class="border-t border-line-soft px-8 py-12 text-center">
+	<p class="m-0 text-sm text-muted">
+		© {currentYear} Dibakar. Crafted with precision and passion.
+	</p>
 </footer>

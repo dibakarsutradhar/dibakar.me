@@ -59,15 +59,20 @@ export const skills = [
 	{ name: 'React', category: 'ui' }
 ];
 
-export const categoryColors: Record<string, string> = {
-	core: '#ffcfa0',      // Primary color (warm orange)
-	systems: '#60a5fa',   // Blue
-	infra: '#34d399',     // Green
-	database: '#a78bfa',  // Purple
-	ai: '#fb923c',        // Orange
-	blockchain: '#f87171', // Red
-	ui: '#22d3ee'         // Teal
+export const categoryColors: Record<string, { dark: string; light: string }> = {
+	core: { dark: '#ffcfa0', light: '#b45309' },       // Primary color (warm orange)
+	systems: { dark: '#60a5fa', light: '#2563eb' },    // Blue
+	infra: { dark: '#34d399', light: '#059669' },      // Green
+	database: { dark: '#a78bfa', light: '#7c3aed' },   // Purple
+	ai: { dark: '#fb923c', light: '#c2410c' },         // Orange
+	blockchain: { dark: '#f87171', light: '#dc2626' }, // Red
+	ui: { dark: '#22d3ee', light: '#0891b2' }          // Teal
 };
+
+export function categoryColor(category: string, darkMode: boolean): string {
+	const colors = categoryColors[category];
+	return darkMode ? colors.dark : colors.light;
+}
 
 export const categoryLabels: Record<string, string> = {
 	core: 'core technologies',

@@ -3,7 +3,9 @@
         title: "Getting Started with SvelteKit",
         category: "tutorial",
         tags: ["svelte", "web development", "javascript"],
-        headerImage: "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200&h=600&fit=crop",
+        headerImage: "/images/blog/cover-sveltekit.webp",
+        headerImageAlt: "Article cover: Getting Started with SvelteKit",
+        headerImageCaption: "SvelteKit bundles routing, data loading and rendering into one framework.",
         date: "2024-05-15",
         excerpt: "A comprehensive guide to building modern web applications with SvelteKit, from setup to deployment."
     };
@@ -45,6 +47,8 @@ src/routes/
         └── +page.svelte → /blog/:slug
 ```
 
+![File-based routing](/images/blog/diagrams/diagram-sveltekit-routing.webp "Every folder under src/routes becomes a URL segment — there is no separate router config")
+
 ## Server-Side Data Loading
 
 Use `+page.server.ts` to fetch data on the server:
@@ -55,6 +59,8 @@ export async function load({ fetch }) {
     return { posts: await response.json() };
 }
 ```
+
+![How a page gets its data](/images/blog/diagrams/diagram-sveltekit-data.webp "load() runs before the page renders: on the server during prerendering, and in the browser for client-side navigations | wide")
 
 ## Deployment
 
