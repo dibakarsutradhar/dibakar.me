@@ -49,6 +49,50 @@ export default function BlogIndex({ posts }: { posts: BlogMeta[] }) {
 		});
 	}
 
+	/** Category + tag pickers. Rendered inline on mobile (right after search)
+	    and in the desktop sidebar — one source of truth for the buttons. */
+	const filterGroups = () => (
+		<>
+			<div>
+				<h3 className="mb-4 text-sm font-semibold tracking-wider text-muted uppercase">
+					Categories
+				</h3>
+				<div className="flex flex-wrap gap-2">
+					{categories.map((cat) => (
+						<button
+							key={cat}
+							onClick={() => toggleCategory(cat)}
+							className={`rounded-full px-3 py-1 text-sm transition-all ${
+								selectedCategory === cat ? 'bg-accent text-accent-ink' : 'bg-card text-fg hover:bg-hover'
+							}`}
+						>
+							{cat}
+						</button>
+					))}
+				</div>
+			</div>
+
+			<div>
+				<h3 className="mb-4 text-sm font-semibold tracking-wider text-muted uppercase">
+					Tags
+				</h3>
+				<div className="flex flex-wrap gap-2">
+					{allTags.map((tag) => (
+						<button
+							key={tag}
+							onClick={() => toggleTag(tag)}
+							className={`rounded-full border px-3 py-1 text-sm transition-all ${
+								selectedTag === tag ? 'border-accent bg-accent/10 text-accent' : 'border-line text-fg hover:border-accent'
+							}`}
+						>
+							#{tag}
+						</button>
+					))}
+				</div>
+			</div>
+		</>
+	);
+
 	return (
 		<div className="flex flex-col gap-12 lg:flex-row">
 			{/* Main content */}
@@ -91,6 +135,9 @@ export default function BlogIndex({ posts }: { posts: BlogMeta[] }) {
 						)}
 					</div>
 				</div>
+
+				{/* Inline filters on mobile — after search, before the posts. */}
+				<div className="space-y-8 lg:hidden">{filterGroups()}</div>
 
 				{/* Active filters */}
 				{(selectedCategory || selectedTag) && (
@@ -148,12 +195,17 @@ export default function BlogIndex({ posts }: { posts: BlogMeta[] }) {
 										</div>
 									)}
 									<div className="p-6">
-										<div className="mb-3 flex flex-wrap items-center gap-3 text-sm">
-											<span className="rounded-full bg-accent/10 px-3 py-1 text-accent">
-												{post.category}
+									<div className="mb-3 flex flex-wrap items-center gap-3 text-sm">
+										<span className="rounded-full bg-accent/10 px-3 py-1 text-accent">
+											{post.category}
+										</span>
+										<span className="text-muted">{shortDate(post.date)}</span>
+										{post.draft && (
+											<span className="rounded-full border border-dashed border-line px-3 py-1 text-muted">
+												draft
 											</span>
-											<span className="text-muted">{shortDate(post.date)}</span>
-										</div>
+										)}
+									</div>
 										<h2 className="mb-2 text-2xl font-semibold transition-colors group-hover:text-accent">
 											{post.title}
 										</h2>
@@ -212,45 +264,9 @@ export default function BlogIndex({ posts }: { posts: BlogMeta[] }) {
 				</div>
 			</div>
 
-			{/* Sidebar */}
-			<aside className="w-full shrink-0 lg:w-64">
-				<div className="space-y-8 lg:sticky lg:top-24">
-					{/* Categories */}
-					<div>
-						<h3 className="mb-4 text-sm font-semibold tracking-wider text-muted uppercase">Categories</h3>
-						<div className="flex flex-wrap gap-2">
-							{categories.map((cat) => (
-								<button
-									key={cat}
-									onClick={() => toggleCategory(cat)}
-									className={`rounded-full px-3 py-1 text-sm transition-all ${
-										selectedCategory === cat ? 'bg-accent text-accent-ink' : 'bg-card text-fg hover:bg-hover'
-									}`}
-								>
-									{cat}
-								</button>
-							))}
-						</div>
-					</div>
-
-					{/* Tags */}
-					<div>
-						<h3 className="mb-4 text-sm font-semibold tracking-wider text-muted uppercase">Tags</h3>
-						<div className="flex flex-wrap gap-2">
-							{allTags.map((tag) => (
-								<button
-									key={tag}
-									onClick={() => toggleTag(tag)}
-									className={`rounded-full border px-3 py-1 text-sm transition-all ${
-										selectedTag === tag ? 'border-accent bg-accent/10 text-accent' : 'border-line text-fg hover:border-accent'
-									}`}
-								>
-									#{tag}
-								</button>
-							))}
-						</div>
-					</div>
-				</div>
+			{/* Sidebar (desktop only — mobile uses the inline filter block) */}
+			<aside className="hidden w-full shrink-0 lg:block lg:w-64">
+				<div className="space-y-8 lg:sticky lg:top-24">{filterGroups()}</div>
 			</aside>
 		</div>
 	);

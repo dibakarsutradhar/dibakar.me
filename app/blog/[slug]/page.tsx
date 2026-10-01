@@ -31,6 +31,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 			url: `/blog/${post.slug}`,
 			title: post.title,
 			description: post.excerpt,
+			publishedTime: post.date,
 			...(post.headerImage && { images: [{ url: post.headerImage }] })
 		},
 		twitter: { card: post.headerImage ? 'summary_large_image' : 'summary' }
@@ -64,6 +65,11 @@ export default async function PostPage({ params }: Props) {
 					<div className="mb-4 flex flex-wrap items-center gap-3 text-sm">
 						<span className="rounded-full bg-accent/10 px-3 py-1 text-accent">{post.category}</span>
 						<span className="text-muted">{formatDate(post.date)}</span>
+						{post.draft && (
+							<span className="rounded-full border border-dashed border-line px-3 py-1 text-muted">
+								draft — not visible in production
+							</span>
+						)}
 					</div>
 
 					<h1 className="mb-6 text-4xl leading-tight font-bold tracking-tight md:text-5xl">

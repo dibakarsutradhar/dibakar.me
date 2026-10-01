@@ -11,8 +11,10 @@ export const metadata: Metadata = {
 		type: 'website',
 		url: '/blog',
 		title: 'Blog | Dibakar Sutra Dhar',
-		description: 'Thoughts on software engineering, web3, and web development.'
-	}
+		description: 'Thoughts on software engineering, web3, and web development.',
+		images: ['/images/og-card.png']
+	},
+	twitter: { card: 'summary_large_image' }
 };
 
 export default function BlogPage() {

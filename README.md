@@ -6,24 +6,32 @@ Next.js (App Router, static export), Tailwind CSS v4, and Bun.
 ## Stack
 
 - **Next.js 15** — App Router, `output: 'export'` (fully static build in `out/`,
-  deployable to GitHub Pages; `out/404.html` is the fallback route).
+  deployable to Cloudflare Pages).
 - **Tailwind CSS v4** — CSS-first config; the theme palette lives in
   `app/globals.css` as CSS variables exposed via `@theme inline`, switched at
   runtime by the `data-theme` attribute on `<html>`.
 - **Bun** — package manager and script runner (`bun install`, `bun run dev`).
-  Node is required to run the production build (`next build`), since the Next
-  CLI does not run under Bun's runtime.
+  The production build (`next build`) needs **Node on PATH** — the Next CLI
+  crashes under Bun's `node` shim when no real Node exists (`fnm` provides
+  it; `~/.zshrc` runs `eval "$(fnm env --use-on-cd)"`).
 
 ## Commands
 
 ```sh
 bun install        # install dependencies
 bun run dev        # dev server (Turbopack), regenerates the image manifest first
-bun run build      # static production build to out/ (requires node on PATH)
+bun run build      # static production build to out/
 bun run images     # regenerate lib/blog/image-manifest.js (intrinsic image sizes)
 bun run logos      # regenerate optimized partner logos
-bun run images:art # regenerate blog cover/diagram art
+bun run images:art # regenerate blog cover/diagram art + the og-card.png
 ```
+
+## Deploying (Cloudflare Pages)
+
+Static export: point Cloudflare Pages at the repo with build command
+`bun run build` and output directory `out`. `out/404.html` serves unknown
+routes. Set `NODE_VERSION` in the Pages environment to a current LTS (e.g.
+`22`) — the build runs `next` under real Node, never Bun's shim.
 
 ## Structure
 
@@ -56,6 +64,11 @@ Body markdown. Images get automatic figures/captions:
 
 ![Alt text](/images/blog/my-image.webp "A caption | wide")
 ```
+
+Add `draft: true` to the frontmatter to keep a post visible while you write
+it: drafts render in `bun run dev` (with a "draft" chip on the card and post
+page), and are excluded from production builds — the index, the sitemap, and
+every static route. Remove the flag to publish.
 
 The slug is the file name. Search indexes the whole body (plus weighted
 title/tags/category/excerpt matches).

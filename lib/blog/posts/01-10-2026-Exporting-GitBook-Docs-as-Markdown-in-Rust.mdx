@@ -1,0 +1,74 @@
+---
+title: "Exporting GitBook Docs as Clean Markdown with Rust"
+category: "project"
+tags: ["rust", "open source", "llm", "cli", "scraping"]
+headerImage: "/images/blog/cover-doc-scraper.webp"
+headerImageAlt: "Article cover: Exporting GitBook Docs as Clean Markdown with Rust"
+headerImageCaption: "The docs are already markdown — you just have to ask for them politely."
+date: "2026-10-01"
+excerpt: "How doc-scraper-rs exports GitBook docs as a clean markdown tree with llms.txt and AGENTS.md sidecars — one request per page, no HTML parsing, and a content-based fallback for soft 404s."
+---
+
+Every documentation site I wanted to feed to an LLM had the same problem: the good markdown was already there, and every scraper I tried insisted on taking the scenic route through the HTML to get it.
+
+GitBook's Next.js-rendered sites expose every page twice. Once as a fully-rendered React app — 380 to 770 KB of HTML with a hydration payload, a "Copy page" button, a feedback widget, and a Ctrl-K modal baked in. And once more as a clean `text/markdown` payload at the same URL with `.md` appended. Most scrapers hit the HTML and try to parse the result. [doc-scraper-rs](https://github.com/dibakarsutradhar/doc-scraper-rs) hits the markdown endpoint instead: one HTTP request per page, no browser, no HTML parsing, no chrome leaking into the output. What lands on disk is what the author wrote.
+
+![Pipeline diagram: sitemap, the .md endpoint, a content-based soft-404 check, and the mirror tree with sidecars](/images/blog/diagrams/diagram-doc-scraper-pipeline.webp "From sitemap to LLM-ready corpus | wide")
+
+The result is a mirror tree — `<output>/<url-path>/<slug>.md`, shaped exactly like the site — plus a structured `index.md`, and three sidecars aimed directly at the AI toolchain: an [`llms.txt`](https://llmstxt.org/) catalog, an `llms-full.txt` corpus, and an `AGENTS.md` that Claude Code, Cursor, and Copilot pick up automatically.
+
+```bash
+cargo install doc-scraper-rs
+
+# Mirror docs.strata.markets → ./strata-docs/
+doc-scraper https://docs.strata.markets
+```
+
+## The soft 404 you can't see
+
+The first real design problem wasn't fetching — it was trusting the fetch. When a GitBook page exists in the sitemap but its `.md` route isn't wired up, GitBook doesn't return a 404. It returns **HTTP 200** with a "Page Not Found" markdown stub as the body. On the wire, that response looks completely healthy.
+
+So the fallback has to be content-based. The detection is a regex anchored to the heading line — `^\s*#\s+page not found\b`, case-insensitive, multiline — which is deliberately strict. Documentation *about* error pages legitimately contains the phrase "page not found" in prose, and a loose match would eat real pages. The regex only fires when it's the first heading, i.e. when it *is* the page:
+
+```rust
+static PAGE_NOT_FOUND: LazyLock<Regex> =
+    LazyLock::new(|| Regex::new(r"(?im)^\s*#\s+page not found\b").expect("page-not-found regex"));
+```
+
+When the stub is detected, the scraper falls back to the bare HTML URL, reusing the same retry budget — and without re-paying the politeness delay, since the first request already waited. This whole path is covered by a wiremock integration test that emulates the stub end-to-end, plus a runnable smoke test in `examples/soft_404_smoke.rs` that pulls a real GitBook site known to return stubs on a subset of pages.
+
+## Mintlify: same trick, different lies
+
+Once the GitBook path worked, Mintlify turned out to expose the *same* `text/markdown` endpoint — the only structural difference is the sitemap. GitBook serves a `<sitemapindex>` pointing at `sitemap-pages.xml`; Mintlify serves a flat `<urlset>` in `/sitemap.xml`. That made auto-detection trivial: parse the sitemap, look at its shape, and you know whose lies you're dealing with.
+
+Because the lies are different. Mintlify prepends a three-line doc-index banner to every `.md` response — which is stripped by walking the lines literally, and if *anything* doesn't line up, the body is returned untouched so legitimate content is never accidentally stripped. And where GitBook's stubs fall back to HTML, Mintlify stubs are surfaced as errors instead: Mintlify stub pages have no useful content, and falling back would dump the SPA shell into the mirror tree. The stub heuristic is conservative on purpose — fewer than 100 bytes **and** no `# ` heading — so a short-but-real page is never misclassified.
+
+## Politeness is a concurrency problem
+
+The fetch fan-out is a Tokio semaphore — 20 concurrent requests by default — with a per-request politeness delay applied *before every primary attempt*, and bounded retries with exponential backoff on 5xx and 429. The subtlety is that the delay and the backoff stack: the effective per-request floor is the larger of the configured delay and the backoff sequence capped at 5× the delay. User-supplied negative delays are clamped to zero so neither sleep path can go negative — the kind of bug you find by writing the test that asserts the clamp.
+
+The payoff, measured against a 34-page GitBook site on an old Intel MacBook Pro with default settings: ~172 KB of clean markdown in ~1.3 seconds — about 26 pages per second, and ~36/s with the delay off, peaking near 48/s warm. A scraper with a headless browser would still be loading its first page.
+
+## Sidecars for the machines
+
+The markdown tree is for humans; the sidecars are for the models:
+
+- **`llms.txt`** — one line per page: title, URL, first paragraph. A navigation index a model can hold entirely in context.
+- **`llms-full.txt`** — the entire site as one file, each page emitted as `# Title`, `URL:`, body, `---`. This is the file you hand to OpenAI's Files API or any RAG pipeline that wants the corpus at once.
+- **`AGENTS.md` + `skills/`** — a synthesized project overview, plus per-section deep-dive files with numeric prefixes (`skills/00-…md`) that sort in the same order as AGENTS.md's section index. An agent reads the overview, then `cat`s only the sections it needs instead of loading the whole corpus.
+
+That layering — index, corpus, sections — is the whole point. Context windows are still a budget, and "all of it" is rarely the right spend.
+
+## Shipping it
+
+The crate is 0.1.1 on [crates.io](https://crates.io/crates/doc-scraper-rs), MIT-licensed, MSRV 1.85 (it uses `std::sync::LazyLock` rather than pulling in `once_cell` for two statics). Distribution goes three ways: `cargo install`, prebuilt binaries per platform from GitHub Releases with SHA-256 sidecars, and — the newest piece — an npm wrapper where `npm install -g doc-scraper` resolves the platform package via `optionalDependencies`, downloads the binary at install time, and verifies it. There's even a legacy HTML-scraping mode for pre–Next.js GitBook sites, though at this point it's a stub waiting for a site that actually needs it.
+
+What I'd like next: sitemap-driven incremental re-scrapes using `lastmod`, and more host detection behind the same `SitemapShape` abstraction — the whole design treats "which documentation platform is this" as the only branching point, so adding one is adding a parser, not touching the pipeline.
+
+If you have docs to feed to a model, try it:
+
+```bash
+doc-scraper https://docs.strata.markets -o ./strata-docs/
+```
+
+Repo: [github.com/dibakarsutradhar/doc-scraper-rs](https://github.com/dibakarsutradhar/doc-scraper-rs) · Crate: [crates.io/crates/doc-scraper-rs](https://crates.io/crates/doc-scraper-rs)

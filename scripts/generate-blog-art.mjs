@@ -14,7 +14,7 @@ import { fileURLToPath } from 'node:url';
 import sharp from 'sharp';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..');
-const outDir = join(root, 'static/images/blog');
+const outDir = join(root, 'public/images/blog');
 
 const BG = '#0f1419';
 const BG_2 = '#131c26';
@@ -49,27 +49,12 @@ function wrap(text, maxChars) {
 function backdrop(w, h) {
 	return `
 		<defs>
-			<linearGradient id="base" x1="0" y1="0" x2="1" y2="1">
-				<stop offset="0" stop-color="${BG}"/>
-				<stop offset="0.65" stop-color="${BG_2}"/>
-				<stop offset="1" stop-color="${BG}"/>
-			</linearGradient>
-			<radialGradient id="glowWarm" cx="0.82" cy="0.12" r="0.75">
-				<stop offset="0" stop-color="${ACCENT}" stop-opacity="0.30"/>
-				<stop offset="1" stop-color="${ACCENT}" stop-opacity="0"/>
-			</radialGradient>
-			<radialGradient id="glowCool" cx="0.1" cy="0.95" r="0.7">
-				<stop offset="0" stop-color="${ACCENT_2}" stop-opacity="0.18"/>
-				<stop offset="1" stop-color="${ACCENT_2}" stop-opacity="0"/>
-			</radialGradient>
 			<pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
 				<path d="M48 0H0V48" fill="none" stroke="#ffffff" stroke-opacity="0.035" stroke-width="1"/>
 			</pattern>
 		</defs>
-		<rect width="${w}" height="${h}" fill="url(#base)"/>
-		<rect width="${w}" height="${h}" fill="url(#grid)"/>
-		<rect width="${w}" height="${h}" fill="url(#glowWarm)"/>
-		<rect width="${w}" height="${h}" fill="url(#glowCool)"/>`;
+		<rect width="${w}" height="${h}" fill="${BG}"/>
+		<rect width="${w}" height="${h}" fill="url(#grid)"/>`;
 }
 
 function coverSvg({ title, category, width = 1600, height = 900, seed = 0 }) {
@@ -148,6 +133,24 @@ function diagramSvg({ title, steps, width = 1600, height = 1000, accent = ACCENT
 	</svg>`;
 }
 
+/**
+ * The social share card (og:image) for the homepage, /about, /projects and
+ * the blog index: 1200×630, the ratio every platform crops cleanly. PNG on
+ * purpose — some scrapers still mishandle WebP.
+ */
+function ogCardSvg({ width = 1200, height = 630 } = {}) {
+	return `<svg xmlns="http://www.w3.org/2000/svg" width="${width}" height="${height}" viewBox="0 0 ${width} ${height}">
+		${backdrop(width, height)}
+		<circle cx="${width - 150}" cy="130" r="96" fill="none" stroke="${ACCENT}" stroke-opacity="0.28" stroke-width="1.5"/>
+		<circle cx="${width - 150}" cy="130" r="62" fill="none" stroke="${ACCENT}" stroke-opacity="0.18" stroke-width="1.5"/>
+		<text x="96" y="250" font-family="${FONT}" font-size="76" font-weight="700" fill="${INK}">Dibakar Sutra Dhar</text>
+		<rect x="96" y="292" width="72" height="4" rx="2" fill="${ACCENT}"/>
+		<text x="96" y="360" font-family="${FONT}" font-size="34" fill="${MUTED}">senior software engineer — web platforms &amp; web3 security</text>
+		<text x="96" y="${height - 96}" font-family="${FONT}" font-size="26" fill="${MUTED}">dibakar.me</text>
+		${Array.from({ length: 5 }, (_, i) => `<circle cx="${96 + i * 26}" cy="${height - 150}" r="4" fill="${ACCENT}" fill-opacity="${0.2 + i * 0.05}"/>`).join('')}
+	</svg>`;
+}
+
 const covers = [
 	{
 		file: 'cover-sveltekit.jpg',
@@ -160,6 +163,10 @@ const covers = [
 	{
 		file: 'cover-web3-security.jpg',
 		svg: coverSvg({ title: 'Web3 Security Best Practices', category: 'security', seed: 2 })
+	},
+	{
+		file: 'cover-doc-scraper.jpg',
+		svg: coverSvg({ title: 'Exporting GitBook Docs as Clean Markdown', category: 'project', seed: 3 })
 	}
 ];
 
@@ -235,10 +242,28 @@ const diagrams = [
 				{ label: 'Arithmetic', detail: 'rounding always favours someone' }
 			]
 		})
+	},
+	{
+		file: 'diagram-doc-scraper-pipeline.png',
+		svg: diagramSvg({
+			title: 'One request per page, no HTML parsing',
+			steps: [
+				{ label: 'sitemap.xml', detail: 'every published page' },
+				{ label: 'GET /page.md', detail: 'the hidden markdown endpoint' },
+				{ label: 'Soft-404 check', detail: 'content-based, not status codes' },
+				{ label: 'Mirror tree', detail: '+ llms.txt, AGENTS.md sidecars' }
+			]
+		})
 	}
 ];
 
 await mkdir(join(outDir, 'diagrams'), { recursive: true });
+
+// Social share card — lives outside /images/blog since every page references it.
+await sharp(Buffer.from(ogCardSvg()))
+	.png()
+	.toFile(join(root, 'public/images/og-card.png'));
+console.log('og-card ', join('public/images/og-card.png'));
 
 for (const { file, svg } of covers) {
 	await sharp(Buffer.from(svg))

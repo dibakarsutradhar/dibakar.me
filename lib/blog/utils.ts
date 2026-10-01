@@ -25,6 +25,7 @@ export function normalizePostMeta(
 		headerImageCaption: metadata.headerImageCaption || '',
 		date: metadata.date || '',
 		excerpt: metadata.excerpt || '',
+		draft: metadata.draft === true,
 		searchText
 	};
 }

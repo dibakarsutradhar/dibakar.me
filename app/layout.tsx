@@ -1,6 +1,5 @@
 import type { Metadata, Viewport } from 'next';
 import { SITE_TITLE, SITE_URL } from '@/lib/site';
-import ThemeToggle from '@/components/ThemeToggle';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -25,9 +24,10 @@ export const metadata: Metadata = {
 		url: SITE_URL,
 		title: `${SITE_TITLE} — Senior Software Engineer`,
 		description:
-			'Senior software engineer building web platforms and securing web3 systems.'
+			'Senior software engineer building web platforms and securing web3 systems.',
+		images: [{ url: '/images/og-card.png', width: 1200, height: 630 }]
 	},
-	twitter: { card: 'summary' }
+	twitter: { card: 'summary_large_image' }
 };
 
 export const viewport: Viewport = {
@@ -69,8 +69,6 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 			</head>
 			<body className="bg-bg font-sans text-fg antialiased transition-colors duration-500">
 				{children}
-				{/* Fixed in the top-right corner of every page. */}
-				<ThemeToggle />
 			</body>
 		</html>
 	);

@@ -121,6 +121,18 @@
   }
 }
 
+/* Dropdown menu entrance: fade + slight drop from the button. */
+@keyframes menuIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 :focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 2px;
@@ -135,11 +147,13 @@
   box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
 }
 
-/* Utility for text gradient */
-@utility text-gradient {
-  background-clip: text;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+/* Horizontal scroll strip without a visible scrollbar (mobile icon row).
+   The edge fades live on the container, not here. */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

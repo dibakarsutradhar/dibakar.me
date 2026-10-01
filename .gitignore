@@ -11,6 +11,8 @@ node_modules
 /.next
 next-env.d.ts
 *.tsbuildinfo
+.zcode
+.pnpm-store
 
 # OS
 .DS_Store

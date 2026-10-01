@@ -24,6 +24,11 @@ import { getSlugFromPath, normalizePostMeta } from './utils';
 
 const POSTS_DIR = join(process.cwd(), 'lib/blog/posts');
 
+/** Drafts (`draft: true` in frontmatter) render in `next dev` only. Filtering
+ *  at read time means every consumer — index, sitemap, static params, and
+ *  direct URLs — inherits the exclusion in production builds. */
+const DRAFTS_VISIBLE = process.env.NODE_ENV !== 'production';
+
 /** A safety valve, not a real limit: whole posts are indexed so search can
  *  find anything a reader remembers. Only a pathologically long post is
  *  truncated. */
@@ -63,6 +68,7 @@ function readRawPosts(): RawPost[] {
 
 		const { data, content } = matter(readFileSync(join(POSTS_DIR, fileName), 'utf8'));
 		if (!data || Object.keys(data).length === 0) continue;
+		if (data.draft === true && !DRAFTS_VISIBLE) continue;
 
 		posts.push({
 			slug: getSlugFromPath(fileName),

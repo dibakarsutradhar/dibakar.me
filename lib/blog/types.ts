@@ -10,6 +10,11 @@ export interface BlogFrontmatter {
 	headerImageCaption?: string;
 	date: string;
 	excerpt: string;
+	/**
+	 * Drafts are visible in `next dev` only — the production build (and
+	 * therefore the sitemap and every static route) filters them out.
+	 */
+	draft?: boolean;
 }
 
 /** Frontmatter + derived fields for a post, as used by the blog index. */
@@ -24,6 +29,8 @@ export interface BlogMeta {
 	headerImageCaption: string;
 	date: string;
 	excerpt: string;
+	/** True while the post is a draft; always false in production builds. */
+	draft: boolean;
 	/**
 	 * The post body as plain text, so search can match words that only appear in
 	 * the article itself. Empty on a single post, which does not need it.

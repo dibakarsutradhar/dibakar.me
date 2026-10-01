@@ -5,8 +5,10 @@
  * <html>, so this component never owns the state: it just flips the attribute
  * and persists the choice. Both icons render and CSS picks the visible one,
  * which keeps server and client markup identical (no hydration flash).
+ * Positioning is the caller's job (fixed float on standalone pages, inline in
+ * the blog nav), passed via className.
  */
-export default function ThemeToggle() {
+export default function ThemeToggle({ className = '' }: { className?: string }) {
 	function toggleTheme() {
 		const root = document.documentElement;
 		const dark = root.dataset.theme !== 'dark';
@@ -22,7 +24,7 @@ export default function ThemeToggle() {
 		<button
 			onClick={toggleTheme}
 			aria-label="Toggle color theme"
-			className="fixed top-5 right-5 z-50 flex h-10 w-10 items-center justify-center rounded-full transition-all duration-300 hover:bg-hover"
+			className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full transition-all duration-300 hover:bg-hover ${className}`}
 		>
 			{/* Sun: shown in dark mode (clicking switches to light). */}
 			<svg
