@@ -8,13 +8,13 @@ import { SITE_ROLE, SITE_TITLE } from '@/lib/site';
 export const metadata: Metadata = {
 	title: 'About',
 	description:
-		'Dibakar Sutra Dhar — senior software engineer in Dhaka, Bangladesh, building web platforms and securing web3 systems.',
+		'Dibakar Sutra Dhar — senior software engineer in Dhaka, Bangladesh, building ai inference and distributed systems.',
 	alternates: { canonical: '/about' },
 	openGraph: {
 		url: '/about',
 		title: 'About | Dibakar Sutra Dhar',
 		description:
-			'Dibakar Sutra Dhar — senior software engineer in Dhaka, Bangladesh, building web platforms and securing web3 systems.',
+			'Dibakar Sutra Dhar — senior software engineer in Dhaka, Bangladesh, building ai inference and distributed systems.',
 		images: ['/images/og-card.png']
 	},
 	twitter: { card: 'summary_large_image' }

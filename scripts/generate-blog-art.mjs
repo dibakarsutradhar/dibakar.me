@@ -145,7 +145,7 @@ function ogCardSvg({ width = 1200, height = 630 } = {}) {
 		<circle cx="${width - 150}" cy="130" r="62" fill="none" stroke="${ACCENT}" stroke-opacity="0.18" stroke-width="1.5"/>
 		<text x="96" y="250" font-family="${FONT}" font-size="76" font-weight="700" fill="${INK}">Dibakar Sutra Dhar</text>
 		<rect x="96" y="292" width="72" height="4" rx="2" fill="${ACCENT}"/>
-		<text x="96" y="360" font-family="${FONT}" font-size="34" fill="${MUTED}">senior software engineer — web platforms &amp; web3 security</text>
+		<text x="96" y="360" font-family="${FONT}" font-size="34" fill="${MUTED}">senior software engineer — ai inference &amp; rust</text>
 		<text x="96" y="${height - 96}" font-family="${FONT}" font-size="26" fill="${MUTED}">dibakar.me</text>
 		${Array.from({ length: 5 }, (_, i) => `<circle cx="${96 + i * 26}" cy="${height - 150}" r="4" fill="${ACCENT}" fill-opacity="${0.2 + i * 0.05}"/>`).join('')}
 	</svg>`;

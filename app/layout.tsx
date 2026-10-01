@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 		template: `%s | ${SITE_TITLE}`
 	},
 	description:
-		'Senior software engineer building web platforms and securing web3 systems. Writing about software engineering, web3, and web development.',
+		'Senior software engineer building ai inference and distributed systems. Writing about software engineering, web3, and ai engineering.',
 	alternates: { canonical: '/' },
 	icons: {
 		icon: [
@@ -24,7 +24,7 @@ export const metadata: Metadata = {
 		url: SITE_URL,
 		title: `${SITE_TITLE} — Senior Software Engineer`,
 		description:
-			'Senior software engineer building web platforms and securing web3 systems.',
+			'Senior software engineer building ai inference and distributed systems. Writing about software engineering, web3, and ai engineering.',
 		images: [{ url: '/images/og-card.png', width: 1200, height: 630 }]
 	},
 	twitter: { card: 'summary_large_image' }
