@@ -1,0 +1,167 @@
+@import "tailwindcss";
+
+/* Self-hosted Space Grotesk (latin subset, from Google Fonts). Local copies
+   in /fonts remove the render-blocking fonts.googleapis.com request and the
+   third-party connection entirely. */
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 300;
+  font-display: swap;
+  src: url('/fonts/space-grotesk-300.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url('/fonts/space-grotesk-400.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url('/fonts/space-grotesk-500.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url('/fonts/space-grotesk-600.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: 'Space Grotesk';
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url('/fonts/space-grotesk-700.woff2') format('woff2');
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA,
+    U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193,
+    U+FEFF, U+FFFD;
+}
+
+/* Theme palette. Values live on :root / [data-theme] so a single attribute
+   switch (set before first paint in app/layout.tsx) re-skins every page. */
+:root,
+[data-theme='dark'] {
+  color-scheme: dark;
+  --bg: #0f1419;
+  --fg: #e4e6eb;
+  --muted: #a6adba;
+  --accent: #ffcfa0;
+  --accent-ink: #0f1419;
+  --card: rgba(255, 255, 255, 0.05);
+  --hover: rgba(255, 255, 255, 0.1);
+  --border: rgba(255, 255, 255, 0.14);
+  --border-soft: rgba(255, 255, 255, 0.08);
+}
+
+[data-theme='light'] {
+  color-scheme: light;
+  --bg: #f0f0f0;
+  --fg: #1a1a1a;
+  --muted: #55565a;
+  --accent: #b45309;
+  --accent-ink: #ffffff;
+  --card: rgba(255, 255, 255, 0.55);
+  --hover: rgba(0, 0, 0, 0.07);
+  --border: rgba(0, 0, 0, 0.16);
+  --border-soft: rgba(0, 0, 0, 0.1);
+}
+
+/* Expose the palette to Tailwind as standard color utilities
+   (bg-bg, text-fg, text-muted, text-accent, border-line, ...).
+   `inline` keeps the utilities pointing at the runtime vars so they
+   follow the theme attribute instead of being baked in at build time. */
+@theme inline {
+  --color-bg: var(--bg);
+  --color-fg: var(--fg);
+  --color-muted: var(--muted);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-card: var(--card);
+  --color-hover: var(--hover);
+  --color-line: var(--border);
+  --color-line-soft: var(--border-soft);
+
+  --animate-float: float 7s ease-in-out infinite;
+
+  @keyframes float {
+    0%,
+    100% {
+      translate: 0 0;
+    }
+    50% {
+      translate: 0 -10px;
+    }
+  }
+}
+
+/* Shared entrance animation, referenced as animate-[fadeIn_...] utilities. */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* Dropdown menu entrance: fade + slight drop from the button. */
+@keyframes menuIn {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* Glassmorphism utility. Deliberately no backdrop-filter: the blur forces
+   continuous re-rasterization while content moves and showed up as
+   multi-hundred-ms main-thread tasks in Lighthouse. */
+@utility glass {
+  background: var(--card);
+  border: 1px solid var(--border-soft);
+  box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+}
+
+/* Horizontal scroll strip without a visible scrollbar (mobile icon row).
+   The edge fades live on the container, not here. */
+@utility no-scrollbar {
+  scrollbar-width: none;
+  &::-webkit-scrollbar {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

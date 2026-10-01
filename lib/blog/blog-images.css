@@ -1,0 +1,133 @@
+/**
+ * Picture styles for blog posts.
+ *
+ * Loaded by src/routes/blog/+layout.svelte rather than from a +page.svelte,
+ * because post bodies are rendered by a mdsvex component: Svelte's scoped
+ * styles never reach that markup, so every rule here is global.
+ *
+ * The dark palette matches the blog layout, which is dark in both site themes.
+ */
+
+/* --- Images ------------------------------------------------------------ */
+
+.prose img,
+.blog-image {
+	display: block;
+	max-width: 100%;
+	height: auto;
+	border-radius: 0.75rem;
+	/* Visible placeholder while a lazy image loads, matching the reserved box. */
+	background-color: rgba(255, 255, 255, 0.04);
+}
+
+a.blog-image__zoom {
+	display: block;
+	border-radius: 0.75rem;
+	cursor: zoom-in;
+}
+
+a.blog-image__zoom:focus-visible {
+	outline: 2px solid #ffcfa0;
+	outline-offset: 3px;
+}
+
+/* --- Figures ----------------------------------------------------------- */
+
+.blog-figure {
+	margin: 2rem 0;
+}
+
+.blog-figure__caption,
+.prose figcaption {
+	margin-top: 0.75rem;
+	font-size: 0.875rem;
+	line-height: 1.6;
+	text-align: center;
+	color: rgba(228, 230, 235, 0.55);
+}
+
+/* "A caption | half" — a smaller image, centred in the text column. */
+.blog-figure--half {
+	width: min(100%, 26rem);
+	margin-inline: auto;
+}
+
+/* "A caption | wide" — a modest outdent past the 3xl text column. */
+.blog-figure--wide {
+	width: min(50rem, calc(100vw - 3rem));
+	margin-inline: calc((100% - min(50rem, calc(100vw - 3rem))) / 2);
+}
+
+/* "A caption | full" — the widest option, for diagrams whose labels need the
+   room. Deliberately not edge-to-edge: a viewport-wide figure dwarfs the text
+   column it sits in and lines up with nothing, so this stays bounded and
+   centred on the same axis as the text. */
+.blog-figure--full {
+	width: min(56rem, calc(100vw - 3rem));
+	margin-inline: calc((100% - min(56rem, calc(100vw - 3rem))) / 2);
+}
+
+/* --- Galleries --------------------------------------------------------- */
+
+.blog-gallery,
+.prose .gallery {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 1rem;
+	/* Tiles keep their own proportions: cropping a screenshot to a shared ratio
+	   silently cuts content off, and a ragged row reads better than that. */
+	align-items: start;
+	margin: 2rem 0;
+}
+
+.blog-gallery--1,
+.prose .gallery--1 {
+	grid-template-columns: minmax(0, 1fr);
+}
+
+.blog-gallery--3,
+.prose .gallery--3 {
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.blog-gallery .blog-figure,
+.prose .gallery figure {
+	width: auto;
+	margin: 0;
+}
+
+/* Even tiles: all tiles share the column width, so only the height varies. */
+.blog-gallery .blog-image,
+.prose .gallery img {
+	width: 100%;
+	height: auto;
+}
+
+.blog-gallery .blog-figure__caption,
+.prose .gallery figcaption {
+	margin-top: 0.5rem;
+	font-size: 0.8125rem;
+	text-align: left;
+}
+
+@media (min-width: 900px) {
+	.blog-gallery--4,
+	.prose .gallery--4 {
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+	}
+}
+
+@media (max-width: 640px) {
+	.blog-gallery,
+	.blog-gallery--3,
+	.prose .gallery,
+	.prose .gallery--3 {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.blog-figure--wide,
+	.blog-figure--full {
+		width: 100%;
+		margin-inline: 0;
+	}
+}

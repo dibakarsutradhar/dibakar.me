@@ -1,39 +1,41 @@
 {
 	"name": "dibakar.me",
 	"private": true,
-	"version": "0.0.1",
+	"version": "1.0.0",
 	"type": "module",
 	"scripts": {
-		"dev": "vite dev",
-		"build": "vite build",
-		"preview": "vite preview",
-		"prepare": "svelte-kit sync || echo ''"
-	},
-	"devDependencies": {
-		"@sveltejs/adapter-static": "^3.0.10",
-		"@sveltejs/kit": "^2.43.2",
-		"@sveltejs/vite-plugin-svelte": "^6.2.0",
-		"@tailwindcss/vite": "^4.1.13",
-		"mdsvex": "^0.12.7",
-		"sharp": "^0.34.4",
-		"svelte": "^5.39.5",
-		"svgo": "^4.0.0",
-		"tailwindcss": "^4.1.13",
-		"typescript": "^5.9.2",
-		"vite": "^7.1.7"
-	},
-	"pnpm": {
-		"onlyBuiltDependencies": [
-			"esbuild"
-		],
-		"ignoredBuiltDependencies": [
-			"sharp"
-		]
+		"predev": "bun scripts/generate-image-manifest.mjs",
+		"dev": "next dev --turbopack",
+		"prebuild": "bun scripts/generate-image-manifest.mjs",
+		"build": "next build",
+		"start": "next start",
+		"images": "bun scripts/generate-image-manifest.mjs",
+		"logos": "bun scripts/generate-logo-derivatives.mjs",
+		"images:art": "bun scripts/generate-blog-art.mjs",
+		"dino": "bun scripts/generate-dino-hero.mjs"
 	},
 	"dependencies": {
 		"clsx": "^2.1.1",
 		"gray-matter": "^4.0.3",
-		"marked": "^18.0.3",
-		"tailwind-merge": "^3.5.0"
+		"next": "^15.5.4",
+		"react": "^19.1.0",
+		"react-dom": "^19.1.0",
+		"rehype-raw": "^7.0.0",
+		"rehype-stringify": "^10.0.1",
+		"remark-gfm": "^4.0.1",
+		"remark-parse": "^11.0.0",
+		"remark-rehype": "^11.1.2",
+		"sharp": "^0.34.4",
+		"tailwind-merge": "^3.5.0",
+		"unified": "^11.0.5"
+	},
+	"devDependencies": {
+		"@tailwindcss/postcss": "^4.1.13",
+		"@types/node": "^24.5.2",
+		"@types/react": "^19.1.13",
+		"@types/react-dom": "^19.1.9",
+		"gifenc": "^1.0.3",
+		"tailwindcss": "^4.1.13",
+		"typescript": "^5.9.2"
 	}
 }
