@@ -62,6 +62,7 @@ export default function ProjectsPage() {
 											{project.org}
 											{project.period ? ` · ${project.period}` : ''}
 										</p>
+										<p className="mt-1 text-xs tracking-wide text-accent/80">{project.stack}</p>
 										{(project.urls?.length || project.href) && (
 											<p className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1">
 												{project.urls?.map((link) => (
