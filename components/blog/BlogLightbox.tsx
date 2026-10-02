@@ -111,7 +111,13 @@ export default function BlogLightbox() {
 	if (!open || !current) return null;
 
 	return (
-		<div className="lightbox" role="dialog" aria-modal="true" aria-label="Image viewer" tabIndex={-1}>
+		<div
+			className="lightbox"
+			role="dialog"
+			aria-modal="true"
+			aria-label="Image viewer"
+			tabIndex={-1}
+		>
 			{/* Clicking outside the image closes. A button rather than a click
 			    handler on the overlay, so it is a real accessible control. */}
 			<button
@@ -140,7 +146,12 @@ export default function BlogLightbox() {
 						aria-label="Previous image"
 					>
 						<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden="true">
-							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth="2"
+								d="M15 19l-7-7 7-7"
+							/>
 						</svg>
 					</button>
 					<button

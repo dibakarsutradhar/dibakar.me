@@ -36,35 +36,39 @@ export default function HomePage() {
 				{/* Generated from public/images/dino.gif by `bun run dino` — the
 				    theme-matched variants carry the night sky; TiltImage adds the
 				    pointer 3D tilt and glow on top (pointer devices only). */}
-				<TiltImage src="/images/dino-light.gif" darkSrc="/images/dino-dark.gif" alt="Animated pixel dinosaur running through a desert" />
+				<TiltImage
+					src="/images/dino-light.gif"
+					darkSrc="/images/dino-dark.gif"
+					alt="Animated pixel dinosaur running through a desert"
+				/>
 
-				<h1 className="animate-[fadeIn_0.6s_ease-out_0.15s_both] mt-6 m-0 text-[clamp(1.5rem,5.5vw,3.5rem)] leading-tight font-bold tracking-tight md:mt-10">
+				<h1 className="m-0 mt-6 animate-[fadeIn_0.6s_ease-out_0.15s_both] text-[clamp(1.5rem,5.5vw,3.5rem)] leading-tight font-bold tracking-tight md:mt-10">
 					{SITE_TITLE}
 				</h1>
 
-			<p className="animate-[fadeIn_0.6s_ease-out_0.25s_both] mt-4 text-base font-medium tracking-wide text-muted md:text-lg">
-				{SITE_ROLE}
-			</p>
+				<p className="mt-4 animate-[fadeIn_0.6s_ease-out_0.25s_both] text-base font-medium tracking-wide text-muted md:text-lg">
+					{SITE_ROLE}
+				</p>
 
-			<div className="animate-[fadeIn_0.6s_ease-out_0.3s_both] mt-5 flex justify-center">
-				<a
-					href={CURRENT_STATUS.url}
-					target="_blank"
-					rel="noopener noreferrer"
-					className="glass inline-flex items-center gap-2.5 rounded-full px-4 py-1.5 text-sm text-muted transition-colors hover:text-fg"
-				>
-					<span className="relative flex h-2 w-2" aria-hidden="true">
-						<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
-						<span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
-					</span>
-					<span>
-						{CURRENT_STATUS.prefix}{' '}
-						<span className="font-medium text-fg">{CURRENT_STATUS.project}</span>
-					</span>
-				</a>
-			</div>
+				<div className="mt-5 flex animate-[fadeIn_0.6s_ease-out_0.3s_both] justify-center">
+					<a
+						href={CURRENT_STATUS.url}
+						target="_blank"
+						rel="noopener noreferrer"
+						className="inline-flex items-center gap-2.5 rounded-full px-4 py-1.5 text-sm text-muted glass transition-colors hover:text-fg"
+					>
+						<span className="relative flex h-2 w-2" aria-hidden="true">
+							<span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-green-400 opacity-75" />
+							<span className="relative inline-flex h-2 w-2 rounded-full bg-green-500" />
+						</span>
+						<span>
+							{CURRENT_STATUS.prefix}{' '}
+							<span className="font-medium text-fg">{CURRENT_STATUS.project}</span>
+						</span>
+					</a>
+				</div>
 
-				<div className="animate-[fadeIn_0.6s_ease-out_0.35s_both] mt-8 flex w-full justify-center md:mt-10">
+				<div className="mt-8 flex w-full animate-[fadeIn_0.6s_ease-out_0.35s_both] justify-center md:mt-10">
 					<SocialLinks />
 				</div>
 			</main>

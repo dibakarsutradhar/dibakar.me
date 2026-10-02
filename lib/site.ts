@@ -15,4 +15,4 @@ export const RECENTLY_RELEASED = {
 	prefix: 'released',
 	project: 'invoiceOS',
 	url: 'https://invoisos.com/'
-}
+};

@@ -54,8 +54,19 @@ export default async function PostPage({ params }: Props) {
 					href="/blog"
 					className="mb-8 inline-flex items-center gap-2 text-muted transition-colors hover:text-fg"
 				>
-					<svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-						<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+					<svg
+						className="h-4 w-4"
+						fill="none"
+						stroke="currentColor"
+						viewBox="0 0 24 24"
+						aria-hidden="true"
+					>
+						<path
+							strokeLinecap="round"
+							strokeLinejoin="round"
+							strokeWidth="2"
+							d="M15 19l-7-7 7-7"
+						/>
 					</svg>
 					Back to blog
 				</Link>
@@ -80,7 +91,10 @@ export default async function PostPage({ params }: Props) {
 
 					<div className="mt-6 flex flex-wrap gap-2">
 						{post.tags.map((tag) => (
-							<span key={tag} className="rounded-full border border-line-soft px-3 py-1 text-sm text-muted">
+							<span
+								key={tag}
+								className="rounded-full border border-line-soft px-3 py-1 text-sm text-muted"
+							>
 								#{tag}
 							</span>
 						))}
@@ -124,15 +138,32 @@ export default async function PostPage({ params }: Props) {
 					<div className="flex items-center justify-between">
 						<div className="flex flex-wrap gap-2">
 							{post.tags.map((tag) => (
-								<span key={tag} className="rounded-full border border-line-soft px-3 py-1 text-sm text-muted">
+								<span
+									key={tag}
+									className="rounded-full border border-line-soft px-3 py-1 text-sm text-muted"
+								>
 									#{tag}
 								</span>
 							))}
 						</div>
-						<Link href="/blog" className="inline-flex items-center gap-2 text-muted transition-colors hover:text-fg">
+						<Link
+							href="/blog"
+							className="inline-flex items-center gap-2 text-muted transition-colors hover:text-fg"
+						>
 							All posts
-							<svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-								<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 5l7 7-7 7" />
+							<svg
+								className="h-4 w-4"
+								fill="none"
+								stroke="currentColor"
+								viewBox="0 0 24 24"
+								aria-hidden="true"
+							>
+								<path
+									strokeLinecap="round"
+									strokeLinejoin="round"
+									strokeWidth="2"
+									d="M9 5l7 7-7 7"
+								/>
 							</svg>
 						</Link>
 					</div>

@@ -8,11 +8,11 @@
 
 ## 1. TL;DR
 
-**Raisolo** (originally **TLDRBox**) is an AI-powered news and content-intelligence platform by **MC² Ventures FZCO** (Dubai). It ingests RSS feeds, newsletters, podcasts, YouTube channels, The Economist, and X/Twitter; clusters multi-source coverage of the same storyline into a shared knowledge graph ("Hivemind"); extracts attributable facts, quotes, opinions, and *predictions*; and ships personalized briefings through a web app, RSS, Slack webhooks, daily email newsletters, and an agent-facing API. The commercial hook: founders/CEOs turn that intelligence into LinkedIn thought-leadership posts with one-click publishing and scheduled distribution.
+**Raisolo** (originally **TLDRBox**) is an AI-powered news and content-intelligence platform by **MC² Ventures FZCO** (Dubai). It ingests RSS feeds, newsletters, podcasts, YouTube channels, The Economist, and X/Twitter; clusters multi-source coverage of the same storyline into a shared knowledge graph ("Hivemind"); extracts attributable facts, quotes, opinions, and _predictions_; and ships personalized briefings through a web app, RSS, Slack webhooks, daily email newsletters, and an agent-facing API. The commercial hook: founders/CEOs turn that intelligence into LinkedIn thought-leadership posts with one-click publishing and scheduled distribution.
 
 **Dibakar's role:** the second engineer on a two-person team, hired by founder Christoph Richter. Over **~4.5 months (Nov 7, 2025 → Mar 12, 2026)** he shipped **531 commits** (+245k / −55k lines), and — most significantly — **designed and built the entire v2 backend**: the `ingest` worker, the R2-backed content pipeline, the v2 D1 schema, the Hivemind clustering/ranking system, the LiteGraphDB graph migration, the voting system, and the AI agent. Christoph owned the product surface (Next.js UI, LinkedIn features, milestones process); Dibakar owned the **backend data plane and AI infrastructure**.
 
-One sentence for the CV: *Second engineer at an AI content-intelligence startup; designed and built the entire v2 ingestion/clustering backend on Cloudflare Workers (D1, R2, Vectorize, Queues, AI Gateway) — a multi-model LLM pipeline that clusters multi-source news into a knowledge graph and drives personalized feeds, briefings, and agent APIs.*
+One sentence for the CV: _Second engineer at an AI content-intelligence startup; designed and built the entire v2 ingestion/clustering backend on Cloudflare Workers (D1, R2, Vectorize, Queues, AI Gateway) — a multi-model LLM pipeline that clusters multi-source news into a knowledge graph and drives personalized feeds, briefings, and agent APIs._
 
 ---
 
@@ -27,19 +27,19 @@ One sentence for the CV: *Second engineer at an AI content-intelligence startup;
 
 ### Key features (as shipped)
 
-| Feature | What it does |
-|---|---|
-| **Personas ("Voices")** | Per-persona profiles that act as "lenses" over the knowledge base — vector-matched against content to personalize feeds, briefings, and post generation. Each persona has its own feed, wire config, and API key. |
-| **Hivemind (global story clusters)** | Multi-source clustering of coverage of the same storyline into a knowledge graph; synthesis (briefing + narrative + key facts + perspectives) generated once ≥2 sources cover a story. |
-| **Knowledge extraction** | Per-article extraction of attributable facts, quotes, opinions, and **predictions** (with predictor attribution for later calibration), plus ad detection gate. |
-| **Feed & ranking** | Personalized feed ranked by `Score = (Similarity×0.4 + Recency×0.2 + Preference×0.3) × PersonalizationBoost × VoteBoost`, with source-diversity re-ranking and voting feedback loops. |
-| **LinkedIn publishing** | 4 post styles (Analyst/Builder/Futurist/Contrarian), Hook Lab, AI magic-wand editor, image generation, draft persistence, scheduled publishing via LinkedIn API. |
-| **Wire** | Per-persona breaking-news wire: persona-voiced headlines + predictions pushed to Slack/webhooks every 30 min, plus pull-based JSON/RSS feeds authenticated by persona-scoped API keys. |
-| **Daily newsletter (v2)** | Top-5 persona-matched content ideas per opted-in user via Resend, with permanent dedup. |
-| **Email ingestion** | Inbound `*@in.tldrbox.ai` catch-all (Cloudflare Email Routing) — forward any newsletter to your workspace; AI auto-approves double-opt-in confirmations with a content-first safety score. |
-| **AI chat + agent** | Streaming chat over the user's knowledge base; a 25–26-tool autonomous agent (sessions in D1, Vercel AI SDK v5) that can browse the feed, draft/refine/publish posts, and manage the pipeline. |
-| **AI agent plugin** | `raisolo-plugin` — a Claude Code / ClawHub plugin letting external AI agents operate a user's Raisolo account through `rsl_` API keys (MIT-licensed). |
-| **Topic sharing** | Email-invite workspaces with owner/editor/viewer roles. |
+| Feature                              | What it does                                                                                                                                                                                                      |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Personas ("Voices")**              | Per-persona profiles that act as "lenses" over the knowledge base — vector-matched against content to personalize feeds, briefings, and post generation. Each persona has its own feed, wire config, and API key. |
+| **Hivemind (global story clusters)** | Multi-source clustering of coverage of the same storyline into a knowledge graph; synthesis (briefing + narrative + key facts + perspectives) generated once ≥2 sources cover a story.                            |
+| **Knowledge extraction**             | Per-article extraction of attributable facts, quotes, opinions, and **predictions** (with predictor attribution for later calibration), plus ad detection gate.                                                   |
+| **Feed & ranking**                   | Personalized feed ranked by `Score = (Similarity×0.4 + Recency×0.2 + Preference×0.3) × PersonalizationBoost × VoteBoost`, with source-diversity re-ranking and voting feedback loops.                             |
+| **LinkedIn publishing**              | 4 post styles (Analyst/Builder/Futurist/Contrarian), Hook Lab, AI magic-wand editor, image generation, draft persistence, scheduled publishing via LinkedIn API.                                                  |
+| **Wire**                             | Per-persona breaking-news wire: persona-voiced headlines + predictions pushed to Slack/webhooks every 30 min, plus pull-based JSON/RSS feeds authenticated by persona-scoped API keys.                            |
+| **Daily newsletter (v2)**            | Top-5 persona-matched content ideas per opted-in user via Resend, with permanent dedup.                                                                                                                           |
+| **Email ingestion**                  | Inbound `*@in.tldrbox.ai` catch-all (Cloudflare Email Routing) — forward any newsletter to your workspace; AI auto-approves double-opt-in confirmations with a content-first safety score.                        |
+| **AI chat + agent**                  | Streaming chat over the user's knowledge base; a 25–26-tool autonomous agent (sessions in D1, Vercel AI SDK v5) that can browse the feed, draft/refine/publish posts, and manage the pipeline.                    |
+| **AI agent plugin**                  | `raisolo-plugin` — a Claude Code / ClawHub plugin letting external AI agents operate a user's Raisolo account through `rsl_` API keys (MIT-licensed).                                                             |
+| **Topic sharing**                    | Email-invite workspaces with owner/editor/viewer roles.                                                                                                                                                           |
 
 ---
 
@@ -68,13 +68,13 @@ packages/
 
 ### Storage — deliberately five stores
 
-| Store | Holds | Why |
-|---|---|---|
-| **D1 `tldrbox-prod`** (v1) | users, personas, topics/shares, webhooks, LinkedIn connections, agent sessions | Read-mostly user state |
-| **D1 `tldrbox-v2-prod`** (v2) | sources, content_analysis/summaries/opinions, story_clusters, cluster_ideas, predictions, voting, feed_health | Pipeline data; 19 migrations |
-| **Vectorize** (`bge-base-en-v1.5`, 768-d) | persona embeddings, summary vectors, opinion vectors, cluster centroids — one unified index | Semantic matching |
-| **LiteGraphDB** (self-hosted graph DB at `api-db.raisolo.com`, behind Cloudflare Tunnel) | `StoryCluster` / `KnowledgeIdea` nodes + edges | Native multi-hop traversal vs SQL JOINs; chosen over managed Neo4j for cost, ran on an existing VPS |
-| **R2** (`cdn.raisolo.com`) | raw content payloads, images, logos, immutable versioned "cluster bundles" | Object storage + public CDN |
+| Store                                                                                    | Holds                                                                                                         | Why                                                                                                 |
+| ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| **D1 `tldrbox-prod`** (v1)                                                               | users, personas, topics/shares, webhooks, LinkedIn connections, agent sessions                                | Read-mostly user state                                                                              |
+| **D1 `tldrbox-v2-prod`** (v2)                                                            | sources, content_analysis/summaries/opinions, story_clusters, cluster_ideas, predictions, voting, feed_health | Pipeline data; 19 migrations                                                                        |
+| **Vectorize** (`bge-base-en-v1.5`, 768-d)                                                | persona embeddings, summary vectors, opinion vectors, cluster centroids — one unified index                   | Semantic matching                                                                                   |
+| **LiteGraphDB** (self-hosted graph DB at `api-db.raisolo.com`, behind Cloudflare Tunnel) | `StoryCluster` / `KnowledgeIdea` nodes + edges                                                                | Native multi-hop traversal vs SQL JOINs; chosen over managed Neo4j for cost, ran on an existing VPS |
+| **R2** (`cdn.raisolo.com`)                                                               | raw content payloads, images, logos, immutable versioned "cluster bundles"                                    | Object storage + public CDN                                                                         |
 
 ### Content pipeline (the heart of the system)
 
@@ -112,14 +112,14 @@ Six epochs, reconstructed from git history:
 
 ### Ownership map (file-touch counts)
 
-| Area | Dibakar | Christoph | Reading |
-|---|---|---|---|
-| `apps/ingest` | **319** | 184 | Dibakar created and owned the pipeline |
-| `packages/storage` | **133** | ~30 | Dibakar owned the data layer |
-| `packages/ai` | **154** | 165 | Shared; Dibakar built the gateway/workflow foundation |
-| `apps/cron-worker` | **114** | 71 | Dibakar owned scheduling |
-| `apps/api-worker` | 290 | 358 | Shared |
-| `apps/web` | 616 | **1,248** | Christoph owned the UI; Dibakar contributed feeds, personas UI, agent UI |
+| Area               | Dibakar | Christoph | Reading                                                                  |
+| ------------------ | ------- | --------- | ------------------------------------------------------------------------ |
+| `apps/ingest`      | **319** | 184       | Dibakar created and owned the pipeline                                   |
+| `packages/storage` | **133** | ~30       | Dibakar owned the data layer                                             |
+| `packages/ai`      | **154** | 165       | Shared; Dibakar built the gateway/workflow foundation                    |
+| `apps/cron-worker` | **114** | 71        | Dibakar owned scheduling                                                 |
+| `apps/api-worker`  | 290     | 358       | Shared                                                                   |
+| `apps/web`         | 616     | **1,248** | Christoph owned the UI; Dibakar contributed feeds, personas UI, agent UI |
 
 Net: **Dibakar = greenfield backend builder** (+245k/−54k); **Christoph = product/UI owner + pruner** (+218k/−132k).
 
@@ -165,17 +165,17 @@ Strongly conventional: 244 `feat`, 153 `fix`, 57 `refactor`, 36 `docs`, 15 `chor
 
 ## 7. Numbers worth quoting
 
-| Metric | Value |
-|---|---|
-| Dibakar's commits / tenure | 531 commits over ~4.5 months (Nov 2025 – Mar 2026) |
-| Lines by Dibakar | +246k / −55k |
-| Monorepo size | 5 workers + 6 packages; api-worker ~403 route handlers across 22 route modules; OpenAPI spec ~168 paths |
-| Pipeline scale | ~60k article vectors in Vectorize after backfill; clustering experiments over 500 articles / 21 sources |
-| Clustering improvement | 0 → 28 multi-source clusters (Phase 3 multi-signal); 262 → 193 clusters with structured embeddings |
-| Extraction eval | gpt-5-mini: 0 hallucinations vs Haiku's 8 on the frozen v4 eval set |
-| Frontend refactor (Dec) | ~75% API-call and memory reduction via centralized hooks |
-| Milestones | v1.0 → v3.5, 78 planning phases, 48/48 agent requirements verified |
-| AI cost controls | per-variant model routing; fission <$0.01/day; auto-estimated per-user LLM cost tracking |
+| Metric                     | Value                                                                                                   |
+| -------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Dibakar's commits / tenure | 531 commits over ~4.5 months (Nov 2025 – Mar 2026)                                                      |
+| Lines by Dibakar           | +246k / −55k                                                                                            |
+| Monorepo size              | 5 workers + 6 packages; api-worker ~403 route handlers across 22 route modules; OpenAPI spec ~168 paths |
+| Pipeline scale             | ~60k article vectors in Vectorize after backfill; clustering experiments over 500 articles / 21 sources |
+| Clustering improvement     | 0 → 28 multi-source clusters (Phase 3 multi-signal); 262 → 193 clusters with structured embeddings      |
+| Extraction eval            | gpt-5-mini: 0 hallucinations vs Haiku's 8 on the frozen v4 eval set                                     |
+| Frontend refactor (Dec)    | ~75% API-call and memory reduction via centralized hooks                                                |
+| Milestones                 | v1.0 → v3.5, 78 planning phases, 48/48 agent requirements verified                                      |
+| AI cost controls           | per-variant model routing; fission <$0.01/day; auto-estimated per-user LLM cost tracking                |
 
 ---
 
@@ -213,6 +213,7 @@ Strongly conventional: 244 `feat`, 153 `fix`, 57 `refactor`, 36 `docs`, 15 `chor
 - App routes `app.raisolo.com` / `api.tldrbox.ai` mixed domains reflect the rename in progress; public site is raisolo.com.
 
 ---
+
 ---
 
 # Part II — System Design & Infrastructure Reference
@@ -251,28 +252,33 @@ Strongly conventional: 244 `feat`, 153 `fix`, 57 `refactor`, 36 `docs`, 15 `chor
    (OpenAI / Anthropic / Google / OpenRouter / Perplexity / Grok) · PostHog EU
 ```
 
-**Who talks to what:** all LLM traffic goes through one gateway chokepoint (`packages/ai/src/ai-gateway.ts`); hivemind reads are proxied api-worker → ingest via the `INGEST_WORKER` service binding; cron-worker and api-worker only *produce* queue messages (ingest is the sole consumer); shared KV namespace IDs are reused across workers so dedup/caches are coherent. Local dev runs with `remote: true` bindings — i.e., **local dev writes to production resources** (a documented hazard, `CLAUDE.md`).
+**Who talks to what:** all LLM traffic goes through one gateway chokepoint (`packages/ai/src/ai-gateway.ts`); hivemind reads are proxied api-worker → ingest via the `INGEST_WORKER` service binding; cron-worker and api-worker only _produce_ queue messages (ingest is the sole consumer); shared KV namespace IDs are reused across workers so dedup/caches are coherent. Local dev runs with `remote: true` bindings — i.e., **local dev writes to production resources** (a documented hazard, `CLAUDE.md`).
 
 ---
 
 ## 11. End-to-end data flows
 
 ### Flow A — RSS article → personalized feed
+
 1. Cron `*/15` (`pollDueSources`) or `0 */4` (`pollRssSources`) picks due sources; producer emits `{type:'ingestion_v2', metadata:{source_id, source_url, …}}` to `ingestion-v2-queue`.
 2. Ingest consumer → `ingestSource` (`handlers/rss.ts`): fetch, parse, hash (SHA-256 of normalized body), dedup check in KV `dedup:{hash}` (24h TTL), scrape full text + images → R2 `raw/{source_type}/{YYYY-MM}/{hash}.json`; emit content-analysis message `{r2_key, content_hash, …}`.
 3. Consumer calls `runContentAnalysisPipeline(r2_key)` (`pipeline/index.ts`): ad gate → parallel AI extraction (summary / structured facts-opinions-predictions / opinion analysis) → one shared embedding → Vectorize upserts → `clusterIntoGlobalGraph` (LiteGraphDB find-or-create cluster, D1 dual-write) → synthesis when ≥2 sources → sealed bundle to R2.
 4. Feed read: web → `APIClient` (`lib/api-client.ts`) → api-worker `/api/hivemind/v3/feed` (Clerk JWT) → service binding `INGEST_WORKER.fetch('http://ingest/hivemind/…')` (30-min KV cache) → `HivemindMatcher` (Vectorize topK 100, persona vector `persona_{id}`) → `FeedBuilder` hydration + diversity re-ranking → `ranker.ts` scoring.
 
 ### Flow B — Inbound newsletter email
+
 `*@in.tldrbox.ai` catch-all → `email()` handler: parse recipient `handle+topic@in.tldrbox.ai` → extract text/HTML/images → content-hash dedup (KV, 24h) → resolve user by handle → find-or-create topic → `detectConfirmation` (heuristic + AI) auto-approves double-opt-in links with safety score >0.5 → enqueue full `QueueMessage` to legacy `INGESTION_QUEUE`. Errors never reject the email (loss prevention). Dedup marked only after successful enqueue.
 
 ### Flow C — Wire (breaking-news push)
+
 Cron `*/30` `deliverWireAlerts`: clusters from last 30 min with `importance_score ≥ 0.7 AND source_count ≥ 3` (LIMIT 10) → dedup via KV `wire-sent:{clusterId}` (24h) → `generateWireContent` (persona-voiced headline/hook + predictions; grok-4-1-fast) → POST to active wire webhooks (Slack/Discord payloads, 🔴 BREAKING / 🟡 DEVELOPING / 🟢 UPDATE). Pull side: `GET /api/wire/:personaId` + `/rss` authenticated by persona-scoped `rsl_` key.
 
 ### Flow D — Idea → LinkedIn post
+
 Daily cron generates story-aware ideas (argument extraction → hook generation, validated against cluster source IDs) → user picks/edits in web (`/draft/[id]`, Hook Lab, magic-wand) → optional image gen (`gemini-2.5-flash-image` direct to Google) → cron `*/30` `publishScheduledPosts` publishes via LinkedIn API (OAuth tokens in `linkedin_connections`), records `social_posts` + versions.
 
 ### Flow E — Daily newsletter (v2)
+
 After idea generation at `0 0 * * *`: users in batches of 5 (Workers 300s CPU limit), 26h window (cron-drift guard), top-5 persona-matched ideas, permanent dedup via `content_ideas.newsletter_sent_at`, delivery via Resend.
 
 ---
@@ -281,13 +287,13 @@ After idea generation at `0 0 * * *`: users in batches of 5 (Workers 300s CPU li
 
 ### 12.1 The five stores
 
-| Store | Database/index | Contents |
-|---|---|---|
-| D1 v1 | `tldrbox-prod` (binding `DB` in api-worker/cron/email; `DB_PERSONA` in ingest) | users, personas, user_api_keys, topics/topic_shares, webhooks, linkedin_connections, agent_sessions, legacy knowledge/newsletter tables |
-| D1 v2 | `tldrbox-v2-prod` (binding `DBV2`; `DB` inside ingest) | sources, content_analysis, content_summaries, content_opinions, story_clusters, cluster_ideas, predictions/predictors, voting, content_ideas, social_posts, feed_health, ingestion_events |
-| Vectorize | `tldrbox-v2-embeddings`, `@cf/baai/bge-base-en-v1.5` (768-d), one unified index | summaries, opinion items, personas, cluster centroids — discriminated by metadata `type` |
-| LiteGraphDB | graph `tldrbox-global`, tenant via `LITEGRAPHDB_TENANT_GUID`, at `api-db.raisolo.com` (Cloudflare Tunnel) | StoryCluster / KnowledgeIdea / UserVault / Source nodes; HAS_CLUSTER / PART_OF / CONTAINS edges |
-| R2 | `tldrbox-content` via `cdn.raisolo.com` | raw content, extracted images, logos, generated images, cluster bundles |
+| Store       | Database/index                                                                                            | Contents                                                                                                                                                                                  |
+| ----------- | --------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| D1 v1       | `tldrbox-prod` (binding `DB` in api-worker/cron/email; `DB_PERSONA` in ingest)                            | users, personas, user_api_keys, topics/topic_shares, webhooks, linkedin_connections, agent_sessions, legacy knowledge/newsletter tables                                                   |
+| D1 v2       | `tldrbox-v2-prod` (binding `DBV2`; `DB` inside ingest)                                                    | sources, content_analysis, content_summaries, content_opinions, story_clusters, cluster_ideas, predictions/predictors, voting, content_ideas, social_posts, feed_health, ingestion_events |
+| Vectorize   | `tldrbox-v2-embeddings`, `@cf/baai/bge-base-en-v1.5` (768-d), one unified index                           | summaries, opinion items, personas, cluster centroids — discriminated by metadata `type`                                                                                                  |
+| LiteGraphDB | graph `tldrbox-global`, tenant via `LITEGRAPHDB_TENANT_GUID`, at `api-db.raisolo.com` (Cloudflare Tunnel) | StoryCluster / KnowledgeIdea / UserVault / Source nodes; HAS_CLUSTER / PART_OF / CONTAINS edges                                                                                           |
+| R2          | `tldrbox-content` via `cdn.raisolo.com`                                                                   | raw content, extracted images, logos, generated images, cluster bundles                                                                                                                   |
 
 ⚠️ **The `DB` binding name means different databases per worker** — api-worker/cron: v1 personas DB; ingest: v2 pipeline DB (with `DB_PERSONA` back to v1). Documented in `CLAUDE.md`; a standing source of confusion.
 
@@ -310,12 +316,12 @@ v1 tables worth knowing: `personas` (goal, 3 topics, authority/challenging index
 
 ### 12.3 Vectorize namespaces (single index, metadata-typed)
 
-| Vector | ID format | Embedding text |
-|---|---|---|
-| Summary | `summary.id` | structured: `TOPICS: …\nFACTS: …\nSUMMARY: …` (8000-char cap) |
-| Opinion item | `content_opinions.id` | `{content}\n\nAttribution: {attribution} ({type})` |
-| Persona | `persona_{personaId}` | sections: Persona/Goal/Industry/Audience/Topics/Vision/Contrarian view/Principle/Themes/ai_notes/Wire brief (8000-char cap) |
-| Cluster centroid | `cluster-centroid:{clusterId}` | running average of member vectors, **frozen after 5 ideas** (`CENTROID_FREEZE_COUNT`) |
+| Vector           | ID format                      | Embedding text                                                                                                              |
+| ---------------- | ------------------------------ | --------------------------------------------------------------------------------------------------------------------------- |
+| Summary          | `summary.id`                   | structured: `TOPICS: …\nFACTS: …\nSUMMARY: …` (8000-char cap)                                                               |
+| Opinion item     | `content_opinions.id`          | `{content}\n\nAttribution: {attribution} ({type})`                                                                          |
+| Persona          | `persona_{personaId}`          | sections: Persona/Goal/Industry/Audience/Topics/Vision/Contrarian view/Principle/Themes/ai_notes/Wire brief (8000-char cap) |
+| Cluster centroid | `cluster-centroid:{clusterId}` | running average of member vectors, **frozen after 5 ideas** (`CENTROID_FREEZE_COUNT`)                                       |
 
 ### 12.4 LiteGraphDB model
 
@@ -327,13 +333,13 @@ v1 tables worth knowing: `personas` (goal, 3 topics, authority/challenging index
 
 ### 12.5 R2 object layout
 
-| Prefix | Key | Notes |
-|---|---|---|
-| Raw content | `raw/{source_type}/{YYYY-MM}/{content_hash}.json` | `RawContentObject` incl. `raw_body`, `full_text`, `images[]`, custom metadata `{content_hash, source_type, source_uri}`; `processed:'true'` after pipeline |
-| Extracted images | `assets/{YYYY-MM}/{content_hash}/{i}.{ext}` | |
-| Logos | `logos/{sourceId}.{ext}` | `max-age=31536000` |
-| Generated images | `generated-images/{YYYY-MM}/{idea_id}/{version}.png` | metadata carries the prompt |
-| Cluster bundles | `clusters/{clusterId}/{revision}.json` | revision = synthesis_generated_at; `immutable` cache; JSON = full cluster (facts/quotes/opinions LIMIT 600, predictions LIMIT 200 w/ predictors) |
+| Prefix           | Key                                                  | Notes                                                                                                                                                      |
+| ---------------- | ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Raw content      | `raw/{source_type}/{YYYY-MM}/{content_hash}.json`    | `RawContentObject` incl. `raw_body`, `full_text`, `images[]`, custom metadata `{content_hash, source_type, source_uri}`; `processed:'true'` after pipeline |
+| Extracted images | `assets/{YYYY-MM}/{content_hash}/{i}.{ext}`          |                                                                                                                                                            |
+| Logos            | `logos/{sourceId}.{ext}`                             | `max-age=31536000`                                                                                                                                         |
+| Generated images | `generated-images/{YYYY-MM}/{idea_id}/{version}.png` | metadata carries the prompt                                                                                                                                |
+| Cluster bundles  | `clusters/{clusterId}/{revision}.json`               | revision = synthesis_generated_at; `immutable` cache; JSON = full cluster (facts/quotes/opinions LIMIT 600, predictions LIMIT 200 w/ predictors)           |
 
 ### 12.6 KV key families (`DEDUP_CACHE` / `SESSIONS_KV` / `GLOBAL_CLUSTERS_KV`)
 
@@ -345,14 +351,14 @@ v1 tables worth knowing: `personas` (goal, 3 topics, authority/challenging index
 
 Orchestrator: `runContentAnalysisPipeline(r2Key, env)`. R2 fetch → Stage 1 (gating) → Stages 2–4 in `Promise.all` → shared embedding → Stage 5 (parallel summary+opinion vectorization) → Stage 6 clustering → final D1 `status='completed'` + `clustering_status` + `cluster_id`. Missing `CF_AIG_TOKEN` ⇒ stages skipped, `clustering_status='skipped'`.
 
-| Stage | Model call | Writes | Notable constants |
-|---|---|---|---|
-| 1 Ad detection | none (heuristic patterns) | `content_analysis` | trusted-source bypass at credibility ≥ **0.85** (`ad_type='trusted_source_bypass'`) |
-| 2 Source analysis | Perplexity `sonar` (temp 0.1); relevancy via `gpt-5-nano` | `sources` (author upserts), `source_entities(+_relations)`, `content_sources` | skips `pending`/`rejected` sources |
+| Stage                             | Model call                                                                                                                                                                                           | Writes                                                                                | Notable constants                                                                                                                                                         |
+| --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1 Ad detection                    | none (heuristic patterns)                                                                                                                                                                            | `content_analysis`                                                                    | trusted-source bypass at credibility ≥ **0.85** (`ad_type='trusted_source_bypass'`)                                                                                       |
+| 2 Source analysis                 | Perplexity `sonar` (temp 0.1); relevancy via `gpt-5-nano`                                                                                                                                            | `sources` (author upserts), `source_entities(+_relations)`, `content_sources`         | skips `pending`/`rejected` sources                                                                                                                                        |
 | 3 Summary + structured extraction | `gpt-5-mini` (narrative) ∥ `structured-extraction` — **per-variant: article→`gpt-5-mini`, transcript→`claude-haiku-4-5`**; temp 0.1; maxTokens **8192** (2048 silently truncated 8/30 long articles) | `content_summaries`, `predictions` (via `predictions-writer.ts`, keyed by analysisId) | body caps 50k (YouTube) / 15k chars; errors classified `[error_class=…]` (`grok_auth`, `anthropic_429`, `openai_length`, `json_parse`…) mirrored in admin FAILURE_CLASSES |
-| 4 Opinion analysis | `grok-4-1-fast`, temp 0.1, maxTokens 2048, 5k-char body | `content_opinions` | title-restatement filter: Jaccard > **0.55** drops facts |
-| 5 Vectorize | Workers AI `bge-base-en-v1.5` (15s timeout race) | Vectorize + `vector_id` backfill | 8000-char cap; summary-vec failure bubbles up, opinion-vec failure only logs |
-| 6 Global clustering | none (vector math) | LiteGraphDB + `story_clusters`/`cluster_ideas` | see §14 |
+| 4 Opinion analysis                | `grok-4-1-fast`, temp 0.1, maxTokens 2048, 5k-char body                                                                                                                                              | `content_opinions`                                                                    | title-restatement filter: Jaccard > **0.55** drops facts                                                                                                                  |
+| 5 Vectorize                       | Workers AI `bge-base-en-v1.5` (15s timeout race)                                                                                                                                                     | Vectorize + `vector_id` backfill                                                      | 8000-char cap; summary-vec failure bubbles up, opinion-vec failure only logs                                                                                              |
+| 6 Global clustering               | none (vector math)                                                                                                                                                                                   | LiteGraphDB + `story_clusters`/`cluster_ideas`                                        | see §14                                                                                                                                                                   |
 
 **Retry/recovery:** queue-level `max_retries 3` → DLQ (`ingestion-v2-dlq-queue`, no in-repo consumer); hourly cron `POST ingest/admin/retry-stale` retries `processing` rows older than **30 min** and `failed` with retry_count <3 (limit 20); `clusterMissedAnalyses` re-clusters completed-but-unclustered rows (batch 5, 500ms delays, bail after 10 consecutive errors).
 
@@ -365,12 +371,14 @@ Orchestrator: `runContentAnalysisPipeline(r2Key, env)`. R2 fetch → Stage 1 (ga
 **Clustering match** (`global-graph-repository.ts`): Vectorize query `topK 10, filter type='cluster-centroid'` → hard join at cosine ≥ **0.68** (0.55 over-merges, 0.78 fragments); soft zone **0.52–0.68** requires topic overlap ≥ **0.4**, combined = `0.6·cosine + 0.4·topicOverlap`. Cluster ID = `deterministicUuid('cluster:{title}:{processedAt}')`. Caps: `MAX_CLUSTER_SIZE 30`; ideas expire at **30 days**; stale clusters expire at **14 days** (daily `0 2 * * *` prune on ingest).
 
 **Importance score** (recomputed for all clusters every 30 min):
+
 ```
 3.0·log2(sources+1)·freshness + 1.5·min(ideas/hours,10) + 1.0·log2(ideas+1)·freshness + 2.0·freshness
 freshness = 0.5^(hoursSinceUpdate / 18)   // 18-hour half-life
 ```
 
 **Feed ranker** (`ranker.ts`):
+
 - Weights: similarity/recency `0.6/0.3` anonymous; `0.4/0.2/0.3 (preference)` personalized; summary type ×1.2.
 - Recency: linear decay `1 − age/window` clipped at 0.
 - Personalization: blocked source → hard filter; preferred source ×1.5; blocked topic ×0.5 (hard filter at ≥2 blocked topics); preferred topic ×1.2; type vote-score < −3 → ×0.8.
@@ -380,7 +388,7 @@ freshness = 0.5^(hoursSinceUpdate / 18)   // 18-hour half-life
 
 **Matcher fallback chain** (`matcher.ts`): persona vector `getByIds` → Vectorize query topK 100 (`published_at > cutoff` filter) → unfiltered query → DB text search (score 0.9) → recent items (score 0.6). Canonical (SQL) feed sets all similarities 1.0 → recency-only ordering.
 
-**Cluster fission** (`cluster-fission.ts`): eligible at ≥6 ideas; one `gemini-3-flash` call (temp 0.2) proposes 2–4 themes; validation gate: ≥2 themes, ≥2 ideas/theme, no unknown/double-assigned IDs, ≥**80%** coverage (empty proposal = "already coherent"). Children get fresh centroids upserted *before* graph/D1 writes; parent demoted to `fission_state='universe'`, expired, centroid deleted. Children commit is the point of no return.
+**Cluster fission** (`cluster-fission.ts`): eligible at ≥6 ideas; one `gemini-3-flash` call (temp 0.2) proposes 2–4 themes; validation gate: ≥2 themes, ≥2 ideas/theme, no unknown/double-assigned IDs, ≥**80%** coverage (empty proposal = "already coherent"). Children get fresh centroids upserted _before_ graph/D1 writes; parent demoted to `fission_state='universe'`, expired, centroid deleted. Children commit is the point of no return.
 
 **Idea generation v3** (`story-idea-generator.ts` + `argument-extractor.ts`): argument extraction pre-step (`gpt-4o`, temp 0.4, 4096 tokens) → hook generation (`story_ideas_v3`, temp 0.8, 2800–3000 tokens) → hallucination guards: source IDs validated against extracted arguments; unresolved cluster resolved by sourceIds overlap, else skipped; saved `score 0.9, status 'raw'` + version row. (Legacy v1 generator: batch of exactly 8 ideas across 6 styles + 2 free, `gpt-4o` temp 0.8, `score 0.8`.)
 
@@ -396,23 +404,23 @@ freshness = 0.5^(hoursSinceUpdate / 18)   // 18-hour half-life
 
 **Model map (what calls what):**
 
-| Operation | Provider / model | Temp / maxTokens |
-|---|---|---|
-| Article structured extraction | openai `gpt-5-mini` | 0.1 / 8192 |
-| Transcript extraction | anthropic `claude-haiku-4-5` | — |
-| Narrative summary | openai `gpt-5-mini` | — |
-| Opinion extraction | grok `grok-4-1-fast` | 0.1 / 2048 |
-| Source research | perplexity `sonar`; relevancy `gpt-5-nano` | 0.1 |
-| Cluster synthesis | grok `grok-4-1-fast` | 0.4 / 4096 |
-| Cluster fission | google `gemini-3-flash` | 0.2 / 2048 |
-| Wire content | grok `grok-4-1-fast` | 0.6 / 1024 |
-| Trend re-rank / cluster scoring | `gpt-5-mini` | 0.2 |
-| Idea generation (v1/v3) | `gpt-4o` | 0.8 |
-| YouTube transcription/topics | Gemini (direct) | — |
-| Image generation | `gemini-2.5-flash-image` | — |
-| Generic `generateText` default | `grok-4-1-fast` (provider auto) | per-type table in `text-generation.ts` |
-| Embeddings | `@cf/baai/bge-base-en-v1.5` (768-d) | — |
-| Anthropic default (catalog) | `claude-sonnet-4-5-20250929` | — |
+| Operation                       | Provider / model                           | Temp / maxTokens                       |
+| ------------------------------- | ------------------------------------------ | -------------------------------------- |
+| Article structured extraction   | openai `gpt-5-mini`                        | 0.1 / 8192                             |
+| Transcript extraction           | anthropic `claude-haiku-4-5`               | —                                      |
+| Narrative summary               | openai `gpt-5-mini`                        | —                                      |
+| Opinion extraction              | grok `grok-4-1-fast`                       | 0.1 / 2048                             |
+| Source research                 | perplexity `sonar`; relevancy `gpt-5-nano` | 0.1                                    |
+| Cluster synthesis               | grok `grok-4-1-fast`                       | 0.4 / 4096                             |
+| Cluster fission                 | google `gemini-3-flash`                    | 0.2 / 2048                             |
+| Wire content                    | grok `grok-4-1-fast`                       | 0.6 / 1024                             |
+| Trend re-rank / cluster scoring | `gpt-5-mini`                               | 0.2                                    |
+| Idea generation (v1/v3)         | `gpt-4o`                                   | 0.8                                    |
+| YouTube transcription/topics    | Gemini (direct)                            | —                                      |
+| Image generation                | `gemini-2.5-flash-image`                   | —                                      |
+| Generic `generateText` default  | `grok-4-1-fast` (provider auto)            | per-type table in `text-generation.ts` |
+| Embeddings                      | `@cf/baai/bge-base-en-v1.5` (768-d)        | —                                      |
+| Anthropic default (catalog)     | `claude-sonnet-4-5-20250929`               | —                                      |
 
 **Observability:** `trackAIUsage` writes typed `ai_usage` events to Analytics Engine (tokens + auto-estimated cost, per user/operation; model price table in `ANALYTICS.md`; 90-day retention, queried via GraphQL) + PostHog `$ai_generation` events; product events (`clustering_failed`, `cluster_idea_added`) via the PostHog server client. Anthropic 4.x rejects `temperature` (400) — handled in the gateway layer.
 
@@ -422,14 +430,14 @@ freshness = 0.5^(hoursSinceUpdate / 18)   // 18-hour half-life
 
 **Middleware order:** CORS → Analytics Engine → path-based auth gate → rate limit. Auth gate skips Clerk for `/api/monitoring/*`, `/api/public/*`, `/api/partner/*`, `/api/me/*`, `/api/wire/*`, LinkedIn OAuth callback.
 
-| Layer | Mechanism | Details |
-|---|---|---|
-| Clerk JWT | `@clerk/backend verifyToken` (RS256) | auto-provisions D1 `users` on first call (`INSERT OR IGNORE`, pending invites linked); role from `role`/`publicMetadata.role` (default USER); `azp` checked-log-only; `TESTING_MODE` bypass via `test-token` |
-| Personal API keys | `rsl_` + 40 hex chars | SHA-256 hex digest stored (`key_hash` UNIQUE); 12-char display prefix; persona-scoped (key's `persona_id` or user's `is_active` persona); `last_used_at` via `waitUntil`; wire routes enforce key↔persona match (403) |
-| Partner | `X-API-Key` constant-time compare vs `PARTNER_API_KEY` | |
-| RBAC | `requireRole(['ADMIN'|'SUPPORT'])` | 403 with required/current roles |
-| Rate limits | KV counters `ratelimit:{userId}:{path}` | e.g. `/api/me` 200/60s, `/api/me/ideas/generate` 5/hour, default 1000/60s; ADMINs and localhost exempt; public routes use IP-based `pub_ratelimit:*` |
-| Plan limits | Clerk Billing claims (`pla`, `fea`, entitlements) | FREE: 5 drafts/mo, 2 published posts/mo, 1 persona; usage counted in `content_ideas`/`personas` |
+| Layer             | Mechanism                                              | Details                                                                                                                                                                                                               |
+| ----------------- | ------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Clerk JWT         | `@clerk/backend verifyToken` (RS256)                   | auto-provisions D1 `users` on first call (`INSERT OR IGNORE`, pending invites linked); role from `role`/`publicMetadata.role` (default USER); `azp` checked-log-only; `TESTING_MODE` bypass via `test-token`          |
+| Personal API keys | `rsl_` + 40 hex chars                                  | SHA-256 hex digest stored (`key_hash` UNIQUE); 12-char display prefix; persona-scoped (key's `persona_id` or user's `is_active` persona); `last_used_at` via `waitUntil`; wire routes enforce key↔persona match (403) |
+| Partner           | `X-API-Key` constant-time compare vs `PARTNER_API_KEY` |                                                                                                                                                                                                                       |
+| RBAC              | `requireRole(['ADMIN'                                  | 'SUPPORT'])`                                                                                                                                                                                                          | 403 with required/current roles |
+| Rate limits       | KV counters `ratelimit:{userId}:{path}`                | e.g. `/api/me` 200/60s, `/api/me/ideas/generate` 5/hour, default 1000/60s; ADMINs and localhost exempt; public routes use IP-based `pub_ratelimit:*`                                                                  |
+| Plan limits       | Clerk Billing claims (`pla`, `fea`, entitlements)      | FREE: 5 drafts/mo, 2 published posts/mo, 1 persona; usage counted in `content_ideas`/`personas`                                                                                                                       |
 
 **Route groups:** v1 Clerk-authed CRUD (topics, personas, newsletters, webhooks, summaries, rss, linkedin, analytics, invites, internal) · `/api/me/*` (rsl_ key: capabilities, profile, feed, opinions, personas, ideas CRUD/generate/schedule/image, sources, stories) · `/api/wire/:personaId` (+`/rss`, `?key=`) · `/api/hivemind/*` incl. `/v3/*` (Clerk; reads proxied to ingest w/ 30-min KV cache; admin ops RBAC) · `/api/public/*` (no auth, IP-limited: opinions JSON+RSS, global hivemind, predictions/predictors for calibration — consumed by raisolo.com and thisisledger.com) · `/api/library/*` (Clerk + admin subroutes) · `/api/ideas/*` (Clerk + plan limits) · `/api/voting/*` · `/api/monitoring/*` (**unauthenticated** admin/debug surface — a known sharp edge) · `/api/partner/*` · `/api/keys` · `/api/agent` (sessions/context for the chat agent).
 
@@ -443,17 +451,18 @@ OpenAPI 3.1 spec: `docs/api/openapi.yaml`, ~168 paths, "generated from the live 
 
 **Cron matrix** (cron-worker `cpu_ms=300000`; ingest has its own `0 2 * * *` graph prune):
 
-| Schedule | Jobs |
-|---|---|
-| `*/15` | Smart polling: due sources (`next_poll_at`), advance interval by `poll_interval_minutes` |
-| `0 */4` | All RSS-subtype sources |
-| `0 *` | Scheduled webhook execution (cron-expression scheduler) + `admin/retry-stale` pipeline retry (limit 20) |
-| `*/30` | `publishScheduledPosts` (LinkedIn) · `recomputeAllImportanceScores` · `deliverWireAlerts` |
-| `0 0` | Content ideas → user stories → non-RSS polling → `autoTunePollingIntervals` → author-photo enrichment (limit 15, via service binding) → daily newsletter |
+| Schedule | Jobs                                                                                                                                                     |
+| -------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `*/15`   | Smart polling: due sources (`next_poll_at`), advance interval by `poll_interval_minutes`                                                                 |
+| `0 */4`  | All RSS-subtype sources                                                                                                                                  |
+| `0 *`    | Scheduled webhook execution (cron-expression scheduler) + `admin/retry-stale` pipeline retry (limit 20)                                                  |
+| `*/30`   | `publishScheduledPosts` (LinkedIn) · `recomputeAllImportanceScores` · `deliverWireAlerts`                                                                |
+| `0 0`    | Content ideas → user stories → non-RSS polling → `autoTunePollingIntervals` → author-photo enrichment (limit 15, via service binding) → daily newsletter |
 
 **Adaptive polling:** for sources with ≥10 hits+misses — hitRate >0.7 → interval halved (min 30 min); <0.2 → ×1.5 (max 2880 min); counters reset.
 
 **Queue message contract** (`packages/shared/src/types`, two shapes on `ingestion-v2-queue`):
+
 1. **Content-analysis trigger** (has `r2_key`): `{content_hash, r2_key, source_type, user_id?, metadata:{source_uri, source_url, source_name, title, ingested_at, image_count, source_id, reprocess?}}` → consumer runs the pipeline.
 2. **`ingestion_v2` source trigger** (no `r2_key`): `{type:'ingestion_v2', metadata:{source_id?, source_url, source_name, user_id, type: rss|youtube|article, force, added_by?, added_reason?}}` → with `source_id` = reingest, without = new ingest. Also recognized: `reingest_feed`, `reprocess_source(_full)`, `reprocess_youtube_url`.
 
@@ -465,17 +474,17 @@ Consumer config: `max_batch_size 10`, `max_batch_timeout 30s`, `max_retries 3`, 
 
 **Bindings matrix:**
 
-| Binding | api-worker | ingest | cron-worker | email-worker |
-|---|---|---|---|---|
-| D1 | `DB`=v1, `DBV2`=v2 | `DB`=v2, `DB_PERSONA`=v1 | `DB`=v1, `DBV2`=v2 | `DB`=v1 |
-| KV | `SESSIONS_KV`, `GLOBAL_CLUSTERS_KV`, `ECONOMIST_KV`, `DEDUP_CACHE` | `DEDUP_CACHE` | all four | `DEDUP_CACHE` |
-| R2 | `CONTENT_BUCKET` | `CONTENT_BUCKET` | `CONTENT_BUCKET` | — |
-| Queue producer | `INGESTION_V2_QUEUE` | both queues | `INGESTION_V2_QUEUE` | `INGESTION_QUEUE` |
-| Queue consumer | — | `ingestion-v2-queue` | — | — |
-| Service binding | `INGEST_WORKER` | — | `INGEST_WORKER` | — |
-| Workers AI / Vectorize / Analytics | `AI` / `VECTORIZE_INDEX` / `ANALYTICS` | `AI` / `VECTORIZE_INDEX` / `ANALYTICS` | `AI` / — / `ANALYTICS` | `AI` / — / `ANALYTICS` |
-| send_email | — | — | — | `EMAIL` |
-| Routes/crons | `api.tldrbox.ai/*` | cron `0 2 * * *` | 5 schedules | catch-all `*@in.tldrbox.ai` |
+| Binding                            | api-worker                                                         | ingest                                 | cron-worker            | email-worker                |
+| ---------------------------------- | ------------------------------------------------------------------ | -------------------------------------- | ---------------------- | --------------------------- |
+| D1                                 | `DB`=v1, `DBV2`=v2                                                 | `DB`=v2, `DB_PERSONA`=v1               | `DB`=v1, `DBV2`=v2     | `DB`=v1                     |
+| KV                                 | `SESSIONS_KV`, `GLOBAL_CLUSTERS_KV`, `ECONOMIST_KV`, `DEDUP_CACHE` | `DEDUP_CACHE`                          | all four               | `DEDUP_CACHE`               |
+| R2                                 | `CONTENT_BUCKET`                                                   | `CONTENT_BUCKET`                       | `CONTENT_BUCKET`       | —                           |
+| Queue producer                     | `INGESTION_V2_QUEUE`                                               | both queues                            | `INGESTION_V2_QUEUE`   | `INGESTION_QUEUE`           |
+| Queue consumer                     | —                                                                  | `ingestion-v2-queue`                   | —                      | —                           |
+| Service binding                    | `INGEST_WORKER`                                                    | —                                      | `INGEST_WORKER`        | —                           |
+| Workers AI / Vectorize / Analytics | `AI` / `VECTORIZE_INDEX` / `ANALYTICS`                             | `AI` / `VECTORIZE_INDEX` / `ANALYTICS` | `AI` / — / `ANALYTICS` | `AI` / — / `ANALYTICS`      |
+| send_email                         | —                                                                  | —                                      | —                      | `EMAIL`                     |
+| Routes/crons                       | `api.tldrbox.ai/*`                                                 | cron `0 2 * * *`                       | 5 schedules            | catch-all `*@in.tldrbox.ai` |
 
 **Secrets (names only):** api-worker `CLERK_SECRET_KEY, RESEND_API_KEY, CF_AIG_TOKEN, OPENROUTER_API_KEY, GEMINI_API_KEY, POSTHOG_API_KEY, PARTNER_API_KEY, LITEGRAPHDB_URL/API_KEY/TENANT_GUID`; ingest `CF_AIG_TOKEN, GEMINI_API_KEY, LITEGRAPHDB_*, POSTHOG_API_KEY`; cron `RESEND_API_KEY, CF_AIG_TOKEN, OPENROUTER_API_KEY, GEMINI_API_KEY, LINKEDIN_CLIENT_ID/SECRET`; email `OPENROUTER_API_KEY, GEMINI_API_KEY`. Provider LLM keys are NOT in workers (BYOK in the AI Gateway dashboard) — except `GEMINI_API_KEY` for the direct multimodal/image calls.
 
@@ -486,6 +495,7 @@ Consumer config: `max_batch_size 10`, `max_batch_timeout 30s`, `max_retries 3`, 
 ## 19. Operational gotchas & key file map
 
 **Gotchas (from `CLAUDE.md`, `.claude/memory/architecture-debt.md`, and code comments):**
+
 - `DB` binding is a different database per worker (see §12.1).
 - LiteGraphDB: insert-only PUT, JSON-stringified nested Data, Int32 Cost, no deletes (simulate with `expired:true`).
 - Anthropic 4.x 400s on `temperature`; gpt-5/o1/o3 need `max_completion_tokens`; maxTokens 2048 silently truncated long extractions (fixed to 8192).
@@ -499,27 +509,27 @@ Consumer config: `max_batch_size 10`, `max_batch_timeout 30s`, `max_retries 3`, 
 
 **Where to look first:**
 
-| Topic | File |
-|---|---|
-| Pipeline orchestrator | `apps/ingest/src/pipeline/index.ts` |
-| Clustering + importance + prune | `apps/ingest/src/hivemind/global-graph-repository.ts` (1.7k LOC) |
-| Feed ranking / diversity | `apps/ingest/src/hivemind/ranker.ts`, `feed-builder.ts` |
-| LiteGraph client + circuit breaker | `packages/storage/src/litegraph/client.ts` |
-| AI gateway + failover | `packages/ai/src/ai-gateway.ts`, `client-factory.ts`, `text-generation.ts` |
-| Extraction model routing | `packages/ai/src/workflows/structured-extraction.ts` (`MODEL_BY_VARIANT`) |
-| Wire delivery | `apps/cron-worker/src/wire-delivery.ts` |
-| Newsletter v2 | `apps/cron-worker/src/v2/newsletter-v2.ts` |
-| Adaptive polling | `apps/cron-worker/src/v2/source-polling.ts` |
-| Auth / API keys | `apps/api-worker/src/middleware/auth.ts`, `user-api-auth.ts`; `packages/shared/src/api-keys.ts` |
-| Rate limits & plan limits | `packages/shared/src/constants/index.ts`, `apps/api-worker/src/middleware/plan-limits.ts` |
-| Cluster bundles | `apps/ingest/src/hivemind/cluster-bundle.ts` |
-| Eval harness | `apps/ingest/tests/eval-extraction.ts`; `packages/ai/src/eval/` |
-| v2 schema | `packages/storage/migrations/001…019` |
-| v1 schema | `packages/database/schema.sql` + `migrations/032–038` |
-| Design docs | `docs/proposal/jan20-systemdesign.md`, `docs/proposal/LITEGRAPHDB_MIGRATION_PLAN.md`, `docs/proposal/implementation/00–07`, `.planning/ROADMAP.md` |
-| Clustering research | `.claude/memory/clustering-research.md`, `docs/archive/proposals/STORY_CLUSTERING_STRATEGY.md` |
-| Tech debt ledger | `.claude/memory/architecture-debt.md` |
+| Topic                              | File                                                                                                                                               |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Pipeline orchestrator              | `apps/ingest/src/pipeline/index.ts`                                                                                                                |
+| Clustering + importance + prune    | `apps/ingest/src/hivemind/global-graph-repository.ts` (1.7k LOC)                                                                                   |
+| Feed ranking / diversity           | `apps/ingest/src/hivemind/ranker.ts`, `feed-builder.ts`                                                                                            |
+| LiteGraph client + circuit breaker | `packages/storage/src/litegraph/client.ts`                                                                                                         |
+| AI gateway + failover              | `packages/ai/src/ai-gateway.ts`, `client-factory.ts`, `text-generation.ts`                                                                         |
+| Extraction model routing           | `packages/ai/src/workflows/structured-extraction.ts` (`MODEL_BY_VARIANT`)                                                                          |
+| Wire delivery                      | `apps/cron-worker/src/wire-delivery.ts`                                                                                                            |
+| Newsletter v2                      | `apps/cron-worker/src/v2/newsletter-v2.ts`                                                                                                         |
+| Adaptive polling                   | `apps/cron-worker/src/v2/source-polling.ts`                                                                                                        |
+| Auth / API keys                    | `apps/api-worker/src/middleware/auth.ts`, `user-api-auth.ts`; `packages/shared/src/api-keys.ts`                                                    |
+| Rate limits & plan limits          | `packages/shared/src/constants/index.ts`, `apps/api-worker/src/middleware/plan-limits.ts`                                                          |
+| Cluster bundles                    | `apps/ingest/src/hivemind/cluster-bundle.ts`                                                                                                       |
+| Eval harness                       | `apps/ingest/tests/eval-extraction.ts`; `packages/ai/src/eval/`                                                                                    |
+| v2 schema                          | `packages/storage/migrations/001…019`                                                                                                              |
+| v1 schema                          | `packages/database/schema.sql` + `migrations/032–038`                                                                                              |
+| Design docs                        | `docs/proposal/jan20-systemdesign.md`, `docs/proposal/LITEGRAPHDB_MIGRATION_PLAN.md`, `docs/proposal/implementation/00–07`, `.planning/ROADMAP.md` |
+| Clustering research                | `.claude/memory/clustering-research.md`, `docs/archive/proposals/STORY_CLUSTERING_STRATEGY.md`                                                     |
+| Tech debt ledger                   | `.claude/memory/architecture-debt.md`                                                                                                              |
 
 ---
 
-*End of Part II. Part I (§1–9) is the narrative/achievement view; Part II (§10–19) is the technical reference. Regenerate both together if the codebase changes materially.*
+_End of Part II. Part I (§1–9) is the narrative/achievement view; Part II (§10–19) is the technical reference. Regenerate both together if the codebase changes materially._

@@ -14,7 +14,7 @@
 
 MC² MCP is a **production MCP (Model Context Protocol) server and DeFi data pipeline** deployed at `mcp.mc2.fi` on Cloudflare Workers, exposing MC² Finance's vault/yield/protocol/wallet analytics to AI agents — principally **"Albert," MC²'s in-house chat agent**. It runs a scheduled 5-stage data pipeline (cron every 4h) that ingests vault metrics from 6 DeFi protocols (BeefyFi, Yo Protocol, IPOR, YieldFi, Turtle, Euler) plus CertiK security scores into PostgreSQL (via Hyperdrive + Drizzle ORM) and a Typesense serving layer, and an Exponential.fi risk-scoring batch subsystem engineered around a 50-calls/day API budget (KV token-bucket rate limiter, rotating 40-contract batches, 7-day cooldowns, cleanup cycles). **Dibakar Sutra Dhar is the near-solo author: 197 of 201 commits (98%) over 11 weeks, ~47,500 hand-written lines (+47,484/−24,309 excluding generated files), 175 new files — architect, data engineer, and API integrator in one.** Christoph Richter contributed 4 commits: client-integration docs, a CORS fix, a yield-score addition, and a wallet-tool fix. The repo was frozen mid-feature (Euler v2 integration) on Nov 7, 2025.
 
-Ready-to-adapt CV summary sentence: *Built and operated a production MCP server and DeFi data pipeline on Cloudflare Workers as sole engineer — 15 external API integrations, a scheduled 5-stage ingestion pipeline into PostgreSQL and Typesense, risk-scoring batch processing under a 50-calls/day API budget, and 10 MCP tools consumed by the company's production AI agent.*
+Ready-to-adapt CV summary sentence: _Built and operated a production MCP server and DeFi data pipeline on Cloudflare Workers as sole engineer — 15 external API integrations, a scheduled 5-stage ingestion pipeline into PostgreSQL and Typesense, risk-scoring batch processing under a 50-calls/day API budget, and 10 MCP tools consumed by the company's production AI agent._
 
 ## 2. The product
 
@@ -24,15 +24,15 @@ Ready-to-adapt CV summary sentence: *Built and operated a production MCP server 
 
 **Feature table:**
 
-| Feature | What it does | Status |
-|---|---|---|
-| MCP server (SSE + streamable HTTP) | `/sse` + `/mcp` transports on a Durable Object (`MC2MCP` via agents SDK `McpAgent`); sessions persist per client | **Live, in production** |
-| 10 active MCP tools | `search_vaults` (~60 Zod filters), `vault_apy_analyzer`, `vault_historical_data`, `search_protocols`, `search_tokens`, `top_yields`, `risk_analyzer`, `wallet_portfolio`, `wallet_positions`, `wallet_top_positions` | **Live** (6 more wallet tools written but disabled) |
-| 5-stage data pipeline | scan → active-set → metrics → risk scores → Typesense merge; cron every 4h + manual `/sync` | **Live** (`src/jobs/orchestrator.ts`, 959 LOC) |
-| 6 protocol processors | BeefyFi, Yo Protocol, IPOR, YieldFi, Turtle, Euler v2 — plugin registry with template-method base class | **Live** (5 more API clients built but unused) |
-| Exponential risk batch | Daily 2AM rotating batches of 40 contracts; KV token-bucket rate limiter (50 calls/day); 7-day cooldown; cleanup cycle for 3x-failed contracts; deadlock-retrying Postgres upserts | **Live, the most engineered subsystem** |
-| AI-native response shaping | Per-response UX guidelines injected into MCP results; LLM-shaped fields (`yield_score`, `risk_level`, `sustainability`); 8 prompts (deprecated); 4 resources | **Live** (prompts/resources partially stale) |
-| Zerion wallet suite | Portfolio/positions via Zerion API | **Live** (3 of 9 tools enabled) |
+| Feature                            | What it does                                                                                                                                                                                                         | Status                                              |
+| ---------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| MCP server (SSE + streamable HTTP) | `/sse` + `/mcp` transports on a Durable Object (`MC2MCP` via agents SDK `McpAgent`); sessions persist per client                                                                                                     | **Live, in production**                             |
+| 10 active MCP tools                | `search_vaults` (~60 Zod filters), `vault_apy_analyzer`, `vault_historical_data`, `search_protocols`, `search_tokens`, `top_yields`, `risk_analyzer`, `wallet_portfolio`, `wallet_positions`, `wallet_top_positions` | **Live** (6 more wallet tools written but disabled) |
+| 5-stage data pipeline              | scan → active-set → metrics → risk scores → Typesense merge; cron every 4h + manual `/sync`                                                                                                                          | **Live** (`src/jobs/orchestrator.ts`, 959 LOC)      |
+| 6 protocol processors              | BeefyFi, Yo Protocol, IPOR, YieldFi, Turtle, Euler v2 — plugin registry with template-method base class                                                                                                              | **Live** (5 more API clients built but unused)      |
+| Exponential risk batch             | Daily 2AM rotating batches of 40 contracts; KV token-bucket rate limiter (50 calls/day); 7-day cooldown; cleanup cycle for 3x-failed contracts; deadlock-retrying Postgres upserts                                   | **Live, the most engineered subsystem**             |
+| AI-native response shaping         | Per-response UX guidelines injected into MCP results; LLM-shaped fields (`yield_score`, `risk_level`, `sustainability`); 8 prompts (deprecated); 4 resources                                                         | **Live** (prompts/resources partially stale)        |
+| Zerion wallet suite                | Portfolio/positions via Zerion API                                                                                                                                                                                   | **Live** (3 of 9 tools enabled)                     |
 
 ## 3. Architecture (summary level)
 
@@ -48,17 +48,17 @@ Deep detail in Part II.
 
 Nine phases reconstructed from git (linear history, no merges, solo trunk development):
 
-| Phase | Dates | Theme | Commits |
-|---|---|---|---|
-| 1. Bootstrap | Aug 22 | Workers + MCP skeleton (`4eaa660`), Yo Protocol tools day one (`91b9a04`) | 1–2 |
-| 2. Persistence + MCP surface | Aug 26–31 | **Drizzle/Postgres** (`7d7b73c`), schema+queries (`a9722d8`), Typesense (`30e82e6`), first cron (`8a82427`), CertiK (`d2192ef`); Aug 26 = 21 commits in one day | 29 |
-| 3. Processor architecture | Sep 1–10 | BeefyFi (`63b58e0`/`27d8e5f`), `ProtocolRegistry` pattern (`8e6b463`), CI/CD deploy (`1b6068d`) | 32 |
-| 4. Monorepo restructure | Sep 11–17 | **17-commit day**: torn out to `src/core`, search stack rebuilt, `BaseTool` (`9eca151`) — the codebase's current shape | 35 |
-| 5. Orchestrator era + protocol blitz | Sep 18–30 | **`DataPipelineOrchestrator` replaces VaultSync/VaultScan** (`c483cac`, +406/−760); IPOR, YieldFi, Turtle, InfiniFi, Uniblock clients land | 29 |
-| 6. Tool registry + TopYield | Oct 1–5 | Query builders (`724a293`), `SearchFacade` (`ff139fe`), registries for vaults/tokens/protocols (`714b86e`, `56d7419`), `TopYieldService` (`76f4814`) | 22 |
-| 7. Euler v1, wallets, Exponential | Oct 6–19 | Euler direct-API processor v1 (`dc27655`); **Zerion wallet suite** (`8634000`); **Exponential risk integration** — 6 commits in 10 minutes (`07b938c` test suite, `64d454f` rate limiter, `8c7c242` deadlock retry) | 25 |
-| 8. Batching + Euler v1 teardown | Oct 20–31 | **`BatchExponentialProcessor` + `BatchCoordinator`** with tests (`08f1695`, `22c71ba`); Euler v1 deleted (`8d46be0`) for subgraph approach | 20 |
-| 9. Euler v2 rebuild | Nov 1–7 | `EulerSubgraphApi` (Goldsky) + `EulerIndexer` + new `EulerProcessor` (`03cf7a2`, `f3b3d44`) — **frozen mid-feature Nov 7** | 7 |
+| Phase                                | Dates     | Theme                                                                                                                                                                                                               | Commits |
+| ------------------------------------ | --------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------- |
+| 1. Bootstrap                         | Aug 22    | Workers + MCP skeleton (`4eaa660`), Yo Protocol tools day one (`91b9a04`)                                                                                                                                           | 1–2     |
+| 2. Persistence + MCP surface         | Aug 26–31 | **Drizzle/Postgres** (`7d7b73c`), schema+queries (`a9722d8`), Typesense (`30e82e6`), first cron (`8a82427`), CertiK (`d2192ef`); Aug 26 = 21 commits in one day                                                     | 29      |
+| 3. Processor architecture            | Sep 1–10  | BeefyFi (`63b58e0`/`27d8e5f`), `ProtocolRegistry` pattern (`8e6b463`), CI/CD deploy (`1b6068d`)                                                                                                                     | 32      |
+| 4. Monorepo restructure              | Sep 11–17 | **17-commit day**: torn out to `src/core`, search stack rebuilt, `BaseTool` (`9eca151`) — the codebase's current shape                                                                                              | 35      |
+| 5. Orchestrator era + protocol blitz | Sep 18–30 | **`DataPipelineOrchestrator` replaces VaultSync/VaultScan** (`c483cac`, +406/−760); IPOR, YieldFi, Turtle, InfiniFi, Uniblock clients land                                                                          | 29      |
+| 6. Tool registry + TopYield          | Oct 1–5   | Query builders (`724a293`), `SearchFacade` (`ff139fe`), registries for vaults/tokens/protocols (`714b86e`, `56d7419`), `TopYieldService` (`76f4814`)                                                                | 22      |
+| 7. Euler v1, wallets, Exponential    | Oct 6–19  | Euler direct-API processor v1 (`dc27655`); **Zerion wallet suite** (`8634000`); **Exponential risk integration** — 6 commits in 10 minutes (`07b938c` test suite, `64d454f` rate limiter, `8c7c242` deadlock retry) | 25      |
+| 8. Batching + Euler v1 teardown      | Oct 20–31 | **`BatchExponentialProcessor` + `BatchCoordinator`** with tests (`08f1695`, `22c71ba`); Euler v1 deleted (`8d46be0`) for subgraph approach                                                                          | 20      |
+| 9. Euler v2 rebuild                  | Nov 1–7   | `EulerSubgraphApi` (Goldsky) + `EulerIndexer` + new `EulerProcessor` (`03cf7a2`, `f3b3d44`) — **frozen mid-feature Nov 7**                                                                                          | 7       |
 
 **Dibakar's tenure:** first commit `4eaa660` (2025-08-22), last `efbc0cd` (2025-11-07 11:50) — a small Euler enhancement, meaning the project was **frozen mid-work, not wrapped up**: no version tag, no docs-finalization commit. **What happened after:** nothing on this repo; the company's agent line continued in `mc2.agentic2` (Sept–Oct 2025, see companion writeup). Cadence: sustained 15–30 commits/week through mid-October with documented late-night bursts (commits at 03:01–03:13 AM on Sep 18; past-midnight runs Oct 20–21) — the commit-hour histogram peaks at 19:00–21:00 local time.
 
@@ -111,23 +111,23 @@ The Euler arc (v1 direct API → deleted → v2 subgraph/indexer) is the repo's 
 
 ## 7. Numbers worth quoting
 
-| Metric | Value | Source / how to reproduce |
-|---|---|---|
-| User's share of commits | 197 of 201 (98%) · Aug 22 – Nov 7, 2025 | `git shortlog -sne HEAD` |
-| User's diff, hand-written code | +47,484 / −24,309 | numstat excluding `worker-configuration.d.ts`, `pnpm-lock.yaml`, `package-lock.json` |
-| User's diff, raw | +63,715 / −24,932 (25.6% generated-file inflation) | numstat |
-| New files authored | 175 (of 181 total new files) | git log --diff-filter=A |
-| Codebase size | 100 files, 22,083 LOC in `src/` | `find src -type f \| xargs wc -l` |
-| External API integrations | 15 clients + Euler subgraph layer (6 fully unused) | `src/core/externalApis/` |
-| Protocol processors | 6 live (BeefyFi, Yo, IPOR, YieldFi, Turtle, Euler) | `src/jobs/orchestrator.ts:117-131` |
-| MCP tools | 16 written, 10 registered | `src/mcp/tools/*/index.ts` |
-| Pipeline stages / cadence | 5 stages · every 4h (`0 0 */4 * *`) + daily 2AM risk batch | `wrangler.jsonc` |
-| Exponential API budget | 50 calls/day, 40-contract batches, 7-day cooldown/cleanup cycle | `src/core/services/rate-limiter.ts:201`, `batch-coordinator.ts` |
-| Cache TTLs | 4h protocol data (6h SWR) · 12h historical (24h SWR) | `src/core/externalApis/cache-config.ts` |
-| Biggest refactor commits | `c483cac` (+406/−760 orchestrator) · `eb8e6b2` (+2,225 MCP consolidation) · Sep 11 = 17 commits | git show --stat |
-| Busiest single day | Aug 26, 2025 — 21 commits | git log |
-| Search filters | ~60 Zod-validated filters on `search_vaults` | `src/mcp/tools/vaults/search.ts` |
-| Test suites | 21 tests (11 batch processor + 10 pipeline integration) | `src/core/processors/__tests__/`, `src/__tests__/integration/` |
+| Metric                         | Value                                                                                           | Source / how to reproduce                                                            |
+| ------------------------------ | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| User's share of commits        | 197 of 201 (98%) · Aug 22 – Nov 7, 2025                                                         | `git shortlog -sne HEAD`                                                             |
+| User's diff, hand-written code | +47,484 / −24,309                                                                               | numstat excluding `worker-configuration.d.ts`, `pnpm-lock.yaml`, `package-lock.json` |
+| User's diff, raw               | +63,715 / −24,932 (25.6% generated-file inflation)                                              | numstat                                                                              |
+| New files authored             | 175 (of 181 total new files)                                                                    | git log --diff-filter=A                                                              |
+| Codebase size                  | 100 files, 22,083 LOC in `src/`                                                                 | `find src -type f \| xargs wc -l`                                                    |
+| External API integrations      | 15 clients + Euler subgraph layer (6 fully unused)                                              | `src/core/externalApis/`                                                             |
+| Protocol processors            | 6 live (BeefyFi, Yo, IPOR, YieldFi, Turtle, Euler)                                              | `src/jobs/orchestrator.ts:117-131`                                                   |
+| MCP tools                      | 16 written, 10 registered                                                                       | `src/mcp/tools/*/index.ts`                                                           |
+| Pipeline stages / cadence      | 5 stages · every 4h (`0 0 */4 * *`) + daily 2AM risk batch                                      | `wrangler.jsonc`                                                                     |
+| Exponential API budget         | 50 calls/day, 40-contract batches, 7-day cooldown/cleanup cycle                                 | `src/core/services/rate-limiter.ts:201`, `batch-coordinator.ts`                      |
+| Cache TTLs                     | 4h protocol data (6h SWR) · 12h historical (24h SWR)                                            | `src/core/externalApis/cache-config.ts`                                              |
+| Biggest refactor commits       | `c483cac` (+406/−760 orchestrator) · `eb8e6b2` (+2,225 MCP consolidation) · Sep 11 = 17 commits | git show --stat                                                                      |
+| Busiest single day             | Aug 26, 2025 — 21 commits                                                                       | git log                                                                              |
+| Search filters                 | ~60 Zod-validated filters on `search_vaults`                                                    | `src/mcp/tools/vaults/search.ts`                                                     |
+| Test suites                    | 21 tests (11 batch processor + 10 pipeline integration)                                         | `src/core/processors/__tests__/`, `src/__tests__/integration/`                       |
 
 ## 8. Raw material for derived artifacts
 
@@ -198,6 +198,7 @@ Who talks to what: only the Worker/DO touches Postgres (through Hyperdrive), Typ
 ## 11. End-to-end data flows
 
 **Flow 1 — Full metrics pipeline** (cron `0 0 */4 * *` or `GET /sync`; `orchestrator.ts` `executeFullPipeline`)
+
 1. `preprocessChains()` inserts 8 hardcoded chains first (deadlock avoidance).
 2. `scanForNewData()` — every processor's `scanVault()` in parallel (`Promise.allSettled`); failures isolated per protocol.
 3. `getAllActiveData()` — read entities + active contracts with relations from Postgres.
@@ -206,11 +207,13 @@ Who talks to what: only the Worker/DO touches Postgres (through Hyperdrive), Typ
 6. `mergeAndUpdateTypesense()` — upsert `entities` + `contracts` collections, merge risk + metrics (batch 25, `metrics-only` strategy).
 
 **Flow 2 — Exponential risk batch** (cron `0 2 * * *` or `GET /test/batch-pipeline`; `executeExponentialBatchPipeline`)
+
 1. `BatchCoordinator` (`src/core/services/batch-coordinator.ts`) selects the day's batch: day-modulo rotation over 40-contract batches tracked in `batch_processing_state`; every 7 days a cleanup batch re-processes contracts with `failureCount >= 3`.
 2. `BatchExponentialProcessor` fetches pool risk per contract through the KV token-bucket limiter (`rate-limiter.ts`: `maxTokens: 50`, midnight-UTC reset, 5-token safety margin, wait-or-skip).
 3. Results upserted into `exponential_risk` (polymorphic pool|protocol rows) via deadlock-retrying transactions; `exponentialLastUpdated` timestamps advanced. `DRY_RUN` env short-circuits writes. Status at `GET /api/pipeline/exponential-status`.
 
 **Flow 3 — MCP tool call** (`src/mcp/tools/`)
+
 1. Request hits `/mcp` or `/sse` → routed into the `MC2MCP` DO; session state persists per client.
 2. Tool registry dispatch → `BaseTool.execute()` wrapper: timing logs, Zod input validation, success/error JSON envelopes (`src/mcp/helpers/responses.ts`).
 3. Tool queries Typesense via `SearchFacade`/query builders (`src/search/`); `risk_analyzer` falls back to CertiK; wallet tools call Zerion.
@@ -225,12 +228,12 @@ Discovers the vault via Typesense search → routes to the owning protocol proce
 
 **Store inventory:**
 
-| Engine | Name | Contents |
-|---|---|---|
-| PostgreSQL (RDS, via Hyperdrive) | schema `yields` | canonical protocol/entity/contract/risk data |
-| Typesense cloud | `entities`, `contracts` collections | serving layer for MCP tools |
-| KV (`MCP_CACHE_KV`) | API cache entries + rate-limit state | TTL/SWR per `cache-config.ts` |
-| DO SQLite (`MC2MCP`) | MCP session state | agents SDK managed |
+| Engine                           | Name                                 | Contents                                     |
+| -------------------------------- | ------------------------------------ | -------------------------------------------- |
+| PostgreSQL (RDS, via Hyperdrive) | schema `yields`                      | canonical protocol/entity/contract/risk data |
+| Typesense cloud                  | `entities`, `contracts` collections  | serving layer for MCP tools                  |
+| KV (`MCP_CACHE_KV`)              | API cache entries + rate-limit state | TTL/SWR per `cache-config.ts`                |
+| DO SQLite (`MC2MCP`)             | MCP session state                    | agents SDK managed                           |
 
 **Postgres tables** (`src/core/db/schema.ts`, Drizzle, pgSchema `yields`):
 
@@ -245,14 +248,14 @@ Query layer: `YieldQueries` (`src/core/db/queries.ts`, 1,413 LOC) — transactio
 
 ## 13. Pipeline / processing reference
 
-| Stage | External call | Writes | Constants |
-|---|---|---|---|
-| Chain pre-insert | none | `chains` | 8 hardcoded chains |
-| Scan | all protocol APIs | entities, contracts | `Promise.allSettled`, per-processor isolation |
-| Metrics | protocol APIs | Typesense `contracts` | batch 25, metrics-only merge |
-| Risk scores | CertiK `partner.certik-skynet.com` | Typesense + risk fields | batch by chain |
-| Exponential batch | `api.exponential.fi` | `exponential_risk`, `batch_processing_state` | 40/batch, 50 calls/day, 7-day cooldown + cleanup cycle |
-| Caching (all API calls via `SuperApi`) | — | KV | protocolData TTL 4h/6h SWR; historical 12h/24h SWR + background refresh |
+| Stage                                  | External call                      | Writes                                       | Constants                                                               |
+| -------------------------------------- | ---------------------------------- | -------------------------------------------- | ----------------------------------------------------------------------- |
+| Chain pre-insert                       | none                               | `chains`                                     | 8 hardcoded chains                                                      |
+| Scan                                   | all protocol APIs                  | entities, contracts                          | `Promise.allSettled`, per-processor isolation                           |
+| Metrics                                | protocol APIs                      | Typesense `contracts`                        | batch 25, metrics-only merge                                            |
+| Risk scores                            | CertiK `partner.certik-skynet.com` | Typesense + risk fields                      | batch by chain                                                          |
+| Exponential batch                      | `api.exponential.fi`               | `exponential_risk`, `batch_processing_state` | 40/batch, 50 calls/day, 7-day cooldown + cleanup cycle                  |
+| Caching (all API calls via `SuperApi`) | —                                  | KV                                           | protocolData TTL 4h/6h SWR; historical 12h/24h SWR + background refresh |
 
 Retry/recovery: Postgres deadlock retry (3x exponential backoff); processor failures isolated by `Promise.allSettled`; failed contracts retried via cleanup batches; everything else fails soft to logs (observability enabled).
 
@@ -266,19 +269,19 @@ Retry/recovery: Postgres deadlock retry (3x exponential backoff); processor fail
 
 ## 15. External services / model catalog
 
-| Client (file) | Base URL | Consumed by | Status |
-|---|---|---|---|
-| BeefyFiApi | api.beefy.finance, data.beefy.finance | BeefyFiProcessor | live |
-| YoProtocolApi (+DefiLlama) | api.yo.xyz, api.llama.fi, yields.llama.fi | YoProtocolProcessor | live |
-| IporApi | api.ipor.io | IporProcessor | live |
-| YieldFiApi | ctrl.yield.fi | YieldFiProtocolProcessor | live |
-| TurtleProtocolApi (+Napier) | api.turtle.xyz | TurtleProcessor | live |
-| EulerSubgraphApi | Goldsky per-chain subgraphs | EulerProcessor v2 | live (in flight at freeze) |
-| EulerIndexer / EulerRewardsApi | indexer-main.euler.finance / app.euler.finance (spoofed UA) | EulerProcessor v2 | live |
-| ExponentialApi | api.exponential.fi | BatchExponentialProcessor | live, rate-limited |
-| CertikApi | partner.certik-skynet.com | orchestrator, risk_analyzer | live |
-| ZerionApi (Basic auth) | api.zerion.io | wallet tools | live |
-| Uniblock, PortalsFi, YieldXYZ, InfiniFi, DefiLlama | — | nothing | **built, unused** |
+| Client (file)                                      | Base URL                                                    | Consumed by                 | Status                     |
+| -------------------------------------------------- | ----------------------------------------------------------- | --------------------------- | -------------------------- |
+| BeefyFiApi                                         | api.beefy.finance, data.beefy.finance                       | BeefyFiProcessor            | live                       |
+| YoProtocolApi (+DefiLlama)                         | api.yo.xyz, api.llama.fi, yields.llama.fi                   | YoProtocolProcessor         | live                       |
+| IporApi                                            | api.ipor.io                                                 | IporProcessor               | live                       |
+| YieldFiApi                                         | ctrl.yield.fi                                               | YieldFiProtocolProcessor    | live                       |
+| TurtleProtocolApi (+Napier)                        | api.turtle.xyz                                              | TurtleProcessor             | live                       |
+| EulerSubgraphApi                                   | Goldsky per-chain subgraphs                                 | EulerProcessor v2           | live (in flight at freeze) |
+| EulerIndexer / EulerRewardsApi                     | indexer-main.euler.finance / app.euler.finance (spoofed UA) | EulerProcessor v2           | live                       |
+| ExponentialApi                                     | api.exponential.fi                                          | BatchExponentialProcessor   | live, rate-limited         |
+| CertikApi                                          | partner.certik-skynet.com                                   | orchestrator, risk_analyzer | live                       |
+| ZerionApi (Basic auth)                             | api.zerion.io                                               | wallet tools                | live                       |
+| Uniblock, PortalsFi, YieldXYZ, InfiniFi, DefiLlama | —                                                           | nothing                     | **built, unused**          |
 
 No LLM is called in this repo — it is tool/data infrastructure for LLMs. Transport: MCP over SSE (120s keep-alive) and streamable HTTP; no AI Gateway here.
 
@@ -293,27 +296,28 @@ No LLM is called in this repo — it is tool/data infrastructure for LLMs. Trans
 
 ## 17. Scheduling & queues
 
-| Schedule | Job |
-|---|---|
-| `0 0 */4 * *` (every 4h) | `executeFullPipeline` — all 5 stages |
-| `0 2 * * *` (daily 2AM) | `executeExponentialBatchPipeline` — one 40-contract batch |
-| Manual | `/sync` (full), `/test/batch-pipeline` (one batch), `/init/batch-states` (bootstrap batch state), `/data/missing` (analysis only) |
+| Schedule                 | Job                                                                                                                               |
+| ------------------------ | --------------------------------------------------------------------------------------------------------------------------------- |
+| `0 0 */4 * *` (every 4h) | `executeFullPipeline` — all 5 stages                                                                                              |
+| `0 2 * * *` (daily 2AM)  | `executeExponentialBatchPipeline` — one 40-contract batch                                                                         |
+| Manual                   | `/sync` (full), `/test/batch-pipeline` (one batch), `/init/batch-states` (bootstrap batch state), `/data/missing` (analysis only) |
 
 No Queues, no DO alarms; all scheduling is cron + manual HTTP. Batch state machine: `pending → processing → success|failed` with `failureCount` accumulation and 7-day cleanup sweep.
 
 ## 18. Bindings, secrets & deployment
 
-| Binding | Type | Notes |
-|---|---|---|
-| `MCP_OBJECT` | Durable Object `MC2MCP` (SQLite, migration v1) | MCP sessions |
-| `MCP_CACHE_KV` | KV namespace | API cache + rate limiter |
-| `HYPERDRIVE` | Hyperdrive → AWS RDS PostgreSQL (`postgres-staging-1…eu-west-1.rds.amazonaws.com:5432/mc2fi`) | ⚠️ `localConnectionString` with credentials committed in `wrangler.jsonc` |
+| Binding        | Type                                                                                          | Notes                                                                     |
+| -------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `MCP_OBJECT`   | Durable Object `MC2MCP` (SQLite, migration v1)                                                | MCP sessions                                                              |
+| `MCP_CACHE_KV` | KV namespace                                                                                  | API cache + rate limiter                                                  |
+| `HYPERDRIVE`   | Hyperdrive → AWS RDS PostgreSQL (`postgres-staging-1…eu-west-1.rds.amazonaws.com:5432/mc2fi`) | ⚠️ `localConnectionString` with credentials committed in `wrangler.jsonc` |
 
 Secrets/vars: `TYPESENSE_HOST`, `TYPESENSE_API_KEY`, `CERTIK_API_KEY`, `YIELD_XYZ_API_KEY`, `PORTALS_FI_API_KEY`, `UNIBLOCK_API_KEY`, `ZERION_API_KEY`, `EXPONENTIAL_API_KEY`, `AMPLITUDE_API_KEY`, `DRY_RUN` (`src/core/types.ts`). Worker limits: `cpu_ms: 300000`; observability on. CI/CD: push to `main` → pnpm 10/Node 23 → `pnpm run build` (wrangler dry-run) → `wrangler-action@v3` deploy (`CLOUDFLARE_API_TOKEN`); **no test/lint gates**. Migrations out-of-band (no committed drizzle migrations).
 
 ## 19. Operational gotchas & key file map
 
 **Gotchas:**
+
 1. **Committed staging DB credentials** in `wrangler.jsonc` (`localConnectionString`) — rotate before any public exposure.
 2. **No drizzle migrations in repo** — schema changes were applied manually; a fresh environment cannot be reconstructed from the repo alone.
 3. **`/data/missing` only logs** — it looks like a repair job but isn't (`orchestrator.ts:175-319`).
@@ -326,21 +330,21 @@ Secrets/vars: `TYPESENSE_HOST`, `TYPESENSE_API_KEY`, `CERTIK_API_KEY`, `YIELD_XY
 
 **Key file map:**
 
-| Topic | File(s) |
-|---|---|
-| Server entry + routes + cron | `src/index.ts` |
-| Pipeline orchestrator (start here) | `src/jobs/orchestrator.ts`, `src/jobs/registry.ts` |
-| Processor base + implementations | `src/core/processors/base-protocol-processor.ts`, `euler-processor.ts` (newest), `beefy-fi-processor.ts` |
-| Exponential batch subsystem | `src/core/processors/batch-exponential-processor.ts`, `src/core/services/batch-coordinator.ts`, `src/core/services/rate-limiter.ts` |
-| DB schema + queries | `src/core/db/schema.ts`, `src/core/db/queries.ts` |
-| External API clients | `src/core/externalApis/*`, `src/core/subgraph/euler.ts` |
-| Search layer | `src/search/` (`SearchService`, `SearchFacade`, query builders; `src/search/README.md`) |
-| MCP tools | `src/mcp/tools/{vaults,wallets,protocols,tokens,shared}/*`, `src/mcp/tools/base.ts` |
-| Guidelines injection | `src/mcp/helpers/guidelines.ts`, `src/mcp/helpers/responses.ts` |
-| Tests (the good part) | `src/core/processors/__tests__/batch-exponential-processor.test.ts`, `src/__tests__/integration/batch-pipeline.test.ts`, `src/__tests__/mocks/` |
-| Client-facing docs (stale tool names) | `README.md`, `spec.md`, `CURSOR_AGENT_PROMPT.md`, `SSE_INTEGRATION_GUIDE.md` |
-| Consumers | sibling repos `mc2.agentic` (MCP client era) and `mc2.agentic2` (current) — companion writeups |
+| Topic                                 | File(s)                                                                                                                                         |
+| ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| Server entry + routes + cron          | `src/index.ts`                                                                                                                                  |
+| Pipeline orchestrator (start here)    | `src/jobs/orchestrator.ts`, `src/jobs/registry.ts`                                                                                              |
+| Processor base + implementations      | `src/core/processors/base-protocol-processor.ts`, `euler-processor.ts` (newest), `beefy-fi-processor.ts`                                        |
+| Exponential batch subsystem           | `src/core/processors/batch-exponential-processor.ts`, `src/core/services/batch-coordinator.ts`, `src/core/services/rate-limiter.ts`             |
+| DB schema + queries                   | `src/core/db/schema.ts`, `src/core/db/queries.ts`                                                                                               |
+| External API clients                  | `src/core/externalApis/*`, `src/core/subgraph/euler.ts`                                                                                         |
+| Search layer                          | `src/search/` (`SearchService`, `SearchFacade`, query builders; `src/search/README.md`)                                                         |
+| MCP tools                             | `src/mcp/tools/{vaults,wallets,protocols,tokens,shared}/*`, `src/mcp/tools/base.ts`                                                             |
+| Guidelines injection                  | `src/mcp/helpers/guidelines.ts`, `src/mcp/helpers/responses.ts`                                                                                 |
+| Tests (the good part)                 | `src/core/processors/__tests__/batch-exponential-processor.test.ts`, `src/__tests__/integration/batch-pipeline.test.ts`, `src/__tests__/mocks/` |
+| Client-facing docs (stale tool names) | `README.md`, `spec.md`, `CURSOR_AGENT_PROMPT.md`, `SSE_INTEGRATION_GUIDE.md`                                                                    |
+| Consumers                             | sibling repos `mc2.agentic` (MCP client era) and `mc2.agentic2` (current) — companion writeups                                                  |
 
 ---
 
-*End of Part II. Part I is the narrative/achievement view; Part II is the technical reference. Regenerate both together if the codebase changes materially.*
+_End of Part II. Part I is the narrative/achievement view; Part II is the technical reference. Regenerate both together if the codebase changes materially._

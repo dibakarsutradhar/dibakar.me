@@ -85,9 +85,7 @@ const rawPosts = readRawPosts();
 /** All posts, newest first, each carrying the plain text used by search. */
 export function getAllPosts(): BlogMeta[] {
 	return rawPosts
-		.map((post) =>
-			normalizePostMeta(post.slug, post.frontmatter, toPlainText(post.content))
-		)
+		.map((post) => normalizePostMeta(post.slug, post.frontmatter, toPlainText(post.content)))
 		.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
 

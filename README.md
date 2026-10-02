@@ -62,7 +62,7 @@ excerpt: One sentence summary.
 
 Body markdown. Images get automatic figures/captions:
 
-![Alt text](/images/blog/my-image.webp "A caption | wide")
+![Alt text](/images/blog/my-image.webp 'A caption | wide')
 ```
 
 Add `draft: true` to the frontmatter to keep a post visible while you write

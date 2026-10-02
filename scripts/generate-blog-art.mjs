@@ -166,7 +166,11 @@ const covers = [
 	},
 	{
 		file: 'cover-doc-scraper.jpg',
-		svg: coverSvg({ title: 'Exporting GitBook Docs as Clean Markdown', category: 'project', seed: 3 })
+		svg: coverSvg({
+			title: 'Exporting GitBook Docs as Clean Markdown',
+			category: 'project',
+			seed: 3
+		})
 	}
 ];
 
@@ -260,9 +264,7 @@ const diagrams = [
 await mkdir(join(outDir, 'diagrams'), { recursive: true });
 
 // Social share card — lives outside /images/blog since every page references it.
-await sharp(Buffer.from(ogCardSvg()))
-	.png()
-	.toFile(join(root, 'public/images/og-card.png'));
+await sharp(Buffer.from(ogCardSvg())).png().toFile(join(root, 'public/images/og-card.png'));
 console.log('og-card ', join('public/images/og-card.png'));
 
 for (const { file, svg } of covers) {

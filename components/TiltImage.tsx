@@ -68,7 +68,7 @@ export default function TiltImage({
 			style={{ perspective: `${PERSPECTIVE_PX}px` }}
 		>
 			<div
-				className="animate-float relative"
+				className="relative animate-float"
 				style={{
 					transform: `rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg)`,
 					transition: 'transform 0.25s ease-out',
@@ -85,7 +85,7 @@ export default function TiltImage({
 							alt={alt}
 							width={890}
 							height={300}
-							className="block h-auto w-[min(82vw,26rem)] rounded-3xl object-cover shadow-[0_25px_60px_-15px_rgba(0,0,0,0.5)] ring-1 ring-line select-none [html[data-theme='dark']_&]:hidden md:w-[30rem]"
+							className="block h-auto w-[min(82vw,26rem)] rounded-3xl object-cover shadow-[0_25px_60px_-15px_rgba(0,0,0,0.5)] ring-1 ring-line select-none md:w-[30rem] [html[data-theme='dark']_&]:hidden"
 							draggable={false}
 						/>
 						<img
@@ -93,7 +93,7 @@ export default function TiltImage({
 							alt={alt}
 							width={890}
 							height={300}
-							className="hidden h-auto w-[min(82vw,26rem)] rounded-3xl object-cover shadow-[0_25px_60px_-15px_rgba(0,0,0,0.5)] ring-1 ring-line select-none [html[data-theme='dark']_&]:block md:w-[30rem]"
+							className="hidden h-auto w-[min(82vw,26rem)] rounded-3xl object-cover shadow-[0_25px_60px_-15px_rgba(0,0,0,0.5)] ring-1 ring-line select-none md:w-[30rem] [html[data-theme='dark']_&]:block"
 							draggable={false}
 						/>
 					</>

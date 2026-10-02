@@ -13,22 +13,22 @@
 
 MC² Finance is a crypto portfolio-analytics platform (portfolio ROI, whale tracking, token data/prices, AI-generated insights, yield opportunities). Its backend is a Cloudflare Workers monorepo — six Workers services plus a shared library — built by a five-person remote team from June 2024, with a staged sunset of most services in October 2025 and full wind-down by June 2026. **Dibakar Sutra Dhar was the core engineer: 1,121 commits (60% of the repo), July 2024 → October 2025, creator of the majority of the service architecture** — the ROI calculation service, the Durable Objects portfolio engine, the multi-portfolio data workflows, the vault/yield subsystems, the CI/CD pipeline, and the deprecation program itself. One ready-to-adapt CV summary sentence:
 
-> *Core engineer (top contributor, ~60% of commits) of MC² Finance's Cloudflare Workers backend — designed and built the portfolio ROI engine, Durable Objects-based portfolio state service, and multi-stage portfolio data workflows across a 6-service monorepo, and led the staged deprecation of the platform.*
+> _Core engineer (top contributor, ~60% of commits) of MC² Finance's Cloudflare Workers backend — designed and built the portfolio ROI engine, Durable Objects-based portfolio state service, and multi-stage portfolio data workflows across a 6-service monorepo, and led the staged deprecation of the platform._
 
 ## 2. The product
 
 MC² Finance tracked crypto wallets and portfolios, computed their ROI and trading statistics, surfaced whales and top traders, scored tokens for security/authenticity, generated AI-written market insights, and listed yield opportunities. Target users were retail and whale crypto traders — the ROI engineering explicitly dealt with "inactive whale wallets" and wallets "with very low start values and high transaction volumes" (`roi-fix-proposal.md`), and the whale validation snapshot includes accounts like justinsuntron and Cooopahtroopa (`whale-portfolios-summary.json`, 2025-04-17). Multi-chain: EVM chains plus Solana.
 
-| Feature | What it did |
-|---|---|
-| Portfolio ROI & stats | Multi-period (latest/7d/30d) ROI, win rate, unrealized gains per wallet portfolio |
-| Whale & trader discovery | Whale identification, portfolio similarity analysis, indexed portfolio search (Typesense) |
-| Token data pipeline | Prices (Mobula → Uniblock → PortalsFi fallback), marketcap-tiered refresh, Typesense token search |
-| Token security scoring | CertiK Skynet + GoPlusLabs scanning, DappRadar blacklists, authenticity scores |
-| AI insights ("Albert") | LLM-written token descriptions, market insights, and "Portfolio Pulse" summaries |
-| Yield opportunities | ERC-4626 vault scanning, Pendle + Yield.xyz strategy processing with risk scores |
-| Alerts & notifications | Signal/wallet queue consumers, Telegram (FlowXO) and Discord delivery |
-| Awards/gamification | SVG/PNG award image generation service (feeder) |
+| Feature                  | What it did                                                                                       |
+| ------------------------ | ------------------------------------------------------------------------------------------------- |
+| Portfolio ROI & stats    | Multi-period (latest/7d/30d) ROI, win rate, unrealized gains per wallet portfolio                 |
+| Whale & trader discovery | Whale identification, portfolio similarity analysis, indexed portfolio search (Typesense)         |
+| Token data pipeline      | Prices (Mobula → Uniblock → PortalsFi fallback), marketcap-tiered refresh, Typesense token search |
+| Token security scoring   | CertiK Skynet + GoPlusLabs scanning, DappRadar blacklists, authenticity scores                    |
+| AI insights ("Albert")   | LLM-written token descriptions, market insights, and "Portfolio Pulse" summaries                  |
+| Yield opportunities      | ERC-4626 vault scanning, Pendle + Yield.xyz strategy processing with risk scores                  |
+| Alerts & notifications   | Signal/wallet queue consumers, Telegram (FlowXO) and Discord delivery                             |
+| Awards/gamification      | SVG/PNG award image generation service (feeder)                                                   |
 
 ## 3. Architecture (summary level)
 
@@ -39,15 +39,15 @@ MC² Finance tracked crypto wallets and portfolios, computed their ROI and tradi
 
 ## 4. The story: how the project evolved
 
-| Epoch | Period | Theme |
-|---|---|---|
-| Bootstrap | Jun–Jul 2024 | Repo initialized 2024-06-26 by Christoph Richter (founder). Dibakar joins **2024-07-01** (`a2a8f91`), builds the metrics worker, signal queue, consumers, and Typesense sync service — much of the platform scaffolding. |
-| Data foundations | Aug–Oct 2024 | Timeseries migration service, shared ORM, token authenticity scoring (GoPlusLabs, DappRadar), marketcap cron tiers, GitHub Actions CI. |
-| Portfolio platform | Nov 2024–Apr 2025 | The heart of the product: single/multi-portfolio Workflows, embeddings, statusManager/cronManager, and **ROICalculator4** (`034bdb0`, Feb 2025). Team peaks (239–261 commits/month Dec–May); Abubakar's ROI-correctness hotfix campaign (PRs #195–#202) and validation harness (Apr 2025). |
-| Durable Objects era | May–Jul 2025 | Dibakar creates the `durables` app (`fe04eeb`, 2025-05-05) — per-portfolio Durable Objects with SQLite state, ETL coordinator, throttled Typesense sync. Vault/ERC-4626 subsystem (`133b29c`), wallet-assets API (`a141ea5`, +1,714 lines), DeBank and Solana support. |
-| Yield & security | Jul–Aug 2025 | Final feature wave: CertiK integration, Yield.xyz API, `YieldStrategyProcessorV2`, Pendle strategies. Dibakar's last feature work ~2025-08-18. |
-| Sunset | Oct 2025 | **2025-10-28:** Dibakar executes the staged deprecation (`8f1b723` — SUNSET_IMPACT.md, bindings disabled across five apps while preserving code for rollback; PRs #359/#360). His last commit is the sunset merge PR #360. |
-| Wind-down | May–Jun 2026 | After tenure: Christoph disables tokenadmin crons and queue consumers to stop runaway Durable Objects billing (`cc54afc`, `f1982f3`, `563c673`). Nothing further was built. |
+| Epoch               | Period            | Theme                                                                                                                                                                                                                                                                                      |
+| ------------------- | ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Bootstrap           | Jun–Jul 2024      | Repo initialized 2024-06-26 by Christoph Richter (founder). Dibakar joins **2024-07-01** (`a2a8f91`), builds the metrics worker, signal queue, consumers, and Typesense sync service — much of the platform scaffolding.                                                                   |
+| Data foundations    | Aug–Oct 2024      | Timeseries migration service, shared ORM, token authenticity scoring (GoPlusLabs, DappRadar), marketcap cron tiers, GitHub Actions CI.                                                                                                                                                     |
+| Portfolio platform  | Nov 2024–Apr 2025 | The heart of the product: single/multi-portfolio Workflows, embeddings, statusManager/cronManager, and **ROICalculator4** (`034bdb0`, Feb 2025). Team peaks (239–261 commits/month Dec–May); Abubakar's ROI-correctness hotfix campaign (PRs #195–#202) and validation harness (Apr 2025). |
+| Durable Objects era | May–Jul 2025      | Dibakar creates the `durables` app (`fe04eeb`, 2025-05-05) — per-portfolio Durable Objects with SQLite state, ETL coordinator, throttled Typesense sync. Vault/ERC-4626 subsystem (`133b29c`), wallet-assets API (`a141ea5`, +1,714 lines), DeBank and Solana support.                     |
+| Yield & security    | Jul–Aug 2025      | Final feature wave: CertiK integration, Yield.xyz API, `YieldStrategyProcessorV2`, Pendle strategies. Dibakar's last feature work ~2025-08-18.                                                                                                                                             |
+| Sunset              | Oct 2025          | **2025-10-28:** Dibakar executes the staged deprecation (`8f1b723` — SUNSET_IMPACT.md, bindings disabled across five apps while preserving code for rollback; PRs #359/#360). His last commit is the sunset merge PR #360.                                                                 |
+| Wind-down           | May–Jun 2026      | After tenure: Christoph disables tokenadmin crons and queue consumers to stop runaway Durable Objects billing (`cc54afc`, `f1982f3`, `563c673`). Nothing further was built.                                                                                                                |
 
 After Dibakar's tenure stopped, the only code activity was infrastructure shutdown — his architecture ran the platform's entire production life.
 
@@ -57,15 +57,15 @@ After Dibakar's tenure stopped, the only code activity was infrastructure shutdo
 
 1,121 commits (919 as "Dibakar Sutra Dhar" + 202 as "Dibakar", same email `iamdibakardipu@gmail.com`). Directory ownership by commit touches:
 
-| Directory | Dibakar touches | vs. next author |
-|---|---|---|
-| `apps/portfolioadmin` | 475 | (Aleem 202, Christoph 170) |
-| `apps/durables` | 359 | (created by Dibakar; dominant author) |
-| `packages/serviceproviders` | 353 | (Aleem 221, Christoph 153) |
-| `apps/tokenadmin` | 176 | (Aleem 309, Christoph 171) |
-| `apps/consumers` | 101 | (created/owned by Dibakar) |
-| `apps/metrics`, `apps/sync`, `apps/queue` | 54 + 41 + 27 | (created and solely owned by Dibakar; later merged away) |
-| `.github` CI workflows | 31 | (next: ~0) |
+| Directory                                 | Dibakar touches | vs. next author                                          |
+| ----------------------------------------- | --------------- | -------------------------------------------------------- |
+| `apps/portfolioadmin`                     | 475             | (Aleem 202, Christoph 170)                               |
+| `apps/durables`                           | 359             | (created by Dibakar; dominant author)                    |
+| `packages/serviceproviders`               | 353             | (Aleem 221, Christoph 153)                               |
+| `apps/tokenadmin`                         | 176             | (Aleem 309, Christoph 171)                               |
+| `apps/consumers`                          | 101             | (created/owned by Dibakar)                               |
+| `apps/metrics`, `apps/sync`, `apps/queue` | 54 + 41 + 27    | (created and solely owned by Dibakar; later merged away) |
+| `.github` CI workflows                    | 31              | (next: ~0)                                               |
 
 Reading: Dibakar was the **greenfield backend builder and platform integrator** — he created most services and owned the portfolio data platform end-to-end. Christoph (founder) bootstrapped the repo, price pipeline, and feeder; Aleem owned the tokenadmin feature surface, Albert AI insights, and alerting; Emmanuel patched notifications/metrics; Abubakar did a short ROI-hotfix tenure.
 
@@ -105,26 +105,27 @@ Best on the team: 78% strict `type(scope):` conventional commits with consistent
 
 ## 7. Numbers worth quoting
 
-| Metric | Value | Trace |
-|---|---|---|
-| Total commits / Dibakar's share | 1,870 / **1,121 (60%)** | `git shortlog -sne` |
-| Tenure | 2024-07-01 → 2025-10-28 (~16 months) | first `a2a8f91`, last PR #360 |
-| PRs merged by Dibakar | 201 of 343 (release manager) | merge-commit authorship |
-| Monorepo TypeScript LOC | ~55,250 | `find … -name '*.ts' \| xargs wc -l` |
-| Services in monorepo | 6 apps + shared library (3 packages) | `apps/`, `packages/` |
-| Dibakar raw diff | 69,486 ins / 34,444 del (≈8k/9k lockfile) | `git log --author=iamdibakardipu --numstat` |
-| ROICalculator4 | 1,961 LOC final; +863-line test suite in first commit | `034bdb0`; file at `563c673` |
-| Wallet-assets API | +1,714 lines in one commit | `a141ea5` |
-| Vault subsystem | +909 lines (`YieldStrategyProcessorV2` etc.) | `133b29c` |
-| Test suite | 15 files / 3,342 LOC | agent count, spot-checked |
-| Whale portfolios validated | 78, snapshot 2025-04-17 | `whale-portfolios-summary.json` |
-| Peak team velocity | 261 commits/month (May 2025) | month-by-month log |
-| Runaway DO cost (post-tenure) | ~25M invocations/mo prod at ~99.7% error; ~9 msg/s self-feeding queue loop | commit messages `cc54afc`, `563c673` |
-| Price-refresh cadence | >$100M mcap every 5 min; $1–100M every 7 min; <$1M every 15 min | `apps/tokenadmin/src/cron/priceupdates.ts` |
+| Metric                          | Value                                                                      | Trace                                       |
+| ------------------------------- | -------------------------------------------------------------------------- | ------------------------------------------- |
+| Total commits / Dibakar's share | 1,870 / **1,121 (60%)**                                                    | `git shortlog -sne`                         |
+| Tenure                          | 2024-07-01 → 2025-10-28 (~16 months)                                       | first `a2a8f91`, last PR #360               |
+| PRs merged by Dibakar           | 201 of 343 (release manager)                                               | merge-commit authorship                     |
+| Monorepo TypeScript LOC         | ~55,250                                                                    | `find … -name '*.ts' \| xargs wc -l`        |
+| Services in monorepo            | 6 apps + shared library (3 packages)                                       | `apps/`, `packages/`                        |
+| Dibakar raw diff                | 69,486 ins / 34,444 del (≈8k/9k lockfile)                                  | `git log --author=iamdibakardipu --numstat` |
+| ROICalculator4                  | 1,961 LOC final; +863-line test suite in first commit                      | `034bdb0`; file at `563c673`                |
+| Wallet-assets API               | +1,714 lines in one commit                                                 | `a141ea5`                                   |
+| Vault subsystem                 | +909 lines (`YieldStrategyProcessorV2` etc.)                               | `133b29c`                                   |
+| Test suite                      | 15 files / 3,342 LOC                                                       | agent count, spot-checked                   |
+| Whale portfolios validated      | 78, snapshot 2025-04-17                                                    | `whale-portfolios-summary.json`             |
+| Peak team velocity              | 261 commits/month (May 2025)                                               | month-by-month log                          |
+| Runaway DO cost (post-tenure)   | ~25M invocations/mo prod at ~99.7% error; ~9 msg/s self-feeding queue loop | commit messages `cc54afc`, `563c673`        |
+| Price-refresh cadence           | >$100M mcap every 5 min; $1–100M every 7 min; <$1M every 15 min            | `apps/tokenadmin/src/cron/priceupdates.ts`  |
 
 ## 8. Raw material for derived artifacts
 
 **CV bullet candidates:**
+
 - Built the portfolio analytics backend of MC² Finance — a Cloudflare Workers monorepo (~55k LOC, 6 services) — as top contributor with ~60% of 1,870 commits over 16 months.
 - Designed and implemented the ROI calculation engine (1,961 LOC with provider-interface architecture) and an 863-line edge-case test suite, hardened by a team-wide whale-portfolio validation campaign across 78 real portfolios.
 - Architected a per-portfolio Durable Objects system with embedded SQLite state, ETL coordination, and throttled search-index sync — replacing batch workflow processing for real-time portfolio recomputation.
@@ -133,13 +134,15 @@ Best on the team: 78% strict `type(scope):` conventional commits with consistent
 - Led a rollback-first deprecation of five services — a documented, reversible sunset preserving code and a migration path — while keeping the token pipeline in production.
 
 **Blog-post angles:**
-- *"The ROI formula was fine: how data quality, not math, broke our portfolio returns"* — the repo documents the whole argument (`roi-fix-proposal.md`), including why value-capping was rejected and the `-1` sentinel replaced with attribution metadata.
-- *"Durable Objects as per-customer state machines"* — the PortfolioDO/ETLCoordinatorDO design (SQLite-in-DO, throttled external writes, alarm-driven recompute) is an under-documented Cloudflare pattern with real tradeoffs.
-- *"How we sunset a microservice platform without deleting it"* — comment-out-based deprecation with a rollback runbook; unusual and reusable.
-- *"Post-mortem in commit messages: the ~25M invocations/month runaway loop"* — a self-feeding queue re-enqueueing failures at ~9 msg/s is a great incident-story with numbers (though post-tenure; frame accordingly).
-- *"Testing a financial calculation against production whales"* — the validation-harness approach (reference implementation vs. production emulation, hand-computed expected ROIs).
+
+- _"The ROI formula was fine: how data quality, not math, broke our portfolio returns"_ — the repo documents the whole argument (`roi-fix-proposal.md`), including why value-capping was rejected and the `-1` sentinel replaced with attribution metadata.
+- _"Durable Objects as per-customer state machines"_ — the PortfolioDO/ETLCoordinatorDO design (SQLite-in-DO, throttled external writes, alarm-driven recompute) is an under-documented Cloudflare pattern with real tradeoffs.
+- _"How we sunset a microservice platform without deleting it"_ — comment-out-based deprecation with a rollback runbook; unusual and reusable.
+- _"Post-mortem in commit messages: the ~25M invocations/month runaway loop"_ — a self-feeding queue re-enqueueing failures at ~9 msg/s is a great incident-story with numbers (though post-tenure; frame accordingly).
+- _"Testing a financial calculation against production whales"_ — the validation-harness approach (reference implementation vs. production emulation, hand-computed expected ROIs).
 
 **LinkedIn headline candidates:**
+
 - Core Engineer @ MC² Finance — built the Cloudflare Workers backend for crypto portfolio analytics (60% of commits).
 - Backend engineer: distributed systems on Cloudflare Workers, Durable Objects & Workflows — crypto portfolio ROI at scale.
 - Top-contributing engineer of a 6-service serverless monorepo: data pipelines, financial computation, and its graceful sunset.
@@ -198,13 +201,13 @@ Failure behavior: all queues max_batch_size 30, max_retries 10, retry_delay 120s
 
 ## 12. Data model reference
 
-| Engine | Store | Contents |
-|---|---|---|
-| PostgreSQL (RDS eu-west-1, Hyperdrive) | `mc2fi` db, `tokens` + `signals_v2` schemas | tokens, wallets→portfolios, signals, awards, users, followers, performance history |
-| TimescaleDB (managed) | `tsdb` | wallet/portfolio time-series stats (migrated by `apps/timeseries`) |
-| Durable Object SQLite | per-PortfolioDO | minimal portfolio calculation state |
-| Typesense | token + portfolio collections | search/read documents |
-| Cloudflare KV | `mc2tokenadmin`, `mc2kv`, `mc2sessions`, workflow-progress | price caches, insight caches (24 h TTL), session/award data |
+| Engine                                 | Store                                                      | Contents                                                                           |
+| -------------------------------------- | ---------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| PostgreSQL (RDS eu-west-1, Hyperdrive) | `mc2fi` db, `tokens` + `signals_v2` schemas                | tokens, wallets→portfolios, signals, awards, users, followers, performance history |
+| TimescaleDB (managed)                  | `tsdb`                                                     | wallet/portfolio time-series stats (migrated by `apps/timeseries`)                 |
+| Durable Object SQLite                  | per-PortfolioDO                                            | minimal portfolio calculation state                                                |
+| Typesense                              | token + portfolio collections                              | search/read documents                                                              |
+| Cloudflare KV                          | `mc2tokenadmin`, `mc2kv`, `mc2sessions`, workflow-progress | price caches, insight caches (24 h TTL), session/award data                        |
 
 - **Drizzle schemas** in `packages/serviceproviders/src/orm/`: `tokens.ts` (`chains`, `tokens`, `token_metadata`, `token_metrics`, `token_prices`, `token_type_info`; primitives enum spot/future/option/perpetual/index/pool-liquidity; vendor enum mobula/lifi/moralis), `portfolios.ts` (`xxwalletAssets`, `portfolioPerformanceHistoryV2`), `signals.ts`, `awards.ts`, `user.ts`, `wallets.ts`. Kysely types in `apps/durables` (deliberately "query builder, not ORM" — `packages/serviceproviders/src/kysely/types/README.md`).
 - **Migrations:** `apps/tokenadmin/migrations-folder/0000_uneven_nocturne.sql` (tokens schema); hand-written SQL in `packages/serviceproviders/migrations/` (`token_yield_strategies.sql` adds erc4626-vault primitives + `tokens.projects`; `add_denominating_asset.sql`; `rename_wallet_to_portfolio.sql`).
@@ -213,15 +216,15 @@ Failure behavior: all queues max_batch_size 30, max_retries 10, retry_delay 120s
 
 ## 13. Pipeline / processing reference
 
-| Stage | External call | Writes to | Key constants |
-|---|---|---|---|
-| Price update | Mobula → Uniblock → PortalsFi | KV + Typesense | tiers: >$100M/5 min, $1–100M/7 min, <$1M/15 min (`src/cron/priceupdates.ts`) |
-| Token security | CertiK Skynet batch scan, GoPlusLabs | token_metrics | cached scans (`TokenAnalysisService.ts`) |
-| ROI calculation | — (pure, provider-injected) | portfolioPerformanceHistoryV2, Typesense | batch 20; suspicious-ROI sentinel −1 for \|ROI\|>4.0/5.0 (see §14) |
-| Transaction filtering | — | signal aggregation | size-tiered SELL thresholds 50×/20×/10×/5× by portfolio value; round-number heuristic only <$100k |
-| Whale detection | Arkham/DeBank | whale summary | whale = start value > $500,000 |
-| Timeseries migration | — | TimescaleDB | batches 20k rows, ≤30k/batch cap |
-| AI insight | OpenRouter Mistral Nemo; OpenAI ada-002 | KV (24 h) | 150–200 char portfolio pulse; 3-part token insight |
+| Stage                 | External call                           | Writes to                                | Key constants                                                                                     |
+| --------------------- | --------------------------------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Price update          | Mobula → Uniblock → PortalsFi           | KV + Typesense                           | tiers: >$100M/5 min, $1–100M/7 min, <$1M/15 min (`src/cron/priceupdates.ts`)                      |
+| Token security        | CertiK Skynet batch scan, GoPlusLabs    | token_metrics                            | cached scans (`TokenAnalysisService.ts`)                                                          |
+| ROI calculation       | — (pure, provider-injected)             | portfolioPerformanceHistoryV2, Typesense | batch 20; suspicious-ROI sentinel −1 for \|ROI\|>4.0/5.0 (see §14)                                |
+| Transaction filtering | —                                       | signal aggregation                       | size-tiered SELL thresholds 50×/20×/10×/5× by portfolio value; round-number heuristic only <$100k |
+| Whale detection       | Arkham/DeBank                           | whale summary                            | whale = start value > $500,000                                                                    |
+| Timeseries migration  | —                                       | TimescaleDB                              | batches 20k rows, ≤30k/batch cap                                                                  |
+| AI insight            | OpenRouter Mistral Nemo; OpenAI ada-002 | KV (24 h)                                | 150–200 char portfolio pulse; 3-part token insight                                                |
 
 ## 14. Algorithms
 
@@ -236,18 +239,18 @@ Failure behavior: all queues max_batch_size 30, max_retries 10, retry_delay 120s
 
 Transport: all external APIs wrapped as classes extending a `SuperApi` fetch base in `packages/serviceproviders/src/apis/`, env access only through typed `Mc2Env` (`src/mc2env.ts`, ~30 keys).
 
-| Operation | Service / model | Notes |
-|---|---|---|
-| Token prices | Mobula → Uniblock → PortalsFi | ordered fallback chain |
-| Wallet/protocol data | Moralis (deep-index v2.2), DeBank pro-openapi, Arkham | portfolio assets/trades |
-| Security scoring | CertiK Skynet (partner API), GoPlusLabs, DappRadar | batch token-scan |
-| Yield data | Pendle (api-v2), Yield.xyz v1 | strategies with risk_score |
-| AI text | OpenRouter, `mistralai/mistral-nemo` ("Albert" persona) | KV-cached 24 h |
-| Embeddings | OpenAI `text-embedding-ada-002` | portfolio/token docs |
-| Search | Typesense (dedicated instances per env) | read index |
-| Notifications | FlowXO (Telegram), Discord webhooks | consumers |
-| Metrics | Datadog EU (`packages/serviceproviders/src/metrics.ts`) | ⚠ hardcoded API key in source — see §9 |
-| Internal ETL | Ingestor API (`src/ingestor.ts`) with CheckpointManager | external repo |
+| Operation            | Service / model                                         | Notes                                  |
+| -------------------- | ------------------------------------------------------- | -------------------------------------- |
+| Token prices         | Mobula → Uniblock → PortalsFi                           | ordered fallback chain                 |
+| Wallet/protocol data | Moralis (deep-index v2.2), DeBank pro-openapi, Arkham   | portfolio assets/trades                |
+| Security scoring     | CertiK Skynet (partner API), GoPlusLabs, DappRadar      | batch token-scan                       |
+| Yield data           | Pendle (api-v2), Yield.xyz v1                           | strategies with risk_score             |
+| AI text              | OpenRouter, `mistralai/mistral-nemo` ("Albert" persona) | KV-cached 24 h                         |
+| Embeddings           | OpenAI `text-embedding-ada-002`                         | portfolio/token docs                   |
+| Search               | Typesense (dedicated instances per env)                 | read index                             |
+| Notifications        | FlowXO (Telegram), Discord webhooks                     | consumers                              |
+| Metrics              | Datadog EU (`packages/serviceproviders/src/metrics.ts`) | ⚠ hardcoded API key in source — see §9 |
+| Internal ETL         | Ingestor API (`src/ingestor.ts`) with CheckpointManager | external repo                          |
 
 ## 16. API & auth reference
 
@@ -273,6 +276,7 @@ Transport: all external APIs wrapped as classes extending a `SuperApi` fetch bas
 ## 19. Operational gotchas & key file map
 
 **Gotchas:**
+
 1. **Self-feeding queue loops:** tokenadmin consumers re-enqueued the next batch every invocation even when DB queries failed → ~9 msg/s, ~100%-error loop independent of crons; crons fanned out ~25M PortfolioDO calls/mo at ~99.7% error; DO alarms self-perpetuate sync loops. The 2026 shutdown used `[skip ci]` on branch updates to avoid re-deploying all services (commits `cc54afc`, `f1982f3`, `563c673`).
 2. **No app-layer auth on admin routes** (CORS `*`) — anything referencing these APIs publicly must treat them as internal-only.
 3. **Hardcoded Datadog API key** in `packages/serviceproviders/src/metrics.ts` — must be redacted in any public excerpt.
@@ -283,18 +287,18 @@ Transport: all external APIs wrapped as classes extending a `SuperApi` fetch bas
 
 **Key file map:**
 
-| Topic | Where to look |
-|---|---|
-| ROI engine | `apps/portfolioadmin/src/services/RoiCalculator4.ts` (+ `.test.ts`), `services/calculations/*` |
-| ROI correctness research | root `roi-fix-proposal.md`, `roi-validation-harness.js`, `whale-portfolios-summary.json` |
-| Durable Objects design | `apps/durables/README.md`, `src/durables/portfolio.ts`, `src/durables/etl.ts` |
-| Multi-portfolio workflow | `apps/portfolioadmin/src/workflows/multi-portfolios-v2/` (+ README) |
-| Price pipeline | `apps/tokenadmin/src/cron/priceupdates.ts`, `kvpriceupdates.ts` |
-| Token scoring/security | `apps/tokenadmin/src/services/` (securityScorer, gopluslabs, TokenAnalysisService, dappradar) |
-| AI insights | `packages/serviceproviders/src/albert.ts`, `apps/tokenadmin/src/services/albert.ts` |
-| Yield/vaults | `apps/tokenadmin/src/services/YieldStrategyProcessorV2.ts`, `vaultTypes.ts`, `src/platforms/pendleFi.ts` |
-| Status state machine | `apps/portfolioadmin/src/managers/statusManager.md` (+ txManager.md) |
-| Shared env/wrappers | `packages/serviceproviders/src/mc2env.ts`, `src/apis/*` |
-| Sunset runbook | root `SUNSET_IMPACT.md` |
+| Topic                    | Where to look                                                                                            |
+| ------------------------ | -------------------------------------------------------------------------------------------------------- |
+| ROI engine               | `apps/portfolioadmin/src/services/RoiCalculator4.ts` (+ `.test.ts`), `services/calculations/*`           |
+| ROI correctness research | root `roi-fix-proposal.md`, `roi-validation-harness.js`, `whale-portfolios-summary.json`                 |
+| Durable Objects design   | `apps/durables/README.md`, `src/durables/portfolio.ts`, `src/durables/etl.ts`                            |
+| Multi-portfolio workflow | `apps/portfolioadmin/src/workflows/multi-portfolios-v2/` (+ README)                                      |
+| Price pipeline           | `apps/tokenadmin/src/cron/priceupdates.ts`, `kvpriceupdates.ts`                                          |
+| Token scoring/security   | `apps/tokenadmin/src/services/` (securityScorer, gopluslabs, TokenAnalysisService, dappradar)            |
+| AI insights              | `packages/serviceproviders/src/albert.ts`, `apps/tokenadmin/src/services/albert.ts`                      |
+| Yield/vaults             | `apps/tokenadmin/src/services/YieldStrategyProcessorV2.ts`, `vaultTypes.ts`, `src/platforms/pendleFi.ts` |
+| Status state machine     | `apps/portfolioadmin/src/managers/statusManager.md` (+ txManager.md)                                     |
+| Shared env/wrappers      | `packages/serviceproviders/src/mc2env.ts`, `src/apis/*`                                                  |
+| Sunset runbook           | root `SUNSET_IMPACT.md`                                                                                  |
 
-*End of Part II. Part I is the narrative/achievement view; Part II is the technical reference. Regenerate both together if the codebase changes materially.*
+_End of Part II. Part I is the narrative/achievement view; Part II is the technical reference. Regenerate both together if the codebase changes materially._

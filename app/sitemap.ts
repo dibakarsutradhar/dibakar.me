@@ -8,9 +8,7 @@ export const dynamic = 'force-static';
 export default function sitemap(): MetadataRoute.Sitemap {
 	const posts = getAllPosts();
 	// Posts are listed newest-first; only dates (no times) are known.
-	const latest = posts[0]?.date
-		? new Date(posts[0].date).toISOString().split('T')[0]
-		: undefined;
+	const latest = posts[0]?.date ? new Date(posts[0].date).toISOString().split('T')[0] : undefined;
 
 	// URLs use the trailing-slash form GitHub Pages serves (trailingSlash: true
 	// makes the 308-redirect target), so crawlers land on the final URL.

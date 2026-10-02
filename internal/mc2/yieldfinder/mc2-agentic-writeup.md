@@ -14,7 +14,7 @@
 
 MC² Agentic is **"Albert" — the AI crypto-analysis assistant for MC² Finance's DeFi Terminal** (mc2.fi): a Cloudflare Workers chat agent (Durable Object per session, gpt-4o via Cloudflare AI Gateway) that analyzes tokens and wallets through MC²'s internal APIs, searches a Typesense token database with LLM-generated structured queries, and optionally connects to a remote MCP server for DeFi vault/yield tools. After a June scaffold by Christoph Richter (from Cloudflare's `agents-starter`), **Dibakar Sutra Dhar built essentially the entire product over six weeks (Aug 6 – Sep 16, 2025): 29 of 33 commits, ~2,250 net-new hand-written lines (+2,247/−1,881 excluding generated files), including a full in-app MCP server (later deliberately removed), four production tools, the Albert system prompt, and the GitHub Actions deploy pipeline.** The repo's successor, `mc2.agentic2`, rearchitected this into a multi-tenant platform — making this repo the founding codebase of MC²'s AI assistant line.
 
-Ready-to-adapt CV summary sentence: *Built the production AI chat agent for a DeFi analytics platform on Cloudflare Workers — Durable Object agent architecture, OpenAI via AI Gateway, LLM-generated structured search queries against Typesense, resilient optional MCP tool integration, and CI/CD to production — as primary author (29 commits over 6 weeks).*
+Ready-to-adapt CV summary sentence: _Built the production AI chat agent for a DeFi analytics platform on Cloudflare Workers — Durable Object agent architecture, OpenAI via AI Gateway, LLM-generated structured search queries against Typesense, resilient optional MCP tool integration, and CI/CD to production — as primary author (29 commits over 6 weeks)._
 
 ## 2. The product
 
@@ -24,17 +24,17 @@ Ready-to-adapt CV summary sentence: *Built the production AI chat agent for a De
 
 **Feature table:**
 
-| Feature | What it does | Status |
-|---|---|---|
-| Chat agent on Durable Objects | One `Chat` DO per browser session (localStorage UUID); WebSocket streaming via the `agents` SDK; history persisted in per-DO SQLite | **Live** |
-| 4 internal tools | `searchTokenTool` (token analysis), `searchAddressTool` (address analysis), `generalSearchTool` (MC² feeds search), `tokensSearchTool` (structured Typesense query) | **Live** (`src/agents/mc2fi-agent.ts:30-74`) |
-| LLM-generated token search | Model compiles a Zod-typed query (chain, marketcap, liquidity, authenticity_score, holders, …) into a Typesense `filter_by` string; results deep-linked to `app.mc2.fi/tokens/{id}` | **Live** (`src/agents/apis/tokensSearch.ts`) |
-| MCP client integration | Optional, non-blocking connection to `${MCP_HOST}/sse`; remote tools merged over local tools; degrades gracefully when absent | **Live** (`mc2fi-agent.ts:87-135`) |
-| In-app MCP server | Full MCP server (tools/resources/prompts, session management, HistoryManager/PreferenceManager) | **Built Aug 6–12, removed Aug 28** (868 lines deleted) |
-| "Albert" system prompt | Persona + tool-routing rules + vault/yield capabilities + risk-assessment rules | **Live, iterated to the last commit** |
-| Amplitude analytics | `chat_message` event per user message, userId = session | **Live** (from Christoph's June commit) |
-| CI/CD | GitHub Actions → `wrangler deploy` to Cloudflare on push to main | **Live** (user-authored) |
-| Agentic network (multi-agent RPC, feedback scoring, prompt versioning) | `AbstractBaseAgent` + 8-table schema + specs | **Designed + implemented, never wired in** (dead code) |
+| Feature                                                                | What it does                                                                                                                                                                        | Status                                                 |
+| ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| Chat agent on Durable Objects                                          | One `Chat` DO per browser session (localStorage UUID); WebSocket streaming via the `agents` SDK; history persisted in per-DO SQLite                                                 | **Live**                                               |
+| 4 internal tools                                                       | `searchTokenTool` (token analysis), `searchAddressTool` (address analysis), `generalSearchTool` (MC² feeds search), `tokensSearchTool` (structured Typesense query)                 | **Live** (`src/agents/mc2fi-agent.ts:30-74`)           |
+| LLM-generated token search                                             | Model compiles a Zod-typed query (chain, marketcap, liquidity, authenticity_score, holders, …) into a Typesense `filter_by` string; results deep-linked to `app.mc2.fi/tokens/{id}` | **Live** (`src/agents/apis/tokensSearch.ts`)           |
+| MCP client integration                                                 | Optional, non-blocking connection to `${MCP_HOST}/sse`; remote tools merged over local tools; degrades gracefully when absent                                                       | **Live** (`mc2fi-agent.ts:87-135`)                     |
+| In-app MCP server                                                      | Full MCP server (tools/resources/prompts, session management, HistoryManager/PreferenceManager)                                                                                     | **Built Aug 6–12, removed Aug 28** (868 lines deleted) |
+| "Albert" system prompt                                                 | Persona + tool-routing rules + vault/yield capabilities + risk-assessment rules                                                                                                     | **Live, iterated to the last commit**                  |
+| Amplitude analytics                                                    | `chat_message` event per user message, userId = session                                                                                                                             | **Live** (from Christoph's June commit)                |
+| CI/CD                                                                  | GitHub Actions → `wrangler deploy` to Cloudflare on push to main                                                                                                                    | **Live** (user-authored)                               |
+| Agentic network (multi-agent RPC, feedback scoring, prompt versioning) | `AbstractBaseAgent` + 8-table schema + specs                                                                                                                                        | **Designed + implemented, never wired in** (dead code) |
 
 ## 3. Architecture (summary level)
 
@@ -48,15 +48,15 @@ Deep detail in Part II.
 
 ## 4. The story: how the project evolved
 
-| Epoch | Dates | Theme | Author |
-|---|---|---|---|
-| A. Scaffold | Jun 18–21, 2025 | Cloudflare `agents-starter` scaffold (+64K lines incl. build artifacts, all 3 lockfiles), Amplitude tracking (`b702c54`); then a 6-week gap | Christoph |
-| B. MCP server era | Aug 6 | Dibakar's first day: 6 commits — new deps, worker renamed `mc2-mcp-server`, and the standalone **512-line MC² MCP server** (`3badab5`) with session management | Dibakar |
-| C. Specs | Aug 7 | +809 lines of Claude-drafted multi-agent specs (`30f1ccc`) — Christoph's last commit on main | Christoph |
-| D. MCP agent day | Aug 12 | 9 commits in 3 minutes of wall-clock: in-agent `Mc2fiMCPAgent` (`60647ea`), tools/resources/prompts (`3f15676`, `531321e`, `a9fff7a`), HistoryManager + PreferenceManager (`28cc9cf`) — and deletion of the 6-day-old standalone server (`708218c`) | Dibakar |
-| E. The pivot | Aug 28 | **MCP server half removed** (`5a14a40`, 868 deletions incl. HistoryManager/PreferenceManager); `Mc2fiChatAgent` gains optional MCP-client connection (`e095be6`) | Dibakar |
-| F. Infra day | Sep 5 | 10 commits: staging → main **PR #1** (carries all 19 prior commits, +3,496/−1,869), GitHub Actions deploy (`ddd8696`), AsyncLocalStorage context extracted (`09af9c9`), non-blocking MCP (`bbae9e4`), wrangler 4.34 | Dibakar |
-| G. Prompt refinement | Sep 11–16 | DeFi analysis clarity + **vault filtering & risk assessment rules** (`4816081`, `2f7d959`) — last commit on main | Dibakar |
+| Epoch                | Dates           | Theme                                                                                                                                                                                                                                               | Author    |
+| -------------------- | --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| A. Scaffold          | Jun 18–21, 2025 | Cloudflare `agents-starter` scaffold (+64K lines incl. build artifacts, all 3 lockfiles), Amplitude tracking (`b702c54`); then a 6-week gap                                                                                                         | Christoph |
+| B. MCP server era    | Aug 6           | Dibakar's first day: 6 commits — new deps, worker renamed `mc2-mcp-server`, and the standalone **512-line MC² MCP server** (`3badab5`) with session management                                                                                      | Dibakar   |
+| C. Specs             | Aug 7           | +809 lines of Claude-drafted multi-agent specs (`30f1ccc`) — Christoph's last commit on main                                                                                                                                                        | Christoph |
+| D. MCP agent day     | Aug 12          | 9 commits in 3 minutes of wall-clock: in-agent `Mc2fiMCPAgent` (`60647ea`), tools/resources/prompts (`3f15676`, `531321e`, `a9fff7a`), HistoryManager + PreferenceManager (`28cc9cf`) — and deletion of the 6-day-old standalone server (`708218c`) | Dibakar   |
+| E. The pivot         | Aug 28          | **MCP server half removed** (`5a14a40`, 868 deletions incl. HistoryManager/PreferenceManager); `Mc2fiChatAgent` gains optional MCP-client connection (`e095be6`)                                                                                    | Dibakar   |
+| F. Infra day         | Sep 5           | 10 commits: staging → main **PR #1** (carries all 19 prior commits, +3,496/−1,869), GitHub Actions deploy (`ddd8696`), AsyncLocalStorage context extracted (`09af9c9`), non-blocking MCP (`bbae9e4`), wrangler 4.34                                 | Dibakar   |
+| G. Prompt refinement | Sep 11–16       | DeFi analysis clarity + **vault filtering & risk assessment rules** (`4816081`, `2f7d959`) — last commit on main                                                                                                                                    | Dibakar   |
 
 **Dibakar's tenure:** first commit `3b1b42f` (2025-08-06 16:35 +0600), last `2f7d959` (2025-09-16). **What happened after:** Christoph's follow-up work (Sept 16–23, e.g. "feat(generativeUI)", "fix sse and mcp connection") went to the `origin/generic-chat` branch, not main — and the whole architecture was then superseded by `mc2.agentic2` (sibling repo, see companion writeup), which adopted AI SDK v5, per-client Durable Objects, and the hard-won MCP schema/truncation fixes. The Aug–Sep arc here — build MCP server → move it into the agent → delete the server half and go client-only — is the direct ancestor of that successor's design.
 
@@ -106,20 +106,20 @@ Two full build-and-remove cycles in 22 days (Aug 6 server deleted Aug 12; Aug 12
 
 ## 7. Numbers worth quoting
 
-| Metric | Value | Source / how to reproduce |
-|---|---|---|
-| User's share of commits | 29 of 33 on main (Aug 6 – Sep 16, 2025) | `git shortlog -sne HEAD` (merge the "Dibakar"/"Dibakar Sutra Dhar" identities — same email) |
-| User's diff, hand-written code | +2,247 / −1,881 | numstat excluding `pnpm-lock.yaml`, `worker-configuration.d.ts`, lockfiles |
-| User's diff, raw | +5,521 / −2,796 (59% generated-file inflation) | numstat; generated = wrangler typegen + lockfile |
-| Codebase size | 47 files, 3,517 TS/TSX LOC in `src/` | `find src -type f \( -name "*.ts" -o -name "*.tsx" \) \| xargs wc -l` |
-| Largest single artifact | 512-line MCP server (built Aug 6, deleted Aug 12) | `3badab5`, `708218c` |
-| MCP server code removed in pivot | 868 lines across 11 files | `5a14a40` |
-| Production tools | 4 local + N remote MCP tools | `src/agents/mc2fi-agent.ts:30-74` |
-| Token-search query schema | 14 filter dimensions, 10 sort fields, 10 results/page | `src/agents/apis/tokensSearch.ts` |
-| Agentic loop | `maxSteps: 10` | `mc2fi-agent.ts:170` |
-| LLM | `gpt-4o-2024-11-20` via Cloudflare AI Gateway | `mc2fi-agent.ts:19-24` |
-| Learned-preference thresholds | marketcap >$1B → low risk; <$100M → high risk; last-5 chains; 50-entry history cap | `preference-manager.ts` at `5a14a40^` (removed code, git history only) |
-| PR #1 (staging→main) | +3,496/−1,869, carried 19 commits | `f425ad8` |
+| Metric                           | Value                                                                              | Source / how to reproduce                                                                   |
+| -------------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| User's share of commits          | 29 of 33 on main (Aug 6 – Sep 16, 2025)                                            | `git shortlog -sne HEAD` (merge the "Dibakar"/"Dibakar Sutra Dhar" identities — same email) |
+| User's diff, hand-written code   | +2,247 / −1,881                                                                    | numstat excluding `pnpm-lock.yaml`, `worker-configuration.d.ts`, lockfiles                  |
+| User's diff, raw                 | +5,521 / −2,796 (59% generated-file inflation)                                     | numstat; generated = wrangler typegen + lockfile                                            |
+| Codebase size                    | 47 files, 3,517 TS/TSX LOC in `src/`                                               | `find src -type f \( -name "*.ts" -o -name "*.tsx" \) \| xargs wc -l`                       |
+| Largest single artifact          | 512-line MCP server (built Aug 6, deleted Aug 12)                                  | `3badab5`, `708218c`                                                                        |
+| MCP server code removed in pivot | 868 lines across 11 files                                                          | `5a14a40`                                                                                   |
+| Production tools                 | 4 local + N remote MCP tools                                                       | `src/agents/mc2fi-agent.ts:30-74`                                                           |
+| Token-search query schema        | 14 filter dimensions, 10 sort fields, 10 results/page                              | `src/agents/apis/tokensSearch.ts`                                                           |
+| Agentic loop                     | `maxSteps: 10`                                                                     | `mc2fi-agent.ts:170`                                                                        |
+| LLM                              | `gpt-4o-2024-11-20` via Cloudflare AI Gateway                                      | `mc2fi-agent.ts:19-24`                                                                      |
+| Learned-preference thresholds    | marketcap >$1B → low risk; <$100M → high risk; last-5 chains; 50-entry history cap | `preference-manager.ts` at `5a14a40^` (removed code, git history only)                      |
+| PR #1 (staging→main)             | +3,496/−1,869, carried 19 commits                                                  | `f425ad8`                                                                                   |
 
 ## 8. Raw material for derived artifacts
 
@@ -186,6 +186,7 @@ Who talks to what: the browser talks only to `/agents/chat/{session}`; only the 
 ## 11. End-to-end data flows
 
 **Flow 1 — Chat message → streamed answer**
+
 1. `app.tsx:31-39`: session UUID generated once, persisted in localStorage; `useAgentChat({ agent, maxSteps: 5 })` drives the UI.
 2. `server.ts:16-29`: 500 with setup instructions if `OPENAI_API_KEY` unset; else `routeAgentRequest` → `Chat` DO named by session id.
 3. `AIChatAgent` (agents SDK) loads history from per-DO SQLite, invokes `Mc2fiChatAgent.onChatMessage` (`mc2fi-agent.ts:117-178`).
@@ -197,6 +198,7 @@ Who talks to what: the browser talks only to `/agents/chat/{session}`; only the 
 `onStart` → if `MCP_HOST` set, `initializeMCP()` fired without await → `connect(${MCP_HOST}/sse)` sets `mcpConnected = true`, failures warn + flag false. Per message: `mcp.unstable_getAITools()` in try/catch; any throw flips `mcpConnected = false` permanently (until DO restart). No `MCP_HOST` → runs with 4 local tools only.
 
 **Flow 3 — Structured token search**
+
 1. Model fills `searchQuerySchema` (`tokensSearch.ts`): `searchTerm`, filters (`chain`/`chain_id`, `marketcap`, `volumeMcapRatio`, `authenticity_score` 0–1, `price`, `stablecoin`, `primitive`, `cexlisted`, `holders`, `price_change_24h`, `liquidity`), sort from 10 fields (default `token_ranking:asc`).
 2. `TokensSearchAPI.searchTokens` compiles it into a Typesense `filter_by` string → `GET {host}/collections/tokens/documents/search` (`query_by: name,symbol,chain`, `per_page: 10`).
 3. Hits decorated with `website: https://app.mc2.fi/tokens/{id}` (`tokensSearch.ts:163-169`) and returned to the model as tool output.
@@ -211,24 +213,24 @@ Who talks to what: the browser talks only to `/agents/chat/{session}`; only the 
 
 **Live persistence is minimal — by design:**
 
-| Store | Contents |
-|---|---|
+| Store                               | Contents                                                           |
+| ----------------------------------- | ------------------------------------------------------------------ |
 | Per-DO SQLite (agents SDK internal) | chat messages per session; no app-managed keys in `mc2fi-agent.ts` |
-| localStorage: `agentSessionId` | stable per-browser session identity |
-| localStorage: `theme` | dark/light preference |
+| localStorage: `agentSessionId`      | stable per-browser session identity                                |
+| localStorage: `theme`               | dark/light preference                                              |
 
-**Git-only schema** (`src/agents/migrations.sql`, 8 tables, for the *unused* `AbstractBaseAgent`): `feedback_points`, `task_prompts` (versioned, `performance_score`), `interaction_logs`, `agent_state` (KV), `scheduled_tasks` (DO-alarm driven, `next_run`), `error_logs`, `task_logs`, `tool_usage_logs` + 9 indexes. No D1/SQL binding exists in `wrangler.jsonc`, so none of this can run today.
+**Git-only schema** (`src/agents/migrations.sql`, 8 tables, for the _unused_ `AbstractBaseAgent`): `feedback_points`, `task_prompts` (versioned, `performance_score`), `interaction_logs`, `agent_state` (KV), `scheduled_tasks` (DO-alarm driven, `next_run`), `error_logs`, `task_logs`, `tool_usage_logs` + 9 indexes. No D1/SQL binding exists in `wrangler.jsonc`, so none of this can run today.
 
 ## 13. Pipeline / processing reference
 
-| Stage | External call | Constants |
-|---|---|---|
-| LLM stream | OpenAI gpt-4o-2024-11-20 via AI Gateway | `maxSteps: 10` |
-| Token analysis | tokenadmin staging API | requires `data` + `albertSummary` in response |
-| Structured search | Typesense (`tokens` collection) | 14 filters, 10 sorts, `per_page: 10` |
-| MCP tools | `${MCP_HOST}/sse` | optional; connect = background; failure → permanent flag-off |
-| Analytics | `POST api2.amplitude.com/2/httpapi` | event `chat_message`, userId = session name |
-| Removed server | — | 50-entry history cap; 5-min session-break nudge (`300000 ms`) |
+| Stage             | External call                           | Constants                                                     |
+| ----------------- | --------------------------------------- | ------------------------------------------------------------- |
+| LLM stream        | OpenAI gpt-4o-2024-11-20 via AI Gateway | `maxSteps: 10`                                                |
+| Token analysis    | tokenadmin staging API                  | requires `data` + `albertSummary` in response                 |
+| Structured search | Typesense (`tokens` collection)         | 14 filters, 10 sorts, `per_page: 10`                          |
+| MCP tools         | `${MCP_HOST}/sse`                       | optional; connect = background; failure → permanent flag-off  |
+| Analytics         | `POST api2.amplitude.com/2/httpapi`     | event `chat_message`, userId = session name                   |
+| Removed server    | —                                       | 50-entry history cap; 5-min session-break nudge (`300000 ms`) |
 
 No queues, no alarms in the live agent, no retries beyond the SDK's own behavior.
 
@@ -241,15 +243,15 @@ No queues, no alarms in the live agent, no retries beyond the SDK's own behavior
 
 ## 15. External services / model catalog
 
-| Operation | Service | Notes |
-|---|---|---|
-| Chat completion | OpenAI `gpt-4o-2024-11-20` | via hardcoded Cloudflare AI Gateway URL (account `9e6fbc31e203e0af03a5f03a21368cf6`, gateway `agents2`) — `mc2fi-agent.ts:19-24` |
-| Token/address/portfolio analysis | MC² tokenadmin + portfolioadmin staging Workers | hardcoded defaults in `mc2Api.ts` |
-| Market search | `staging.api.mc2.fi/feeds/search` | |
-| Token search | Typesense (`typesense.mc2.fi` default) | client URL template inconsistent with full-URL host inputs (latent bug) |
-| MCP tools | `${MCP_HOST}/sse` | remote vault/yield tools: `searchVaults`, `getVaultsByRiskScore`, `getStableYieldVaults`, `getYieldFarmingOpportunities`, `searchProtocols`, `getStablecoinYieldData` — prompted-for but only present when MCP is connected |
-| Analytics | Amplitude HTTP API | |
-| LLM observability | LangSmith (`src/lib/langsmith.ts`) | **complete but never imported** |
+| Operation                        | Service                                         | Notes                                                                                                                                                                                                                       |
+| -------------------------------- | ----------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Chat completion                  | OpenAI `gpt-4o-2024-11-20`                      | via hardcoded Cloudflare AI Gateway URL (account `9e6fbc31e203e0af03a5f03a21368cf6`, gateway `agents2`) — `mc2fi-agent.ts:19-24`                                                                                            |
+| Token/address/portfolio analysis | MC² tokenadmin + portfolioadmin staging Workers | hardcoded defaults in `mc2Api.ts`                                                                                                                                                                                           |
+| Market search                    | `staging.api.mc2.fi/feeds/search`               |                                                                                                                                                                                                                             |
+| Token search                     | Typesense (`typesense.mc2.fi` default)          | client URL template inconsistent with full-URL host inputs (latent bug)                                                                                                                                                     |
+| MCP tools                        | `${MCP_HOST}/sse`                               | remote vault/yield tools: `searchVaults`, `getVaultsByRiskScore`, `getStableYieldVaults`, `getYieldFarmingOpportunities`, `searchProtocols`, `getStablecoinYieldData` — prompted-for but only present when MCP is connected |
+| Analytics                        | Amplitude HTTP API                              |                                                                                                                                                                                                                             |
+| LLM observability                | LangSmith (`src/lib/langsmith.ts`)              | **complete but never imported**                                                                                                                                                                                             |
 
 ## 16. API & auth reference
 
@@ -263,15 +265,16 @@ Live agent: none. Starter residue: `scheduleTask` tool (scheduled/delayed/cron v
 
 ## 18. Bindings, secrets & deployment
 
-| Binding | Type | Notes |
-|---|---|---|
-| `Chat` | Durable Object (SQLite, migration v1) | only binding; class exported from `src/server.ts` |
+| Binding | Type                                  | Notes                                             |
+| ------- | ------------------------------------- | ------------------------------------------------- |
+| `Chat`  | Durable Object (SQLite, migration v1) | only binding; class exported from `src/server.ts` |
 
 Env: `OPENAI_API_KEY`, `TYPESENSE_HOST`, `TYPESENSE_API_KEY`, `AMPLITUDE_API_KEY`, `MCP_HOST` (optional) — `worker-configuration.d.ts:5-14`. Compat date 2025-02-04, `nodejs_compat`. CI/CD (`.github/workflows/deploy.yml`, user-authored): push to `main` → pnpm 10 / Node 23 → `pnpm install --frozen-lockfile` → `pnpm run types` (wrangler typegen) → `pnpm run build` (vite) → `cloudflare/wrangler-action@v3` (wrangler 4.34.0, `CLOUDFLARE_API_TOKEN` secret). **No test/lint gates.** No staging deploy; the `staging` branch was a dev-integration branch, not an environment.
 
 ## 19. Operational gotchas & key file map
 
 **Gotchas:**
+
 1. `src/tools.ts` is broken starter residue (imports `agentContext` from `./server`, which no longer exports it) — do not import it; the live tools are built inside `mc2fi-agent.ts`.
 2. The system prompt advertises six vault/yield tools that exist only on the remote MCP server; with `MCP_HOST` unset the model is told about tools it cannot call — expect failed tool attempts.
 3. `mcpConnected` never recovers within a DO lifetime — a single failed `getAITools()` call permanently disables MCP tools until the DO restarts.
@@ -283,19 +286,19 @@ Env: `OPENAI_API_KEY`, `TYPESENSE_HOST`, `TYPESENSE_API_KEY`, `AMPLITUDE_API_KEY
 
 **Key file map:**
 
-| Topic | File(s) |
-|---|---|
-| Live agent (start here) | `src/agents/mc2fi-agent.ts` |
-| Model + gateway config | `src/agents/mc2fi-agent.ts:19-24` |
-| Tools | `mc2fi-agent.ts:30-74` (registration), `src/agents/apis/mc2Api.ts`, `src/agents/apis/tokensSearch.ts`, `src/agents/apis/typesense.ts` |
-| System prompt (product spec) | `src/agents/system-prompt.ts` |
-| DO/tool context | `src/agents/context.ts` |
-| Removed MCP server | git only: `git show 5a14a40^:src/mcp/` (tools, resources, prompts, HistoryManager, PreferenceManager) |
-| Dead multi-agent subsystem | `src/agents/base-agent.ts`, `src/agents/types.ts`, `src/agents/migrations.sql`, `src/agents/spec*.md` |
-| CI/CD | `.github/workflows/deploy.yml` |
-| Infra config | `wrangler.jsonc` |
-| Successor architecture | sibling repo `mc2.agentic2` (see companion writeup) |
+| Topic                        | File(s)                                                                                                                               |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Live agent (start here)      | `src/agents/mc2fi-agent.ts`                                                                                                           |
+| Model + gateway config       | `src/agents/mc2fi-agent.ts:19-24`                                                                                                     |
+| Tools                        | `mc2fi-agent.ts:30-74` (registration), `src/agents/apis/mc2Api.ts`, `src/agents/apis/tokensSearch.ts`, `src/agents/apis/typesense.ts` |
+| System prompt (product spec) | `src/agents/system-prompt.ts`                                                                                                         |
+| DO/tool context              | `src/agents/context.ts`                                                                                                               |
+| Removed MCP server           | git only: `git show 5a14a40^:src/mcp/` (tools, resources, prompts, HistoryManager, PreferenceManager)                                 |
+| Dead multi-agent subsystem   | `src/agents/base-agent.ts`, `src/agents/types.ts`, `src/agents/migrations.sql`, `src/agents/spec*.md`                                 |
+| CI/CD                        | `.github/workflows/deploy.yml`                                                                                                        |
+| Infra config                 | `wrangler.jsonc`                                                                                                                      |
+| Successor architecture       | sibling repo `mc2.agentic2` (see companion writeup)                                                                                   |
 
 ---
 
-*End of Part II. Part I is the narrative/achievement view; Part II is the technical reference. Regenerate both together if the codebase changes materially.*
+_End of Part II. Part I is the narrative/achievement view; Part II is the technical reference. Regenerate both together if the codebase changes materially._

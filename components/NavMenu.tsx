@@ -21,8 +21,7 @@ export default function NavMenu() {
 	const pathname = usePathname();
 	const [open, setOpen] = useState(false);
 
-	const isActive = (href: string) =>
-		href === '/' ? pathname === '/' : pathname.startsWith(href);
+	const isActive = (href: string) => (href === '/' ? pathname === '/' : pathname.startsWith(href));
 
 	// Close on Escape so keyboard users aren't trapped in the open state.
 	useEffect(() => {
@@ -86,7 +85,7 @@ export default function NavMenu() {
 						className="fixed inset-0 z-40 cursor-default"
 						onClick={() => setOpen(false)}
 					/>
-					<div className="absolute top-12 right-0 z-50 w-40 origin-top-right rounded-xl border border-line-soft bg-bg/95 p-2 shadow-lg animate-[menuIn_0.18s_ease-out_both] sm:hidden">
+					<div className="absolute top-12 right-0 z-50 w-40 origin-top-right animate-[menuIn_0.18s_ease-out_both] rounded-xl border border-line-soft bg-bg/95 p-2 shadow-lg sm:hidden">
 						{NAV_LINKS.map((link) =>
 							isActive(link.href) ? (
 								<span

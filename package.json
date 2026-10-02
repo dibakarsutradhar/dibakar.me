@@ -12,7 +12,8 @@
 		"images": "bun scripts/generate-image-manifest.mjs",
 		"logos": "bun scripts/generate-logo-derivatives.mjs",
 		"images:art": "bun scripts/generate-blog-art.mjs",
-		"dino": "bun scripts/generate-dino-hero.mjs"
+		"dino": "bun scripts/generate-dino-hero.mjs",
+		"format": "prettier --write ."
 	},
 	"dependencies": {
 		"clsx": "^2.1.1",
@@ -36,6 +37,7 @@
 		"@types/react": "^19.1.13",
 		"@types/react-dom": "^19.1.9",
 		"gifenc": "^1.0.3",
+		"prettier-plugin-tailwindcss": "^0.8.1",
 		"tailwindcss": "^4.1.13",
 		"typescript": "^5.9.2"
 	}

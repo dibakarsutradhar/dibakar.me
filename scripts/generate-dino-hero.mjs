@@ -48,8 +48,15 @@ async function readFrames() {
 	// `page` is 0-based; `pages: 1` extracts exactly that frame (libvips'
 	// `pages: N` alone would stack the first N frames into one tall image).
 	for (let p = 0; p < meta.pages; p++) {
-		const { data, info } = await sharp(SRC, { page: p, pages: 1 }).raw().toBuffer({ resolveWithObject: true });
-		frames.push({ data: new Uint8Array(data), width: info.width, height: info.height, channels: info.channels });
+		const { data, info } = await sharp(SRC, { page: p, pages: 1 })
+			.raw()
+			.toBuffer({ resolveWithObject: true });
+		frames.push({
+			data: new Uint8Array(data),
+			width: info.width,
+			height: info.height,
+			channels: info.channels
+		});
 	}
 	return frames;
 }
@@ -58,12 +65,16 @@ function recolor(frame, { bg, ink, cloud }) {
 	const { data, width, height, channels } = frame;
 	const out = new Uint8Array(width * height * 4);
 	for (let i = 0; i < width * height; i++) {
-		const o = i * channels, d = i * 4;
+		const o = i * channels,
+			d = i * 4;
 		const lum = 0.2126 * data[o] + 0.7152 * data[o + 1] + 0.0722 * data[o + 2];
 		// dither the bg/cloud threshold on near-white pixels so flat areas
 		// stay flat but large fills get a hint of the checker texture
 		const c = lum > 235 ? bg : lum > 170 ? cloud : ink;
-		out[d] = c[0]; out[d + 1] = c[1]; out[d + 2] = c[2]; out[d + 3] = 255;
+		out[d] = c[0];
+		out[d + 1] = c[1];
+		out[d + 2] = c[2];
+		out[d + 3] = 255;
 	}
 	return { data: out, width, height };
 }
@@ -71,7 +82,10 @@ function recolor(frame, { bg, ink, cloud }) {
 function setPx(img, x, y, [r, g, b]) {
 	if (x < 0 || y < 0 || x >= img.width || y >= img.height) return;
 	const d = (y * img.width + x) * 4;
-	img.data[d] = r; img.data[d + 1] = g; img.data[d + 2] = b; img.data[d + 3] = 255;
+	img.data[d] = r;
+	img.data[d + 1] = g;
+	img.data[d + 2] = b;
+	img.data[d + 3] = 255;
 }
 
 /** Filled circle (for the moon). */
@@ -130,21 +144,36 @@ function drawNightSky(img, frameNo, { bg, ink, cloud }) {
 	fillCircle(img, 128, 48, 15, bg);
 	// stars: fixed scatter, 3-phase twinkle
 	const stars = [
-		[210, 40], [300, 90], [385, 35], [455, 75], [540, 45], [610, 95],
-		[660, 30], [735, 20], [800, 110], [840, 40], [260, 120], [700, 125]
+		[210, 40],
+		[300, 90],
+		[385, 35],
+		[455, 75],
+		[540, 45],
+		[610, 95],
+		[660, 30],
+		[735, 20],
+		[800, 110],
+		[840, 40],
+		[260, 120],
+		[700, 125]
 	];
 	stars.forEach(([x, y], i) => {
 		const phase = (frameNo + i * 3) % 9;
 		const c = phase < 3 ? cloud : phase < 6 ? ink : cloud;
 		setPx(img, x, y, c);
 		setPx(img, x + 1, y, c);
-		if (phase >= 6) { setPx(img, x, y + 1, c); setPx(img, x + 1, y + 1, c); }
+		if (phase >= 6) {
+			setPx(img, x, y + 1, c);
+			setPx(img, x + 1, y + 1, c);
+		}
 	});
 }
 
 const delaySource = readSourceDelays();
 const sourceFrames = await readFrames();
-console.log(`source: ${sourceFrames.length} frames, ${new Set(delaySource).size} unique delay(s) [${delaySource[0]}ms]`);
+console.log(
+	`source: ${sourceFrames.length} frames, ${new Set(delaySource).size} unique delay(s) [${delaySource[0]}ms]`
+);
 
 mkdirSync(join(root, 'public/images'), { recursive: true });
 

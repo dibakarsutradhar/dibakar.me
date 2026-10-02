@@ -19,7 +19,9 @@ await mkdir(OUT, { recursive: true });
 const files = (await readdir(SRC)).filter((f) => /\.(png|jpe?g|webp|tiff?|svg)$/i.test(f));
 
 for (const file of files) {
-	const name = basename(file, extname(file)).toLowerCase().replace(/[^a-z0-9-]/g, '-');
+	const name = basename(file, extname(file))
+		.toLowerCase()
+		.replace(/[^a-z0-9-]/g, '-');
 	const out = join(OUT, `${name}.webp`);
 
 	// SVGs are already resolution-independent: copy through unchanged.

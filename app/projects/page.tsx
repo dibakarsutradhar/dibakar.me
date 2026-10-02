@@ -22,9 +22,7 @@ export const metadata: Metadata = {
 /** Small-caps section label shared with the about page. */
 function SectionLabel({ children }: { children: React.ReactNode }) {
 	return (
-		<h2 className="m-0 text-xs font-semibold tracking-[0.2em] text-muted uppercase">
-			{children}
-		</h2>
+		<h2 className="m-0 text-xs font-semibold tracking-[0.2em] text-muted uppercase">{children}</h2>
 	);
 }
 
@@ -35,33 +33,25 @@ export default function ProjectsPage() {
 
 			<main className="mx-auto max-w-2xl px-6 py-16">
 				<header className="animate-[fadeIn_0.6s_ease-out_both]">
-					<h1 className="m-0 text-4xl font-bold tracking-tight md:text-5xl">
-						Projects
-					</h1>
+					<h1 className="m-0 text-4xl font-bold tracking-tight md:text-5xl">Projects</h1>
 					<p className="mt-3 text-base font-medium tracking-wide text-muted md:text-lg">
 						what I built, and the nitty gritty behind it
 					</p>
 				</header>
 
-				<section className="animate-[fadeIn_0.6s_ease-out_0.15s_both] mt-16">
+				<section className="mt-16 animate-[fadeIn_0.6s_ease-out_0.15s_both]">
 					<SectionLabel>Deep-dives</SectionLabel>
 					<div className="mt-8 space-y-14">
 						{PROJECTS.map((project, index) => (
 							<article key={project.name}>
 								<div className="flex items-baseline gap-4">
-									<span
-										className="text-sm font-medium text-accent tabular-nums"
-										aria-hidden="true"
-									>
+									<span className="text-sm font-medium text-accent tabular-nums" aria-hidden="true">
 										{String(index + 1).padStart(2, '0')}
 									</span>
 									<div>
 										<h3 className="m-0 text-lg font-semibold tracking-tight">
 											{project.href ? (
-												<Link
-													href={project.href}
-													className="transition-colors hover:text-accent"
-												>
+												<Link href={project.href} className="transition-colors hover:text-accent">
 													{project.name}
 												</Link>
 											) : (

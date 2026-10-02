@@ -14,24 +14,24 @@
 
 MC² Finance's user-facing platform — a Nuxt 3 web app (app-hub), a public API for third parties, and a wallet-authenticated secure API, all on Cloudflare — was built by a rotating team of ~12 contributors in this Turborepo. **Dibakar Sutra Dhar was the backend/API specialist: 225 commits (Apr 2024 → Nov 2025) owning the secure-api's portfolio, strategy, token, and auth surface, the shared ORM query layer, and the frontend-facing calculators (ROI, Trade Return Volatility).** He was also the first substantive backend committer and the repo's final committer — the one who executed the November 2025 sunset of all five API workers. One ready-to-adapt CV summary sentence:
 
-> *Built the API layer of MC² Finance's DeFi analytics platform — 108 zod-validated OpenAPI endpoints across public and wallet-authenticated Cloudflare Workers (Hono), the portfolio/strategy/token query layer in shared Drizzle ORM, and the wallet-signature auth system — across a Nuxt 3 + Turborepo monorepo with ~12 contributors.*
+> _Built the API layer of MC² Finance's DeFi analytics platform — 108 zod-validated OpenAPI endpoints across public and wallet-authenticated Cloudflare Workers (Hono), the portfolio/strategy/token query layer in shared Drizzle ORM, and the wallet-signature auth system — across a Nuxt 3 + Turborepo monorepo with ~12 contributors._
 
 ## 2. The product
 
-Positioning (from `apps/app-hub/nuxt.config.ts`): *"MC² Finance | Your new home for DeFi | Analyze | Discuss | Invest"* — a DeFi portfolio marketplace where users analyze wallets/portfolios/tokens, follow traders, and invest through on-chain trade execution. Target users: DeFi retail investors (wallet-based auth only) plus third-party developers on the public API.
+Positioning (from `apps/app-hub/nuxt.config.ts`): _"MC² Finance | Your new home for DeFi | Analyze | Discuss | Invest"_ — a DeFi portfolio marketplace where users analyze wallets/portfolios/tokens, follow traders, and invest through on-chain trade execution. Target users: DeFi retail investors (wallet-based auth only) plus third-party developers on the public API.
 
-| Feature | What it did |
-|---|---|
-| Portfolio marketplace | Browse/rate top DeFi portfolios and strategies (SSR-indexable pages) |
-| Portfolio creation wizard | Two-step flow: create portfolios from wallets, track composition, daily returns, trades |
-| On-chain trading ("shopify" module) | Cart-based token buying via LI.FI, Enso, Bebop with ERC-4337 smart wallets (ZeroDev, Biconomy) |
-| Token analytics | Per-token performance, authenticity/hype/pressure/validity scores, TradingView/DexScreener charts |
-| Bitcoin insights | Fear & Greed, Golden Ratio, Pi Cycle, Puell Multiplier indicators |
-| Albert AI assistant | AI agent chat (WebSocket to `agents.mc2.fi`) + AI insight cards |
-| Social layer | Follow users/tokens/portfolios, feeds, notifications, watchlists, Telegram bot, "claps" |
-| Smart-wallet studio | Strategy → smart-wallet deployment with session-key signers |
-| OAuth provider | MC² issued OAuth authorizations to third-party apps |
-| Public API | 43 OpenAPI endpoints (trending tokens, competitions, stats, sitemaps, screenshots) |
+| Feature                             | What it did                                                                                       |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------- |
+| Portfolio marketplace               | Browse/rate top DeFi portfolios and strategies (SSR-indexable pages)                              |
+| Portfolio creation wizard           | Two-step flow: create portfolios from wallets, track composition, daily returns, trades           |
+| On-chain trading ("shopify" module) | Cart-based token buying via LI.FI, Enso, Bebop with ERC-4337 smart wallets (ZeroDev, Biconomy)    |
+| Token analytics                     | Per-token performance, authenticity/hype/pressure/validity scores, TradingView/DexScreener charts |
+| Bitcoin insights                    | Fear & Greed, Golden Ratio, Pi Cycle, Puell Multiplier indicators                                 |
+| Albert AI assistant                 | AI agent chat (WebSocket to `agents.mc2.fi`) + AI insight cards                                   |
+| Social layer                        | Follow users/tokens/portfolios, feeds, notifications, watchlists, Telegram bot, "claps"           |
+| Smart-wallet studio                 | Strategy → smart-wallet deployment with session-key signers                                       |
+| OAuth provider                      | MC² issued OAuth authorizations to third-party apps                                               |
+| Public API                          | 43 OpenAPI endpoints (trending tokens, competitions, stats, sitemaps, screenshots)                |
 
 ## 3. Architecture (summary level)
 
@@ -44,15 +44,15 @@ Positioning (from `apps/app-hub/nuxt.config.ts`): *"MC² Finance | Your new home
 
 ## 4. The story: how the project evolved
 
-| Epoch | Period | Theme |
-|---|---|---|
-| Scaffold & React alpha | Dec 2023–Feb 2024 | create-turbo scaffold; React alpha (leaderboard, clap service) **abandoned** (`b668a0f1`). |
-| Nuxt pivot | Feb 2024 | `app-hub` initialized on Nuxt 3 (`c337eb5d`) — the framework decision that stuck for the rest of the repo's life. |
-| Strategy era | Mar–Jul 2024 | Create-strategy flows, dashboard, price alerts. **Dibakar joins 2024-04-09** (`6aaee326`). "MC² Finance" naming (`72f6c47e`, Jun 2024). |
-| Portfolio epic | Oct–Dec 2024 | Peak months (434 commits in Oct). Dibakar builds the entire portfolio API surface (~35 commits) and the calculator layer (ROI, TRV). Aleem & Emmanuel join. |
-| Scale era | Jan–May 2025 | Mar 2025 = all-time peak (631 commits): Albert AI agents, social graph, Shopify trade integration, Nuxt 3.15/3.16. Dibakar migrates wallets to the `signals_v2` schema and wires the portfolio workflow queue (Apr). |
-| Wind-down | Jun–Aug 2025 | Release cycles only ("Cycle 49" = PR #876); final feature commit 2025-08-01. Core team churns out May–Jun. |
-| Sunset | Nov 2025 | **2025-11-05:** Dibakar alone retires all five API workers with 410-Gone middleware (`60711e44`, `30938935`, `d6676352`, `2830882d`). Only app-hub and the analytics cron remain live. |
+| Epoch                  | Period            | Theme                                                                                                                                                                                                                |
+| ---------------------- | ----------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Scaffold & React alpha | Dec 2023–Feb 2024 | create-turbo scaffold; React alpha (leaderboard, clap service) **abandoned** (`b668a0f1`).                                                                                                                           |
+| Nuxt pivot             | Feb 2024          | `app-hub` initialized on Nuxt 3 (`c337eb5d`) — the framework decision that stuck for the rest of the repo's life.                                                                                                    |
+| Strategy era           | Mar–Jul 2024      | Create-strategy flows, dashboard, price alerts. **Dibakar joins 2024-04-09** (`6aaee326`). "MC² Finance" naming (`72f6c47e`, Jun 2024).                                                                              |
+| Portfolio epic         | Oct–Dec 2024      | Peak months (434 commits in Oct). Dibakar builds the entire portfolio API surface (~35 commits) and the calculator layer (ROI, TRV). Aleem & Emmanuel join.                                                          |
+| Scale era              | Jan–May 2025      | Mar 2025 = all-time peak (631 commits): Albert AI agents, social graph, Shopify trade integration, Nuxt 3.15/3.16. Dibakar migrates wallets to the `signals_v2` schema and wires the portfolio workflow queue (Apr). |
+| Wind-down              | Jun–Aug 2025      | Release cycles only ("Cycle 49" = PR #876); final feature commit 2025-08-01. Core team churns out May–Jun.                                                                                                           |
+| Sunset                 | Nov 2025          | **2025-11-05:** Dibakar alone retires all five API workers with 410-Gone middleware (`60711e44`, `30938935`, `d6676352`, `2830882d`). Only app-hub and the analytics cron remain live.                               |
 
 After the core team's feature work stopped (May–Aug 2025), the platform ran unchanged for three months until Dibakar's sunset pass. The user-facing APIs' function was consolidated into the backend services monorepo.
 
@@ -62,13 +62,13 @@ After the core team's feature work stopped (May–Aug 2025), the platform ran un
 
 225 commits (Apr 2024 → Nov 2025) — 4.8% of the repo, but concentrated almost entirely in the backend/API half that the UI-heavy majority didn't touch:
 
-| Area | Dibakar's touches | Reading |
-|---|---|---|
-| `apps/secure-api/**` | ~240 file touches (strategies routes/services 43+43, token 33+20, auth 24+17, portfolios 17+15) | Sole owner of the secure API's portfolio/strategy/token logic; **co-owner of auth** (16 touches vs Christoph 13 on `auth.ts`) |
-| `packages/shared-orm` | 34 query + 19 schema touches | Principal author of the portfolio/token query layer |
-| `apps/public-api/**` | ~30 | Portfolio/stats/token read endpoints |
-| `apps/studio-api` | 12 | Wallet endpoints |
-| `packages/cf-adapters` + `packages/types` | 13 + 12 | Calculators, env methods, shared types |
+| Area                                      | Dibakar's touches                                                                               | Reading                                                                                                                       |
+| ----------------------------------------- | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `apps/secure-api/**`                      | ~240 file touches (strategies routes/services 43+43, token 33+20, auth 24+17, portfolios 17+15) | Sole owner of the secure API's portfolio/strategy/token logic; **co-owner of auth** (16 touches vs Christoph 13 on `auth.ts`) |
+| `packages/shared-orm`                     | 34 query + 19 schema touches                                                                    | Principal author of the portfolio/token query layer                                                                           |
+| `apps/public-api/**`                      | ~30                                                                                             | Portfolio/stats/token read endpoints                                                                                          |
+| `apps/studio-api`                         | 12                                                                                              | Wallet endpoints                                                                                                              |
+| `packages/cf-adapters` + `packages/types` | 13 + 12                                                                                         | Calculators, env methods, shared types                                                                                        |
 
 The rest of the team split the frontend: Sarmad (1,545 commits, app-hub UI/CI), alphajeez/Prince Chukwudire (900, components/releases), Emmanuel (571, Shopify trading + Telegram), Aleem (513, search + Twitter/X + Albert agents backend), Christoph (490, auth + onboarding + Albert UX), Ashmeet (165, cross-chain wallets).
 
@@ -107,25 +107,26 @@ Textbook Conventional Commits — `type(scope): summary`, scopes always present,
 
 ## 7. Numbers worth quoting
 
-| Metric | Value | Trace |
-|---|---|---|
-| Total commits / Dibakar's share | 4,671 / **225 (4.8%)** | `git shortlog -sne` |
-| Tenure | 2024-04-09 → 2025-11-05 (first & last backend committer) | `6aaee326` → `2830882d` |
-| Secure API endpoints | 65 (zod-OpenAPI) | `createRoute` count, `apps/secure-api` |
-| Public API endpoints | 43 | `createRoute` count, `apps/public-api` |
-| Dibakar raw diff | 18,738 ins / 22,290 del (**~10k/20k generated**; real ≈ 8.4k / 2.1k) | `git log --numstat` |
-| Portfolio epic | ~35 commits in 3 weeks (Oct–Nov 2024) | git log |
-| TRVCalculator | 180 LOC shared calculator + wallet-performance query layer | `323c00ec` |
-| secure-api file ownership | ~240 file touches (top author by far) | `git log --name-only` |
-| app-hub scale | 171 components, 21 pages, 37 composables, 16 stores | find/wc |
-| Team peak | 631 commits/month (Mar 2025) | month-by-month log |
-| PR merges by Dibakar | 22 | merge-commit count |
-| Workers sunset in one day | 5 (2025-11-05) | `60711e44`…`2830882d` |
-| Contribution efficiency | ~37 net real lines/commit — highest among 7 major contributors | agent calc from numstat |
+| Metric                          | Value                                                                | Trace                                  |
+| ------------------------------- | -------------------------------------------------------------------- | -------------------------------------- |
+| Total commits / Dibakar's share | 4,671 / **225 (4.8%)**                                               | `git shortlog -sne`                    |
+| Tenure                          | 2024-04-09 → 2025-11-05 (first & last backend committer)             | `6aaee326` → `2830882d`                |
+| Secure API endpoints            | 65 (zod-OpenAPI)                                                     | `createRoute` count, `apps/secure-api` |
+| Public API endpoints            | 43                                                                   | `createRoute` count, `apps/public-api` |
+| Dibakar raw diff                | 18,738 ins / 22,290 del (**~10k/20k generated**; real ≈ 8.4k / 2.1k) | `git log --numstat`                    |
+| Portfolio epic                  | ~35 commits in 3 weeks (Oct–Nov 2024)                                | git log                                |
+| TRVCalculator                   | 180 LOC shared calculator + wallet-performance query layer           | `323c00ec`                             |
+| secure-api file ownership       | ~240 file touches (top author by far)                                | `git log --name-only`                  |
+| app-hub scale                   | 171 components, 21 pages, 37 composables, 16 stores                  | find/wc                                |
+| Team peak                       | 631 commits/month (Mar 2025)                                         | month-by-month log                     |
+| PR merges by Dibakar            | 22                                                                   | merge-commit count                     |
+| Workers sunset in one day       | 5 (2025-11-05)                                                       | `60711e44`…`2830882d`                  |
+| Contribution efficiency         | ~37 net real lines/commit — highest among 7 major contributors       | agent calc from numstat                |
 
 ## 8. Raw material for derived artifacts
 
 **CV bullet candidates:**
+
 - Built the API layer of MC² Finance's DeFi analytics platform — 108 zod-validated OpenAPI endpoints across public and wallet-authenticated Cloudflare Workers (Hono).
 - Implemented SIWA-style wallet-signature authentication (Solana Ed25519 + EVM EIP-191) with 48-hour KV-backed sessions across five EVM chains and Solana.
 - Designed and shipped the platform's entire portfolio analytics read surface — composition, daily returns, ROI, trades-per-week, and a shared Trade Return Volatility calculator — over Drizzle ORM on Postgres.
@@ -134,12 +135,14 @@ Textbook Conventional Commits — `type(scope): summary`, scopes always present,
 - Decommissioned five production Cloudflare Workers in a single documented sunset (410 Gone with deprecation notices), closing out the platform.
 
 **Blog-post angles:**
-- *"Wallet signatures as sessions: SIWA auth in practice"* — real implementation detail (tweetnacl vs wagmi paths, KV session shape, bearer format) plus honest sharp edges (weak salt entropy).
-- *"Two monorepos, one platform: splitting user-facing APIs from heavy compute"* — the public/secure/service split, queue handoff between repos, and typed Hono RPC between frontend and Workers.
-- *"The highest-leverage commits in a UI-heavy repo are the ones nobody sees"* — 4.8% commit share owning 100% of the API surface; a case for measuring ownership by territory, not volume.
-- *"How to sunset a product without breaking it"* — paired with the service-mono writeup: two clean decommissions in two weeks (410 Gone vs binding-commenting).
+
+- _"Wallet signatures as sessions: SIWA auth in practice"_ — real implementation detail (tweetnacl vs wagmi paths, KV session shape, bearer format) plus honest sharp edges (weak salt entropy).
+- _"Two monorepos, one platform: splitting user-facing APIs from heavy compute"_ — the public/secure/service split, queue handoff between repos, and typed Hono RPC between frontend and Workers.
+- _"The highest-leverage commits in a UI-heavy repo are the ones nobody sees"_ — 4.8% commit share owning 100% of the API surface; a case for measuring ownership by territory, not volume.
+- _"How to sunset a product without breaking it"_ — paired with the service-mono writeup: two clean decommissions in two weeks (410 Gone vs binding-commenting).
 
 **LinkedIn headline candidates:**
+
 - Backend engineer @ MC² Finance — Hono/Cloudflare Workers APIs, wallet auth, portfolio analytics for a DeFi platform.
 - Built the API layer of a DeFi analytics platform: 108 OpenAPI endpoints, wallet-signature auth, Drizzle/Postgres at the edge.
 
@@ -193,14 +196,14 @@ Failure behavior: queue sends are fire-and-forget with backend-side retries/DLQs
 
 ## 12. Data model reference
 
-| Engine | Store | Contents |
-|---|---|---|
-| Postgres (Hyperdrive) | `mc2fi` db | all product tables via shared-orm |
-| TimescaleDB | `tsdb` | wallet time-series (Hyperdrive `TIMESERIES`) |
-| KV `mc2kv` / `mc2sessions` / `CLAPS_KV` | — | price/misc cache, auth sessions (48h), clap rate limits |
-| D1 `social-interactions` | — | claps counters |
-| R2 `files` | — | screenshots |
-| Typesense | token/portfolio collections | search (Algolia-style instantsearch in app-hub) |
+| Engine                                  | Store                       | Contents                                                |
+| --------------------------------------- | --------------------------- | ------------------------------------------------------- |
+| Postgres (Hyperdrive)                   | `mc2fi` db                  | all product tables via shared-orm                       |
+| TimescaleDB                             | `tsdb`                      | wallet time-series (Hyperdrive `TIMESERIES`)            |
+| KV `mc2kv` / `mc2sessions` / `CLAPS_KV` | —                           | price/misc cache, auth sessions (48h), clap rate limits |
+| D1 `social-interactions`                | —                           | claps counters                                          |
+| R2 `files`                              | —                           | screenshots                                             |
+| Typesense                               | token/portfolio collections | search (Algolia-style instantsearch in app-hub)         |
 
 - **Schemas** (`packages/shared-orm/src/schemas/`): `signals.ts` defines the canonical **`signals_v2`** pgSchema — `assets`, `asset_prices`, `actions` (per-tx transfers with `usd_value`, jsonb), `signals`, `signal_actions`, `intents`, `intents_histories`, `wallet_balance_state`, `performance_v1`, `blacklisted_wallets`, `wallets` + enums (action SEND/RECEIVE; signal SWAP/BUY/SELL). `wallets.ts` holds the **deprecated** public wallet tables (`@deprecated use signals_v2.*`): `wallets`, `wallet_performance_history`, `wallet_scores`, `wallet_tags`, `roi_history`. `portfolios.ts`: `portfolios`, `portfolio_performance_history`, `wallet_assets`. `user.ts`, `tokens.ts`, `awards.ts`, `followers.ts`, `notifications.ts`.
 - **Query classes** (`src/queries/`, hand-written Drizzle/raw SQL): `portfolios`, `tokens` (a class, `99e126b5`), `signals`, `walletPfm`, `users`, `awards`, `followers`, `notifications`, `telegram`.
@@ -209,15 +212,15 @@ Failure behavior: queue sends are fire-and-forget with backend-side retries/DLQs
 
 ## 13. Pipeline / processing reference
 
-| Stage | External call | Writes to | Constants |
-|---|---|---|---|
-| Wallet auth | EVM RPCs (5 chains) / Solana pubkey | KV session | salt 0–10000, TTL 48h, sessionkey UUIDv4 |
-| Portfolio audit (`/internal`) | — | none (read) | fans out wallets→signals→users (heaviest query path) |
-| Trending/stats reads | Mobula | Typesense/KV | zod-validated route schemas |
-| Screenshot | Browser Rendering | R2 `files` | `@cloudflare/puppeteer` |
-| Trade execution | LI.FI, Enso, Bebop | chain (via ZeroDev ERC-4337) | slippage alerts, approvals flow |
-| Monte Carlo | — | KV `mc2.montecarlo` | daily 01:00 cron; per-wallet risk/reward |
-| Metrics | Datadog EU | custom metrics | per-env prefix `{environment}.metric` |
+| Stage                         | External call                       | Writes to                    | Constants                                            |
+| ----------------------------- | ----------------------------------- | ---------------------------- | ---------------------------------------------------- |
+| Wallet auth                   | EVM RPCs (5 chains) / Solana pubkey | KV session                   | salt 0–10000, TTL 48h, sessionkey UUIDv4             |
+| Portfolio audit (`/internal`) | —                                   | none (read)                  | fans out wallets→signals→users (heaviest query path) |
+| Trending/stats reads          | Mobula                              | Typesense/KV                 | zod-validated route schemas                          |
+| Screenshot                    | Browser Rendering                   | R2 `files`                   | `@cloudflare/puppeteer`                              |
+| Trade execution               | LI.FI, Enso, Bebop                  | chain (via ZeroDev ERC-4337) | slippage alerts, approvals flow                      |
+| Monte Carlo                   | —                                   | KV `mc2.montecarlo`          | daily 01:00 cron; per-wallet risk/reward             |
+| Metrics                       | Datadog EU                          | custom metrics               | per-env prefix `{environment}.metric`                |
 
 ## 14. Algorithms
 
@@ -230,15 +233,15 @@ Failure behavior: queue sends are fire-and-forget with backend-side retries/DLQs
 
 Transport: all API clients in `packages/cf-adapters/src/apis/` on a `superApi` base (itty-fetcher with edge caching `cacheEverything` + status-based TTLs); keys only via `Mc2Env` getters.
 
-| Operation | Service | Where |
-|---|---|---|
-| Wallet/market data | Moralis v2.2, DeBank, CoinMarketCap v3, Mobula | `cf-adapters/src/apis/*` |
-| Solana RPC | Helius | `services/solanaWalletValidator.ts` |
-| Social identity | Twitter/X API v2 + OAuth | `twitterOauthApi.ts`, `secure-api/src/community/oauth.ts` |
-| Search | Typesense (+ app-hub instantsearch adapter, custom fork) | `typesenseApi.ts` |
-| Trade execution | LI.FI, Enso, Bebop, Aarc fundkit, ZeroDev, Biconomy | app-hub composables, studio-api |
-| Monitoring | Datadog (RUM + custom metrics + static analysis) | plugins, `metrics.ts` |
-| Admin data | Notion | `bot-api/src/admin/notion.ts` |
+| Operation          | Service                                                  | Where                                                     |
+| ------------------ | -------------------------------------------------------- | --------------------------------------------------------- |
+| Wallet/market data | Moralis v2.2, DeBank, CoinMarketCap v3, Mobula           | `cf-adapters/src/apis/*`                                  |
+| Solana RPC         | Helius                                                   | `services/solanaWalletValidator.ts`                       |
+| Social identity    | Twitter/X API v2 + OAuth                                 | `twitterOauthApi.ts`, `secure-api/src/community/oauth.ts` |
+| Search             | Typesense (+ app-hub instantsearch adapter, custom fork) | `typesenseApi.ts`                                         |
+| Trade execution    | LI.FI, Enso, Bebop, Aarc fundkit, ZeroDev, Biconomy      | app-hub composables, studio-api                           |
+| Monitoring         | Datadog (RUM + custom metrics + static analysis)         | plugins, `metrics.ts`                                     |
+| Admin data         | Notion                                                   | `bot-api/src/admin/notion.ts`                             |
 
 No LLM calls originate in this repo — AI (Albert) lives in the backend services monorepo; app-hub talks to it via `wss://agents.mc2.fi`.
 
@@ -266,6 +269,7 @@ No LLM calls originate in this repo — AI (Albert) lives in the backend service
 ## 19. Operational gotchas & key file map
 
 **Gotchas:**
+
 1. **Committed credentials** in wrangler.toml comments (staging Postgres + Timescale) and frontend-bundled API keys (LI.FI/Enso/Aarc/Typesense) — see §9; must never be quoted publicly.
 2. **shared-services is a broken stub** — `src/index.ts` re-exports a file that was never committed; importing `@mc2/shared-services` fails. The real cross-repo seam is `cf-adapters` + queues.
 3. **The "shopify" naming trap** — the on-chain trading module has zero relation to Shopify; searching for Shopify docs will mislead.
@@ -276,18 +280,18 @@ No LLM calls originate in this repo — AI (Albert) lives in the backend service
 
 **Key file map:**
 
-| Topic | Where to look |
-|---|---|
+| Topic                    | Where to look                                                                                          |
+| ------------------------ | ------------------------------------------------------------------------------------------------------ |
 | Auth (wallet signatures) | `apps/secure-api/src/auth/auth.ts`, `src/authMiddleware.ts`, `packages/cf-adapters/src/kv/sessions.ts` |
-| Portfolio queries | `packages/shared-orm/src/queries/portfolios.ts`, `apps/secure-api/src/portfolios/` |
-| TRV calculator | `packages/cf-adapters/src/trvCalculator.ts` |
-| Env/queue senders | `packages/cf-adapters/src/mc2env.ts` |
-| signals_v2 schema | `packages/shared-orm/src/schemas/signals.ts` |
-| API route catalogs | `apps/public-api/src/index.ts`, `apps/secure-api/src/index.ts` (OpenAPI at `/doc`) |
-| Frontend data layer | `apps/app-hub/api/mc2api.ts`, `composables/useMc2Api.ts`, `stores/` |
-| Trade execution | `apps/app-hub/composables/shopify/`, `components/shopify/` |
-| Route generation | `apps/app-hub/nuxt.config.ts` (pages:extend), `config/routing.ts` |
-| Monte Carlo | `packages/cf-adapters/src/kv/montecarlo.ts`, `apps/analytics/src/` |
-| Sunset evidence | `apps/*/README.md` (dated 2025-11-05), 410 middleware in both API `index.ts` |
+| Portfolio queries        | `packages/shared-orm/src/queries/portfolios.ts`, `apps/secure-api/src/portfolios/`                     |
+| TRV calculator           | `packages/cf-adapters/src/trvCalculator.ts`                                                            |
+| Env/queue senders        | `packages/cf-adapters/src/mc2env.ts`                                                                   |
+| signals_v2 schema        | `packages/shared-orm/src/schemas/signals.ts`                                                           |
+| API route catalogs       | `apps/public-api/src/index.ts`, `apps/secure-api/src/index.ts` (OpenAPI at `/doc`)                     |
+| Frontend data layer      | `apps/app-hub/api/mc2api.ts`, `composables/useMc2Api.ts`, `stores/`                                    |
+| Trade execution          | `apps/app-hub/composables/shopify/`, `components/shopify/`                                             |
+| Route generation         | `apps/app-hub/nuxt.config.ts` (pages:extend), `config/routing.ts`                                      |
+| Monte Carlo              | `packages/cf-adapters/src/kv/montecarlo.ts`, `apps/analytics/src/`                                     |
+| Sunset evidence          | `apps/*/README.md` (dated 2025-11-05), 410 middleware in both API `index.ts`                           |
 
-*End of Part II. Part I is the narrative/achievement view; Part II is the technical reference. Regenerate both together if the codebase changes materially.*
+_End of Part II. Part I is the narrative/achievement view; Part II is the technical reference. Regenerate both together if the codebase changes materially._

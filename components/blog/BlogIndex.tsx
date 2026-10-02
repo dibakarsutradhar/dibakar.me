@@ -63,7 +63,9 @@ export default function BlogIndex({ posts }: { posts: BlogMeta[] }) {
 							key={cat}
 							onClick={() => toggleCategory(cat)}
 							className={`rounded-full px-3 py-1 text-sm transition-all ${
-								selectedCategory === cat ? 'bg-accent text-accent-ink' : 'bg-card text-fg hover:bg-hover'
+								selectedCategory === cat
+									? 'bg-accent text-accent-ink'
+									: 'bg-card text-fg hover:bg-hover'
 							}`}
 						>
 							{cat}
@@ -73,16 +75,16 @@ export default function BlogIndex({ posts }: { posts: BlogMeta[] }) {
 			</div>
 
 			<div>
-				<h3 className="mb-4 text-sm font-semibold tracking-wider text-muted uppercase">
-					Tags
-				</h3>
+				<h3 className="mb-4 text-sm font-semibold tracking-wider text-muted uppercase">Tags</h3>
 				<div className="flex flex-wrap gap-2">
 					{allTags.map((tag) => (
 						<button
 							key={tag}
 							onClick={() => toggleTag(tag)}
 							className={`rounded-full border px-3 py-1 text-sm transition-all ${
-								selectedTag === tag ? 'border-accent bg-accent/10 text-accent' : 'border-line text-fg hover:border-accent'
+								selectedTag === tag
+									? 'border-accent bg-accent/10 text-accent'
+									: 'border-line text-fg hover:border-accent'
 							}`}
 						>
 							#{tag}
@@ -101,7 +103,7 @@ export default function BlogIndex({ posts }: { posts: BlogMeta[] }) {
 				<div className="mb-8">
 					<div className="relative">
 						<svg
-							className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-muted"
+							className="absolute top-1/2 left-4 h-5 w-5 -translate-y-1/2 text-muted"
 							fill="none"
 							stroke="currentColor"
 							viewBox="0 0 24 24"
@@ -125,11 +127,22 @@ export default function BlogIndex({ posts }: { posts: BlogMeta[] }) {
 						{(query || selectedCategory || selectedTag) && (
 							<button
 								onClick={clearAllFilters}
-								className="absolute right-4 top-1/2 -translate-y-1/2 text-muted transition-colors hover:text-fg"
+								className="absolute top-1/2 right-4 -translate-y-1/2 text-muted transition-colors hover:text-fg"
 								aria-label="Clear all filters"
 							>
-								<svg className="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+								<svg
+									className="h-5 w-5"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+									aria-hidden="true"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth="2"
+										d="M6 18L18 6M6 6l12 12"
+									/>
 								</svg>
 							</button>
 						)}
@@ -148,8 +161,19 @@ export default function BlogIndex({ posts }: { posts: BlogMeta[] }) {
 								className="flex items-center gap-1 rounded-full bg-accent/10 px-3 py-1 text-sm text-accent transition-colors hover:bg-accent/20"
 							>
 								{selectedCategory}
-								<svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+								<svg
+									className="h-3 w-3"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+									aria-hidden="true"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth="2"
+										d="M6 18L18 6M6 6l12 12"
+									/>
 								</svg>
 							</button>
 						)}
@@ -159,8 +183,19 @@ export default function BlogIndex({ posts }: { posts: BlogMeta[] }) {
 								className="flex items-center gap-1 rounded-full border border-line px-3 py-1 text-sm text-fg transition-colors hover:border-accent"
 							>
 								#{selectedTag}
-								<svg className="h-3 w-3" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-									<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+								<svg
+									className="h-3 w-3"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+									aria-hidden="true"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth="2"
+										d="M6 18L18 6M6 6l12 12"
+									/>
 								</svg>
 							</button>
 						)}
@@ -195,17 +230,17 @@ export default function BlogIndex({ posts }: { posts: BlogMeta[] }) {
 										</div>
 									)}
 									<div className="p-6">
-									<div className="mb-3 flex flex-wrap items-center gap-3 text-sm">
-										<span className="rounded-full bg-accent/10 px-3 py-1 text-accent">
-											{post.category}
-										</span>
-										<span className="text-muted">{shortDate(post.date)}</span>
-										{post.draft && (
-											<span className="rounded-full border border-dashed border-line px-3 py-1 text-muted">
-												draft
+										<div className="mb-3 flex flex-wrap items-center gap-3 text-sm">
+											<span className="rounded-full bg-accent/10 px-3 py-1 text-accent">
+												{post.category}
 											</span>
-										)}
-									</div>
+											<span className="text-muted">{shortDate(post.date)}</span>
+											{post.draft && (
+												<span className="rounded-full border border-dashed border-line px-3 py-1 text-muted">
+													draft
+												</span>
+											)}
+										</div>
 										<h2 className="mb-2 text-2xl font-semibold transition-colors group-hover:text-accent">
 											{post.title}
 										</h2>
@@ -255,9 +290,23 @@ export default function BlogIndex({ posts }: { posts: BlogMeta[] }) {
 
 				{/* Back to home */}
 				<div className="mt-16 text-center">
-					<Link href="/" className="inline-flex items-center gap-2 text-muted transition-colors hover:text-fg">
-						<svg className="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
-							<path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M15 19l-7-7 7-7" />
+					<Link
+						href="/"
+						className="inline-flex items-center gap-2 text-muted transition-colors hover:text-fg"
+					>
+						<svg
+							className="h-4 w-4"
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24"
+							aria-hidden="true"
+						>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth="2"
+								d="M15 19l-7-7 7-7"
+							/>
 						</svg>
 						Back to home
 					</Link>

@@ -60,9 +60,7 @@ const ELSEWHERE = [
 /** Small-caps section label shared by every block on the page. */
 function SectionLabel({ children }: { children: React.ReactNode }) {
 	return (
-		<h2 className="m-0 text-xs font-semibold tracking-[0.2em] text-muted uppercase">
-			{children}
-		</h2>
+		<h2 className="m-0 text-xs font-semibold tracking-[0.2em] text-muted uppercase">{children}</h2>
 	);
 }
 
@@ -73,34 +71,32 @@ export default function AboutPage() {
 
 			<main className="mx-auto max-w-2xl px-6 py-16">
 				<header className="animate-[fadeIn_0.6s_ease-out_both]">
-					<h1 className="m-0 text-4xl font-bold tracking-tight md:text-5xl">
-						{SITE_TITLE}
-					</h1>
+					<h1 className="m-0 text-4xl font-bold tracking-tight md:text-5xl">{SITE_TITLE}</h1>
 					<p className="mt-3 text-base font-medium tracking-wide text-muted md:text-lg">
 						{SITE_ROLE}
 					</p>
 				</header>
 
-				<section className="animate-[fadeIn_0.6s_ease-out_0.15s_both] mt-12">
+				<section className="mt-12 animate-[fadeIn_0.6s_ease-out_0.15s_both]">
 					<div className="space-y-4 text-base leading-relaxed text-pretty">
 						<p>
 							I build <strong className="font-semibold">distributed backends</strong>,{' '}
 							<strong className="font-semibold">high-performance Rust systems</strong>,{' '}
-							<strong className="font-semibold">data infrastructure</strong>, and products from
-							the ground up.
+							<strong className="font-semibold">data infrastructure</strong>, and products from the
+							ground up.
 						</p>
 						<p>
 							Over the past six years I&apos;ve worked across the software engineering landscape —
-							from blockchain infrastructure and real-time data pipelines to AI agents, fintech,
-							and multi-tenant SaaS — for teams across Switzerland, the US, Singapore, and
-							Malaysia. I&apos;m currently building{' '}
-							<strong className="font-semibold">Jemeti</strong>, a workshop management platform,
-							and recently shipped <strong className="font-semibold">InvoisOS</strong>, an
-							invoicing platform used by businesses in Malaysia.
+							from blockchain infrastructure and real-time data pipelines to AI agents, fintech, and
+							multi-tenant SaaS — for teams across Switzerland, the US, Singapore, and Malaysia.
+							I&apos;m currently building <strong className="font-semibold">Jemeti</strong>, a
+							workshop management platform, and recently shipped{' '}
+							<strong className="font-semibold">InvoisOS</strong>, an invoicing platform used by
+							businesses in Malaysia.
 						</p>
 						<p>
-							My work spans Rust, distributed architectures, data engineering, cloud
-							infrastructure, and AI systems —{' '}
+							My work spans Rust, distributed architectures, data engineering, cloud infrastructure,
+							and AI systems —{' '}
 							<span className="text-muted">
 								blockchain data pipelines, non-custodial wallets, AI-powered tooling, and backends
 								built for consistency, isolation, and reliability under live workloads.
@@ -121,21 +117,21 @@ export default function AboutPage() {
 					</div>
 				</section>
 
-				<section className="animate-[fadeIn_0.6s_ease-out_0.25s_both] mt-16">
+				<section className="mt-16 animate-[fadeIn_0.6s_ease-out_0.25s_both]">
 					<SectionLabel>What I&apos;m Exploring</SectionLabel>
 					<p className="mt-4 text-base leading-relaxed text-pretty">
-						My interests have been expanding beyond conventional backend engineering into areas
-						that connect software, hardware, and human interaction.
+						My interests have been expanding beyond conventional backend engineering into areas that
+						connect software, hardware, and human interaction.
 					</p>
 					<dl className="mt-5 grid gap-y-4 text-[15px] leading-relaxed">
 						{EXPLORING.map(([topic, blurb]) => (
 							<div key={topic}>
 								<dt className="font-semibold">{topic}</dt>
-								<dd className="mt-0.5 m-0 text-muted text-pretty">{blurb}</dd>
+								<dd className="m-0 mt-0.5 text-pretty text-muted">{blurb}</dd>
 							</div>
 						))}
 					</dl>
-					<p className="mt-5 text-sm leading-relaxed text-muted text-pretty">
+					<p className="mt-5 text-sm leading-relaxed text-pretty text-muted">
 						These interests give me opportunities to explore engineering problems at different
 						levels of abstraction, from machine-level operations to the experience of the person
 						using the finished product.
@@ -159,7 +155,7 @@ export default function AboutPage() {
 					</p>
 				</section> */}
 
-				<section className="animate-[fadeIn_0.6s_ease-out_0.35s_both] mt-16">
+				<section className="mt-16 animate-[fadeIn_0.6s_ease-out_0.35s_both]">
 					<SectionLabel>Stack</SectionLabel>
 					<dl className="mt-4 grid grid-cols-[7rem_1fr] gap-x-6 gap-y-3 text-sm">
 						{STACK.map(([area, tools]) => (
@@ -171,7 +167,7 @@ export default function AboutPage() {
 					</dl>
 				</section>
 
-				<section className="animate-[fadeIn_0.6s_ease-out_0.45s_both] mt-14">
+				<section className="mt-14 animate-[fadeIn_0.6s_ease-out_0.45s_both]">
 					<SectionLabel>Contact</SectionLabel>
 					<p className="mt-4 text-base leading-relaxed">
 						The fastest way to reach me is{' '}

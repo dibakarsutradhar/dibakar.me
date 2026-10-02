@@ -37,7 +37,7 @@ export const viewport: Viewport = {
 		{ media: '(prefers-color-scheme: dark)', color: '#0f1419' },
 		{ media: '(prefers-color-scheme: light)', color: '#f0f0f0' }
 	]
-}
+};
 
 /**
  * Set the theme before first paint so the correct palette is applied without a
@@ -64,8 +64,20 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 				{/* Space Grotesk is self-hosted (@font-face in globals.css). Preload
 				    the two weights used above the fold so the swap happens before
 				    first paint. */}
-				<link rel="preload" href="/fonts/space-grotesk-400.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
-				<link rel="preload" href="/fonts/space-grotesk-700.woff2" as="font" type="font/woff2" crossOrigin="anonymous" />
+				<link
+					rel="preload"
+					href="/fonts/space-grotesk-400.woff2"
+					as="font"
+					type="font/woff2"
+					crossOrigin="anonymous"
+				/>
+				<link
+					rel="preload"
+					href="/fonts/space-grotesk-700.woff2"
+					as="font"
+					type="font/woff2"
+					crossOrigin="anonymous"
+				/>
 			</head>
 			<body className="bg-bg font-sans text-fg antialiased transition-colors duration-500">
 				{children}

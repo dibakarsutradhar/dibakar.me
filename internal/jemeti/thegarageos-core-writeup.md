@@ -11,30 +11,31 @@
 
 ## 1. TL;DR
 
-**Jemeti** (launched as *TheGarageOS*, rebranded 2026-07-01, commit `f29429a6`) is a multi-tenant SaaS for vehicle workshop management — job cards, CRM, fleet/vehicle catalog, inventory, POS/sales, accounting, staff/payroll, messaging (WhatsApp/SMS/email), subscriptions and billing — built as a Rust/Axum + PostgreSQL monorepo with three SvelteKit 5 SSR frontends. Dibakar Sutra Dhar designed and built it **solo** in under five months: 1,607 of 1,623 commits (99.0%), 2026-05-08 → 2026-09-22, taking the system from empty repo to a five-surface AWS production deployment (two musl Rust binaries on EC2, three SvelteKit Lambdas behind CloudFront) with row-level-security multi-tenancy, four payment gateways, and a 12-state workshop job state machine.
+**Jemeti** (launched as _TheGarageOS_, rebranded 2026-07-01, commit `f29429a6`) is a multi-tenant SaaS for vehicle workshop management — job cards, CRM, fleet/vehicle catalog, inventory, POS/sales, accounting, staff/payroll, messaging (WhatsApp/SMS/email), subscriptions and billing — built as a Rust/Axum + PostgreSQL monorepo with three SvelteKit 5 SSR frontends. Dibakar Sutra Dhar designed and built it **solo** in under five months: 1,607 of 1,623 commits (99.0%), 2026-05-08 → 2026-09-22, taking the system from empty repo to a five-surface AWS production deployment (two musl Rust binaries on EC2, three SvelteKit Lambdas behind CloudFront) with row-level-security multi-tenancy, four payment gateways, and a 12-state workshop job state machine.
 
 Ready-to-adapt CV summary sentence:
-> *Sole architect and developer of Jemeti, a multi-tenant vehicle-workshop SaaS (Rust/Axum, PostgreSQL RLS, SvelteKit): shipped 251 SQL migrations, ~200+ tenant API endpoints, 4 payment gateways, and a 5-surface AWS production deployment in under 5 months (1,600+ commits).*
+
+> _Sole architect and developer of Jemeti, a multi-tenant vehicle-workshop SaaS (Rust/Axum, PostgreSQL RLS, SvelteKit): shipped 251 SQL migrations, ~200+ tenant API endpoints, 4 payment gateways, and a 5-surface AWS production deployment in under 5 months (1,600+ commits)._
 
 ## 2. The product
 
-Positioning per `CLAUDE.md:1-7` and `docs/ARCHITECTURE.md` §1: *"Multi-tenant enterprise SaaS for vehicle workshop management."* Three user surfaces: workshop staff on `{tenant}.jemeti.app` (owner/admin/manager/staff/mechanic/viewer roles), internal platform ops on `platform.jemeti.app`, and end customers via an OTP job portal. Geography: Bangladesh first (VAT 15%), Malaysia (SST 8%/10%), 7 countries seeded for Stripe. The design doc `plans/39-consolidated-customer-vehicle-intake.md` §1 captures the product thesis in one line: *"A service advisor on a 10–12 hour shift. The dominant event of their day is: a customer walks in with a car."*
+Positioning per `CLAUDE.md:1-7` and `docs/ARCHITECTURE.md` §1: _"Multi-tenant enterprise SaaS for vehicle workshop management."_ Three user surfaces: workshop staff on `{tenant}.jemeti.app` (owner/admin/manager/staff/mechanic/viewer roles), internal platform ops on `platform.jemeti.app`, and end customers via an OTP job portal. Geography: Bangladesh first (VAT 15%), Malaysia (SST 8%/10%), 7 countries seeded for Stripe. The design doc `plans/39-consolidated-customer-vehicle-intake.md` §1 captures the product thesis in one line: _"A service advisor on a 10–12 hour shift. The dominant event of their day is: a customer walks in with a car."_
 
-| Feature | What it does |
-|---|---|
-| Tenant provisioning | Invite-token onboarding, account-first signup, automated Route 53 CNAME + role provisioning (`pending → dns_ready → roles_ready → active`), SSE progress stepper |
-| Jobs / workshop core | 12-state job FSM (`crates/os/src/handlers/jobs/fsm.rs`), DVI inspections, quotations, service catalog, labor, bays, mechanic time-clock, customer OTP portal |
-| CRM | Customers, memberships, cross-tenant `customer_identities` federation, ledgers |
-| Vehicles | Global make/model catalog with platform approval queue, tenant fleet, odometer history, 7-step refactor (migrations 201–209) |
-| Inventory | Vendors, categories, products with moving-average costing, purchase orders, warranties, stock ledger |
-| Sales / POS | POS checkout with idempotency-key replay, invoices, receipts, challan/gate-pass documents |
-| Accounting | Double-entry journal (`journal::write` invariant), chart of accounts, trial balance, P&L in tenant timezone |
-| Staff / HR | Employees, shifts, attendance (incl. device punch), leave, payroll with payslip rendering |
-| Payments | `PaymentGateway` trait: Stripe, SSLCommerz (BD), bKash (BD), Polar.sh; per-country geo router; immutable `payment_events` audit |
-| Subscriptions | Plans, entitlements, quotas, 402 → `/billing-required` gate, subscription tokens |
-| Messaging | Credit-ledger engine, 5 channels (Resend email, BulkSMS BD, Mobius, Telegram, Meta WhatsApp with pgcrypto-encrypted tenant tokens) |
-| Dashboards | 3 Postgres materialized views, 5-min refresh, `kv_cache` + NOTIFY invalidation |
-| Document templates | Tenant-customizable invoice/payslip template engine (`packages/doc-templates`) |
+| Feature              | What it does                                                                                                                                                     |
+| -------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Tenant provisioning  | Invite-token onboarding, account-first signup, automated Route 53 CNAME + role provisioning (`pending → dns_ready → roles_ready → active`), SSE progress stepper |
+| Jobs / workshop core | 12-state job FSM (`crates/os/src/handlers/jobs/fsm.rs`), DVI inspections, quotations, service catalog, labor, bays, mechanic time-clock, customer OTP portal     |
+| CRM                  | Customers, memberships, cross-tenant `customer_identities` federation, ledgers                                                                                   |
+| Vehicles             | Global make/model catalog with platform approval queue, tenant fleet, odometer history, 7-step refactor (migrations 201–209)                                     |
+| Inventory            | Vendors, categories, products with moving-average costing, purchase orders, warranties, stock ledger                                                             |
+| Sales / POS          | POS checkout with idempotency-key replay, invoices, receipts, challan/gate-pass documents                                                                        |
+| Accounting           | Double-entry journal (`journal::write` invariant), chart of accounts, trial balance, P&L in tenant timezone                                                      |
+| Staff / HR           | Employees, shifts, attendance (incl. device punch), leave, payroll with payslip rendering                                                                        |
+| Payments             | `PaymentGateway` trait: Stripe, SSLCommerz (BD), bKash (BD), Polar.sh; per-country geo router; immutable `payment_events` audit                                  |
+| Subscriptions        | Plans, entitlements, quotas, 402 → `/billing-required` gate, subscription tokens                                                                                 |
+| Messaging            | Credit-ledger engine, 5 channels (Resend email, BulkSMS BD, Mobius, Telegram, Meta WhatsApp with pgcrypto-encrypted tenant tokens)                               |
+| Dashboards           | 3 Postgres materialized views, 5-min refresh, `kv_cache` + NOTIFY invalidation                                                                                   |
+| Document templates   | Tenant-customizable invoice/payslip template engine (`packages/doc-templates`)                                                                                   |
 
 ## 3. Architecture (summary level)
 
@@ -48,14 +49,14 @@ Deep detail in Part II.
 
 Six epochs reconstructed from git (dates = commit dates; all hashes verifiable in-repo):
 
-| Epoch | Dates | Theme | Evidence |
-|---|---|---|---|
-| 0 · Bootstrap | May 8–17 | Initial commit `f8d4222b` drops 155 files / +24,482 lines: Rust platform crate + SvelteKit apps already wired for provisioning, RBAC. Feature-gated routes (`8b3784b1`), roles/permissions admin (`f2e7c123`) | git log |
-| 1 · Domain sprint | May 18–25 | 288 commits. Inventory merge `72cc7d8f`; **73 commits on May 19 alone** (CRM cycle 1, POs, vehicles backend); the **jobs epic** lands May 23 in five numbered cycles (`cfca55ff` seeds the plan, 7,042 insertions); bays, locale/currency refactor `195b60ec` | git log |
-| 2 · Billing & platform depth | June | 597 commits — busiest month. Payment engine trait + 3 gateways `9f75416f`; bKash integration series (~25 commits, June 25); unified messaging with credit ledger `ef7f3b4c` (+7,380); payroll `2e3d1701`; onboarding wizard; forgot/reset password | git log |
-| 3 · Rebrand + AWS migration | July | 354 commits. **Rebrand commit `f29429a6` (07-01)**: thegarageos → jemeti, Cloudflare+Atlas dropped for Route 53 + AWS. Squash-merge PR era begins (#1 on 07-15). Lambda/CloudFront deploys (PRs #3, #4, 07-19). Massive vehicle refactor (migrations 201–206, 07-26). Dashboard MV system (07-22–24). **July 15 Lambda deploy outage** → postmortem runbook | git log, `docs/RUNBOOKS/lambda-deploy-issue-2026-07-15.md` |
-| 4 · Accounting, sales, print | August | 179 commits, mostly direct-to-main. Chart of accounts, journal, financial reports (08-24–25); POS terminal; unified receipts/invoices (08-17); document template engine `168a4b0d` (7,759 churn); payroll redesign `972add28`; graphify knowledge-graph artifacts tracked then (later untracked) | git log |
-| 5 · PR discipline + payments + media | September | 205 commits, **40 PR merges (#10→#97)**, direct pushes stop 09-03. Polar.sh gateway (PR #69 + fixes #74/#75/#80); unified media pipeline (PRs #58/#70/#92/#93/#95/#96); Hurl smoke suite (PR #16/#31); typed platform TS clients `87653fd0` (+6,099). Final merge: **PR #97 `67b937d1` (09-22), unified walk-in intake**, whose feature commit `c8a079e8` is the last large change | git log |
+| Epoch                                | Dates     | Theme                                                                                                                                                                                                                                                                                                                                                                              | Evidence                                                   |
+| ------------------------------------ | --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| 0 · Bootstrap                        | May 8–17  | Initial commit `f8d4222b` drops 155 files / +24,482 lines: Rust platform crate + SvelteKit apps already wired for provisioning, RBAC. Feature-gated routes (`8b3784b1`), roles/permissions admin (`f2e7c123`)                                                                                                                                                                      | git log                                                    |
+| 1 · Domain sprint                    | May 18–25 | 288 commits. Inventory merge `72cc7d8f`; **73 commits on May 19 alone** (CRM cycle 1, POs, vehicles backend); the **jobs epic** lands May 23 in five numbered cycles (`cfca55ff` seeds the plan, 7,042 insertions); bays, locale/currency refactor `195b60ec`                                                                                                                      | git log                                                    |
+| 2 · Billing & platform depth         | June      | 597 commits — busiest month. Payment engine trait + 3 gateways `9f75416f`; bKash integration series (~25 commits, June 25); unified messaging with credit ledger `ef7f3b4c` (+7,380); payroll `2e3d1701`; onboarding wizard; forgot/reset password                                                                                                                                 | git log                                                    |
+| 3 · Rebrand + AWS migration          | July      | 354 commits. **Rebrand commit `f29429a6` (07-01)**: thegarageos → jemeti, Cloudflare+Atlas dropped for Route 53 + AWS. Squash-merge PR era begins (#1 on 07-15). Lambda/CloudFront deploys (PRs #3, #4, 07-19). Massive vehicle refactor (migrations 201–206, 07-26). Dashboard MV system (07-22–24). **July 15 Lambda deploy outage** → postmortem runbook                        | git log, `docs/RUNBOOKS/lambda-deploy-issue-2026-07-15.md` |
+| 4 · Accounting, sales, print         | August    | 179 commits, mostly direct-to-main. Chart of accounts, journal, financial reports (08-24–25); POS terminal; unified receipts/invoices (08-17); document template engine `168a4b0d` (7,759 churn); payroll redesign `972add28`; graphify knowledge-graph artifacts tracked then (later untracked)                                                                                   | git log                                                    |
+| 5 · PR discipline + payments + media | September | 205 commits, **40 PR merges (#10→#97)**, direct pushes stop 09-03. Polar.sh gateway (PR #69 + fixes #74/#75/#80); unified media pipeline (PRs #58/#70/#92/#93/#95/#96); Hurl smoke suite (PR #16/#31); typed platform TS clients `87653fd0` (+6,099). Final merge: **PR #97 `67b937d1` (09-22), unified walk-in intake**, whose feature commit `c8a079e8` is the last large change | git log                                                    |
 
 **Tenure boundary:** first commit `f8d4222b` 2026-05-08; last `67b937d1` 2026-09-22. **No commits after September 22, 2026** — the project is complete/paused as of this analysis; there is no post-tenure activity by others to account for. Version milestone: tag `v1.3-payments-local`.
 
@@ -106,23 +107,23 @@ Conventional Commits throughout: 783 `feat`, 423 `fix`, 164 `docs`, 93 `refactor
 
 ## 7. Numbers worth quoting
 
-| Metric | Value | Source |
-|---|---|---|
-| Commits | 1,623 total; 1,607 (99.0%) by Dibakar; 44 merges | `git shortlog -sne HEAD`, `git log --merges` |
-| Active build span | 113 active days, 2026-05-08 → 2026-09-22 (<5 months) | `git log --format='%ad'` deduped |
-| Real insertions (Dibakar) | ≈967k ins / ≈148k del excluding lockfiles & graphify artifacts; raw 6.9M is ~91% generated | `git log --numstat` with pathspec excludes (verified 2026-10-02) |
-| Aggregate code size | ~230k LOC: Svelte 81k, Rust 75k, TS 56k, docs 13k | cloc excl. generated |
-| Rust crates | 3 crates, 294 files / ~83k lines incl. tests; `jobs/` handler domain alone 47 files | `wc` over `crates/` |
-| SQL migrations | 250 numbered files; 177 distinct tables + 3 materialized views | `ls migrations/*.sql` (verified) |
-| API endpoints | OS ~200+ under `/api/*` + portal; Platform ~107 under `/api/platform/v1/` | router inventory, `crates/*/src/{main,lib}.rs` |
-| Tests | 647 Rust test fns; 24 Rust integration files; 75 TS test files; 13 Hurl files | `grep`/`find` (verified) |
-| Security audits | 21 audit docs; Jobs 17 findings (6 High); one "NOT READY FOR PRODUCTION" verdict + remediation | `docs/audits/` |
-| Feature design docs | 51 specs + 83 implementation plans | `ls docs/superpowers/{specs,plans}` |
-| Production footprint | 5 surfaces on 1 EC2 t4g.small + 3 Lambdas; Rust images ~15 MB (`FROM scratch`); Lambda bundles 156 MB (from a 1.5 GB start) | `CLAUDE.md`, `docs/RUNBOOKS/lambda-deploy-issue-2026-07-15.md` |
-| Payment gateways | 4 (Stripe, SSLCommerz, bKash, Polar.sh) behind 1 trait + geo router | `crates/platform/src/payments/` |
-| Job FSM | 12 states incl. customer sign-off loop (`verify_qc` accept/reject) | `crates/os/src/handlers/jobs/fsm.rs` |
-| Messaging | 5 channels; WhatsApp broadcasts up to 5,000 sequential sends per request (flagged HIGH in CPU audit) | `crates/platform/src/messaging/`, `CPU_HEAVY_TASKS_AUDIT.md` #29 |
-| PR cadence (final epoch) | 40 squash-merge PRs (#10→#97) in 19 days | `git log --merges` |
+| Metric                    | Value                                                                                                                       | Source                                                           |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| Commits                   | 1,623 total; 1,607 (99.0%) by Dibakar; 44 merges                                                                            | `git shortlog -sne HEAD`, `git log --merges`                     |
+| Active build span         | 113 active days, 2026-05-08 → 2026-09-22 (<5 months)                                                                        | `git log --format='%ad'` deduped                                 |
+| Real insertions (Dibakar) | ≈967k ins / ≈148k del excluding lockfiles & graphify artifacts; raw 6.9M is ~91% generated                                  | `git log --numstat` with pathspec excludes (verified 2026-10-02) |
+| Aggregate code size       | ~230k LOC: Svelte 81k, Rust 75k, TS 56k, docs 13k                                                                           | cloc excl. generated                                             |
+| Rust crates               | 3 crates, 294 files / ~83k lines incl. tests; `jobs/` handler domain alone 47 files                                         | `wc` over `crates/`                                              |
+| SQL migrations            | 250 numbered files; 177 distinct tables + 3 materialized views                                                              | `ls migrations/*.sql` (verified)                                 |
+| API endpoints             | OS ~200+ under `/api/*` + portal; Platform ~107 under `/api/platform/v1/`                                                   | router inventory, `crates/*/src/{main,lib}.rs`                   |
+| Tests                     | 647 Rust test fns; 24 Rust integration files; 75 TS test files; 13 Hurl files                                               | `grep`/`find` (verified)                                         |
+| Security audits           | 21 audit docs; Jobs 17 findings (6 High); one "NOT READY FOR PRODUCTION" verdict + remediation                              | `docs/audits/`                                                   |
+| Feature design docs       | 51 specs + 83 implementation plans                                                                                          | `ls docs/superpowers/{specs,plans}`                              |
+| Production footprint      | 5 surfaces on 1 EC2 t4g.small + 3 Lambdas; Rust images ~15 MB (`FROM scratch`); Lambda bundles 156 MB (from a 1.5 GB start) | `CLAUDE.md`, `docs/RUNBOOKS/lambda-deploy-issue-2026-07-15.md`   |
+| Payment gateways          | 4 (Stripe, SSLCommerz, bKash, Polar.sh) behind 1 trait + geo router                                                         | `crates/platform/src/payments/`                                  |
+| Job FSM                   | 12 states incl. customer sign-off loop (`verify_qc` accept/reject)                                                          | `crates/os/src/handlers/jobs/fsm.rs`                             |
+| Messaging                 | 5 channels; WhatsApp broadcasts up to 5,000 sequential sends per request (flagged HIGH in CPU audit)                        | `crates/platform/src/messaging/`, `CPU_HEAVY_TASKS_AUDIT.md` #29 |
+| PR cadence (final epoch)  | 40 squash-merge PRs (#10→#97) in 19 days                                                                                    | `git log --merges`                                               |
 
 Footnote: the raw numstat (6.9M insertions) is inflated ~91% by `Cargo.lock`, `pnpm-lock.yaml`, and tracked `graphify-out/` knowledge-graph artifacts (~4.3M lines churn in `56561ab3`/`8c08ce00` alone). Always quote the excluded figure.
 
@@ -155,7 +156,7 @@ Footnote: the raw numstat (6.9M insertions) is inflated ~91% by `Cargo.lock`, `p
 
 - **Attribution:** 99% is genuinely Dibakar's. The four minor identities are his own one-day ops/agent sessions, but `Jemeti Agent` commits are AI-assisted (`Co-Authored-By: Claude`) — don't claim those three fixes as unaided hand-written work. The `TheGarageOS Dev` commits (CacheStore trait, dashboard MVs) are his under an ops identity.
 - **Never quote the raw 6.9M insertions** — ~91% generated (`Cargo.lock`, `pnpm-lock.yaml`, `graphify-out/`). Use ≈970k/148k excluding generated files, or "~100k+ lines of real product code" conservatively (the ~970k includes docs and plans).
-- **Naming:** the product is **Jemeti** since 2026-07-01 (`f29429a6`); "TheGarageOS" appears only in pre-Q3 docs, which `CLAUDE.md:8-16` declares superseded. The repo *directory* is still named `thegarageos/core` — say "the Jemeti core repo" publicly.
+- **Naming:** the product is **Jemeti** since 2026-07-01 (`f29429a6`); "TheGarageOS" appears only in pre-Q3 docs, which `CLAUDE.md:8-16` declares superseded. The repo _directory_ is still named `thegarageos/core` — say "the Jemeti core repo" publicly.
 - **Stale docs:** `docs/ARCHITECTURE.md` (May 7) and `docs/port-mapping.md` describe the pre-AWS, Cloudflare-era topology; don't cite them for current architecture. Truth order: code > `CLAUDE.md` > RUNBOOKS > stale docs.
 - **Migration-count drift across docs:** 157 → 192 → 220 → 250; use 250 (verified 2026-10-02).
 - **Security-flagged behavior still present in code:** WhatsApp broadcasts up to 5,000 sequential sends per request (`CPU_HEAVY_TASKS_AUDIT.md` #29, HIGH); geo-gate is fail-open on missing/XX country detection (documented in `9f75416f` body); some audit register rows remain "NEEDS VERIFY". Don't describe the system as fully remediated.
@@ -165,7 +166,7 @@ Footnote: the raw numstat (6.9M insertions) is inflated ~91% by `Cargo.lock`, `p
 
 # Part II — Technical Reference
 
-*Standalone reference extracted from source at analysis date (2026-10-02). Paths relative to repo root. Section numbering continues from Part I.*
+_Standalone reference extracted from source at analysis date (2026-10-02). Paths relative to repo root. Section numbering continues from Part I._
 
 ## 10. System topology
 
@@ -193,6 +194,7 @@ Footnote: the raw numstat (6.9M insertions) is inflated ~91% by `Cargo.lock`, `p
 ```
 
 Who talks to what:
+
 - **Lambdas never touch Postgres.** They proxy to OS/Platform over HTTPS via the `viewerHost()` header cascade (`apps/web/src/lib/server/viewerHost.ts`, contract in `docs/architecture/viewer-host-contract.md` — "add a new slot to the cascade; do not replace"). Platform is reached at `platform.internal.jemeti.app`, a Route 53 **private** zone — Lambdas can't resolve it, so SSR traffic to Platform goes back through CloudFront/API Gateway (`docs/onboard-aws-deploy-report.md` §1.3: no VPC-attached Lambdas, to avoid cold-start + NAT cost).
 - **`X-Origin-Secret`** (≥32 chars, injected by CloudFront) gates all direct origin access (`crates/os/src/middleware/origin_guard.rs`, `crates/platform/src/middleware/{origin_guard,secret_origin}.rs`).
 - **`X-Internal-Secret`** gates web→Platform trusted calls (`crates/platform/src/middleware/internal_secret_guard.rs`) plus a Host allow-list.
@@ -203,6 +205,7 @@ Who talks to what:
 ## 11. End-to-end data flows
 
 **Flow 1 — Tenant provisioning (Platform + onboard):**
+
 1. Invite token lands on `apps/onboard` `/`; Platform `GET /api/public/tokens/<token>/preview` validates (origin-secret gated); token stored in `onboard_token` cookie.
 2. Account-first: `POST /api/accounts` creates `jemeti-account` (migration 171); email verification token consumed (170); only then `POST /api/tenants` creates the tenant row and one-shot-redeems the token.
 3. `crates/platform/src/services/provisioning/` runs an in-process tokio task (SQS job designed but not required): Route 53 CNAME create → poll propagation → system role provisioning. State machine `pending → dns_ready → roles_ready → active` persisted with `provisioning_logs` (migrations 002, 7339a3b7).
@@ -210,27 +213,32 @@ Who talks to what:
 5. Failure: polling budgets 40×30s (CNAME), 40×15s (SSL), 40×30s (TXT) (`CLAUDE.md` env `PROVISION_*`); state remains retryable; logs persisted for the admin UI.
 
 **Flow 2 — Walk-in job intake (OS, the domain core):**
+
 1. Customer/vehicle/job created — post-PR #97, one consolidated surface: `POST /api/crm/customers` accepts optional `vehicles[]`; shared `insert_customer_in_tx` / `insert_vehicle_in_tx` / `insert_job_in_tx` make single, batch, and job paths atomic and drift-proof (`crates/os/src/handlers/jobs/core/`, `c8a079e8`).
 2. Job follows the FSM in `crates/os/src/handlers/jobs/fsm.rs`: `draft → intake → (dvi) → quoted → approved → in_progress ⇄ on_hold / quality_check / verify_qc → pending_delivery → completed → closed`, `cancelled` from most states; `verify_qc` is the customer sign-off (accept → `pending_delivery`, reject → `in_progress`).
 3. Stages touch: DVI templates (059), quotations (063), parts/labor/service catalog, bays/time-clock (075/076), payments/ledger (064/065), reminders (135, idempotent).
 4. Every handler passes `feature_gate::check` + `check_permission` (`crates/os/src/middleware/`); tax computed per country (BD VAT 15%, MY SST 8%/10% — `tax_rules` table).
 
 **Flow 3 — Payment (Platform):**
+
 1. Checkout session created via `PaymentRouter` (`crates/platform/src/payments/gateway.rs`): geo-gate `is_gateway_allowed` picks the gateway by country (fail-open on missing/XX detection).
 2. Gateway impls: `stripe_gateway.rs`, `sslcz_gateway.rs`, `bkash/` (via `bkash-rs`), `polar/`. All webhook variants land at `/api/platform/v1/webhooks/{stripe,sslcz,polar}` (`handlers/webhooks.rs`) with signature verification; Stripe skew `STRIPE_MAX_SKEW_SECONDS` (default 300s).
 3. Outcomes write immutable `payment_events` + `payment_transactions` (migration 131); audit helpers `record_event` / `upsert_transaction` / `update_transaction` in the payments module. 22 unit tests cover trait/geo-gate/router.
 
 **Flow 4 — Subscription gating (OS):**
+
 1. Per-request middleware chain: `require_origin_secret → rate_limit_tenant → quota_gate → subscription_gate → require_os_auth → resolve_tenant` (`CLAUDE.md:366-385`).
 2. Quota checks hit usage counters (`crates/os/src/services/usage_increment.rs`); entitlements come from an in-process `DashMap<TenantId, TenantEntitlements>` invalidated by Postgres `NOTIFY feature_changed` in <1s (`crates/os/src/services/onboarding_cache.rs` + `AppState`).
 3. Subscription gate returns **402** → frontend redirects to `/billing-required` (`apps/web/src/routes/(workshop)/billing-required`).
 
 **Flow 5 — Messaging (Platform engine, OS triggers):**
+
 1. OS triggers (invoice sent, payment received, job ready, daily cron, manual broadcast) call the messaging engine.
 2. Engine debits a per-tenant credit ledger (`ef7f3b4c`; monthly allotments idempotent via a GENERATED `period` column, migration 163–164) and dispatches to channels: Resend (email), BulkSMS BD, Mobius, Telegram, Meta WhatsApp (`crates/platform/src/messaging/channels/`).
 3. WhatsApp tenant tokens are pgcrypto-encrypted at rest (`WA_TOKEN_ENCRYPTION_KEY`); `META_ENABLED` is the kill switch. Email queue is SQS-backed (`SQS_QUEUE_EMAIL`, ElasticMQ in dev, Resend fail-closed in prod unless configured).
 
 **Flow 6 — Dashboard analytics (OS):**
+
 1. Three materialized views (`mv_dashboard_user_stats`, `mv_dashboard_role_stats`, `mv_dashboard_inventory_stats`, migrations 159–161) refreshed every 5 min by `crates/os/src/services/dashboard_refresh.rs` under the BYPASSRLS `jemeti_mv` role.
 2. Writes to the base tables trigger `NOTIFY mv_dashboard_changed` → OS LISTEN task wipes `dash.tile_cache` keys (`crates/os/src/main.rs:132-136`); CloudFront URL invalidations go through an SQS queue that **fails closed** if `SQS_QUEUE_DASHBOARD_INVALIDATIONS` is unset outside dev (`handlers/dashboard/publisher.rs`).
 
@@ -238,14 +246,14 @@ Who talks to what:
 
 **Store inventory:**
 
-| Engine | Database/namespace | Contents |
-|---|---|---|
-| Supabase Postgres (prod) / postgres:17 (dev) | single shared schema, RLS | 177 tables + 3 MVs; 250 numbered migrations in `migrations/` |
-| Postgres `kv_cache` | table (migration 008) | shared `CacheStore` (`crates/shared/src/cache.rs`) |
-| In-process DashMaps | `AppState` | entitlements, features, rate limits, onboarding, subdomains, countries, S3 URL TTLs |
-| S3 (prod) / MinIO (dev) | `tenant-assets`, `vehicle-models` (+ static-assets, lambda-bundles, logs bucket per runbook) | presigned-PUT only for tenant uploads; OAC read-only for static assets |
-| SQS (prod) / ElasticMQ (dev) | `provisioning`, `email`, `dashboard-invalidations` | async jobs |
-| — (no Redis) | deliberate: "no Redis" is a recorded foundational decision (`wiki/syntheses/migrations-evolution.md` Phase 0) | |
+| Engine                                       | Database/namespace                                                                                            | Contents                                                                            |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| Supabase Postgres (prod) / postgres:17 (dev) | single shared schema, RLS                                                                                     | 177 tables + 3 MVs; 250 numbered migrations in `migrations/`                        |
+| Postgres `kv_cache`                          | table (migration 008)                                                                                         | shared `CacheStore` (`crates/shared/src/cache.rs`)                                  |
+| In-process DashMaps                          | `AppState`                                                                                                    | entitlements, features, rate limits, onboarding, subdomains, countries, S3 URL TTLs |
+| S3 (prod) / MinIO (dev)                      | `tenant-assets`, `vehicle-models` (+ static-assets, lambda-bundles, logs bucket per runbook)                  | presigned-PUT only for tenant uploads; OAC read-only for static assets              |
+| SQS (prod) / ElasticMQ (dev)                 | `provisioning`, `email`, `dashboard-invalidations`                                                            | async jobs                                                                          |
+| — (no Redis)                                 | deliberate: "no Redis" is a recorded foundational decision (`wiki/syntheses/migrations-evolution.md` Phase 0) |                                                                                     |
 
 **Tenancy mechanics (hard rules):** every tenant table has `tenant_id UUID NOT NULL`; `shared::db::set_tenant_context` runs `SET LOCAL app.current_tenant_id` per transaction; RLS `USING (tenant_id = current_setting('app.current_tenant_id', true)::uuid)` (migration 020, hardened 113 `FORCE RLS` + runtime role, 213 nullif fix). Three DB roles: `jemeti_super` (DDL, `MIGRATE_DATABASE_URL`), `jemeti_app` (NOBYPASSRLS runtime, `DATABASE_URL`), `jemeti_mv` (BYPASSRLS, MV refresh; renamed from `jemeti_maintenance` in migration 194). Platform tables (tenants, platform_users, features, subscription_plans, payment_transactions, accounts, messaging_*) intentionally have no RLS.
 
@@ -274,22 +282,23 @@ CPU profile: 49 hot-path tasks cataloged with severities and remediation lenses 
 
 ## 15. External services catalog
 
-| Operation | Service | Notes |
-|---|---|---|
-| Tenant DNS provisioning | Route 53 (`crates/platform/src/services/route53.rs`) | `upsert_cname`/`delete_cname`/`poll_for_record`; `MOCK_ROUTE53` in dev |
-| Email | Resend (`messaging/channels/resend.rs`) | `MOCK_RESEND` dev-only, fail-closed prod |
-| SMS (BD) | BulkSMS BD, Mobius | channel impls in `platform/src/messaging/channels/` |
-| WhatsApp | Meta Cloud API | tenant-owned WABA; tokens pgcrypto-encrypted; `META_ENABLED` kill switch |
-| Telegram | Bot API | channel impl |
-| Payments | Stripe, SSLCommerz, bKash (`bkash-rs`), Polar.sh | trait impls in `platform/src/payments/`; `SSLCZ_SANDBOX=false` fatal in prod; Polar requires BOTH `PAYMENTS_ENABLED=true` and `POLAR_ENABLED=true` or webhooks 404/500 (compose comment re issue #72) |
-| Storage | S3 + CloudFront OAC / MinIO dev | presign via `crates/shared/src/media.rs` |
-| Queues | SQS / ElasticMQ dev | ElasticMQ JVM image deliberately chosen (aws-sdk-sqs 1.98 long-poll bug in `-native`) |
-| Observability | Sentry 0.41 (pinned, rustls+ureq) per-binary DSNs; CloudWatch alarms → SNS → forwarder Lambda → Sentry | tracing JSON → CloudWatch; **no trace shipping** (P1); frontend Sentry removed 2026-07-15 (bundle), re-add path documented |
-| LLM/AI | **none in the product** — `llm-wiki.md` and `wiki/` are developer-side knowledge tooling, not product features | |
+| Operation               | Service                                                                                                        | Notes                                                                                                                                                                                                 |
+| ----------------------- | -------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Tenant DNS provisioning | Route 53 (`crates/platform/src/services/route53.rs`)                                                           | `upsert_cname`/`delete_cname`/`poll_for_record`; `MOCK_ROUTE53` in dev                                                                                                                                |
+| Email                   | Resend (`messaging/channels/resend.rs`)                                                                        | `MOCK_RESEND` dev-only, fail-closed prod                                                                                                                                                              |
+| SMS (BD)                | BulkSMS BD, Mobius                                                                                             | channel impls in `platform/src/messaging/channels/`                                                                                                                                                   |
+| WhatsApp                | Meta Cloud API                                                                                                 | tenant-owned WABA; tokens pgcrypto-encrypted; `META_ENABLED` kill switch                                                                                                                              |
+| Telegram                | Bot API                                                                                                        | channel impl                                                                                                                                                                                          |
+| Payments                | Stripe, SSLCommerz, bKash (`bkash-rs`), Polar.sh                                                               | trait impls in `platform/src/payments/`; `SSLCZ_SANDBOX=false` fatal in prod; Polar requires BOTH `PAYMENTS_ENABLED=true` and `POLAR_ENABLED=true` or webhooks 404/500 (compose comment re issue #72) |
+| Storage                 | S3 + CloudFront OAC / MinIO dev                                                                                | presign via `crates/shared/src/media.rs`                                                                                                                                                              |
+| Queues                  | SQS / ElasticMQ dev                                                                                            | ElasticMQ JVM image deliberately chosen (aws-sdk-sqs 1.98 long-poll bug in `-native`)                                                                                                                 |
+| Observability           | Sentry 0.41 (pinned, rustls+ureq) per-binary DSNs; CloudWatch alarms → SNS → forwarder Lambda → Sentry         | tracing JSON → CloudWatch; **no trace shipping** (P1); frontend Sentry removed 2026-07-15 (bundle), re-add path documented                                                                            |
+| LLM/AI                  | **none in the product** — `llm-wiki.md` and `wiki/` are developer-side knowledge tooling, not product features |                                                                                                                                                                                                       |
 
 ## 16. API & auth reference
 
 Six auth layers, in request order on OS (`CLAUDE.md:366-385`):
+
 1. `X-Origin-Secret` (CloudFront→origin) — `os/middleware/origin_guard.rs`; Platform equivalent `platform/middleware/{origin_guard,secret_origin}.rs`.
 2. `rate_limit_tenant` middleware.
 3. `quota_gate` (usage counters).
@@ -305,13 +314,13 @@ Frontend access: hard auth gate in `apps/web/src/hooks.server.ts` (`os_token` co
 
 ## 17. Scheduling & queues
 
-| Schedule/mechanism | Job | File |
-|---|---|---|
-| 5 min | Dashboard MV refresh (`jemeti_mv` role) | `crates/os/src/services/dashboard_refresh.rs` |
-| Daily | Job-due reminders (idempotent, migration 135) | `crates/os/src/services/job_due_cron.rs` |
-| Continuous | Password-reset token sweeper | `crates/os/src/services/password_reset*` |
-| Continuous | Orphaned-media sweeper | `crates/os/src/services/media_sweeper*` |
-| LISTEN/NOTIFY | feature_changed, countries_changed, mv_dashboard_changed cache invalidation | `crates/os/src/main.rs:22-44` |
+| Schedule/mechanism | Job                                                                         | File                                          |
+| ------------------ | --------------------------------------------------------------------------- | --------------------------------------------- |
+| 5 min              | Dashboard MV refresh (`jemeti_mv` role)                                     | `crates/os/src/services/dashboard_refresh.rs` |
+| Daily              | Job-due reminders (idempotent, migration 135)                               | `crates/os/src/services/job_due_cron.rs`      |
+| Continuous         | Password-reset token sweeper                                                | `crates/os/src/services/password_reset*`      |
+| Continuous         | Orphaned-media sweeper                                                      | `crates/os/src/services/media_sweeper*`       |
+| LISTEN/NOTIFY      | feature_changed, countries_changed, mv_dashboard_changed cache invalidation | `crates/os/src/main.rs:22-44`                 |
 
 Queues: SQS `provisioning` (designed for async provisioning; currently in-process tokio task) and `email` (messaging); `dashboard-invalidations` (CloudFront URL invalidation, **fails closed** if unconfigured outside dev). Message contracts live in `crates/shared/src/sqs.rs` (publisher) and the platform provisioning/email services. Dev uses ElasticMQ :9324/:9325 (`elasticmq.conf`).
 
@@ -328,6 +337,7 @@ Queues: SQS `provisioning` (designed for async provisioning; currently in-proces
 ## 19. Operational gotchas & key file map
 
 **Gotchas (the sharp edges):**
+
 1. **Polar webhooks 404 unless both flags set** — route only mounted when `PAYMENTS_ENABLED=true` AND `POLAR_ENABLED=true`; incident: 208 consecutive 404 deliveries, then a sandbox endpoint auto-disabled after 228×401 signature mismatches and deleted (`docs/RUNBOOKS/polar-webhooks.md`, issue #72).
 2. **Lambda can't resolve private-zone hostnames** — SSR calls to Platform must route via CloudFront/API Gateway; VPC-attached Lambda was evaluated and rejected (cold start + NAT cost).
 3. **Function URLs rejected browser form POSTs** with `403 InvalidSignatureException` (OAC SigV4) — reason for the API Gateway hop (`onboard-aws-deploy-report.md`).
@@ -341,19 +351,19 @@ Queues: SQS `provisioning` (designed for async provisioning; currently in-proces
 
 **Key file map (where to look first):**
 
-| Topic | File |
-|---|---|
-| Canonical architecture + conventions | `CLAUDE.md` (729 lines, current) |
-| API contract | `docs/os-api-reference.md`; typed mirror `packages/http/src/{os,platform}/` |
-| Job domain & FSM | `crates/os/src/handlers/jobs/` (esp. `fsm.rs`, `core/`, `dvi/`, `quotations/`, `portal/`) |
-| Tenancy/RLS | `crates/shared/src/db.rs`; migrations 020/113/213; `wiki/topics/` multi-tenancy |
-| Payments | `crates/platform/src/payments/` (+ `docs/RUNBOOKS/polar-webhooks.md`) |
-| Provisioning | `crates/platform/src/services/provisioning/`; `apps/onboard/src/routes/status/[id]` |
-| Deployment | `deploy/production/docker-compose.yml` (with its load-bearing comments); `.github/workflows/`; `docs/RUNBOOKS/aws-cutover.md` |
-| Security posture | `docs/audits/` (21 files); `docs/backlog/security-fixes.md`; `wiki/syntheses/jobs-security-audit-fixes.md` |
-| Performance research | `crates/os/CPU_HEAVY_TASKS_AUDIT.md`; `docs/audits/2026-07-04-ec2-to-browser-offload-plan.md` |
-| Plans/specs | `docs/superpowers/{specs,plans}/`; `plans/` |
-| Postmortems | `docs/RUNBOOKS/lambda-deploy-issue-2026-07-15.md`; `docs/onboard-aws-deploy-report.md` §3 |
-| Intake UX rationale | `plans/39-consolidated-customer-vehicle-intake.md`; commit `c8a079e8` body |
+| Topic                                | File                                                                                                                          |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- |
+| Canonical architecture + conventions | `CLAUDE.md` (729 lines, current)                                                                                              |
+| API contract                         | `docs/os-api-reference.md`; typed mirror `packages/http/src/{os,platform}/`                                                   |
+| Job domain & FSM                     | `crates/os/src/handlers/jobs/` (esp. `fsm.rs`, `core/`, `dvi/`, `quotations/`, `portal/`)                                     |
+| Tenancy/RLS                          | `crates/shared/src/db.rs`; migrations 020/113/213; `wiki/topics/` multi-tenancy                                               |
+| Payments                             | `crates/platform/src/payments/` (+ `docs/RUNBOOKS/polar-webhooks.md`)                                                         |
+| Provisioning                         | `crates/platform/src/services/provisioning/`; `apps/onboard/src/routes/status/[id]`                                           |
+| Deployment                           | `deploy/production/docker-compose.yml` (with its load-bearing comments); `.github/workflows/`; `docs/RUNBOOKS/aws-cutover.md` |
+| Security posture                     | `docs/audits/` (21 files); `docs/backlog/security-fixes.md`; `wiki/syntheses/jobs-security-audit-fixes.md`                    |
+| Performance research                 | `crates/os/CPU_HEAVY_TASKS_AUDIT.md`; `docs/audits/2026-07-04-ec2-to-browser-offload-plan.md`                                 |
+| Plans/specs                          | `docs/superpowers/{specs,plans}/`; `plans/`                                                                                   |
+| Postmortems                          | `docs/RUNBOOKS/lambda-deploy-issue-2026-07-15.md`; `docs/onboard-aws-deploy-report.md` §3                                     |
+| Intake UX rationale                  | `plans/39-consolidated-customer-vehicle-intake.md`; commit `c8a079e8` body                                                    |
 
-*End of Part II. Part I is the narrative/achievement view; Part II is the technical reference. Regenerate both together if the codebase changes materially.*
+_End of Part II. Part I is the narrative/achievement view; Part II is the technical reference. Regenerate both together if the codebase changes materially._

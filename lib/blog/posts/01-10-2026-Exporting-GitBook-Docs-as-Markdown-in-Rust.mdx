@@ -1,19 +1,19 @@
 ---
-title: "Exporting GitBook Docs as Clean Markdown with Rust"
-category: "project"
-tags: ["rust", "open source", "llm", "cli", "scraping"]
-headerImage: "/images/blog/cover-doc-scraper.webp"
-headerImageAlt: "Article cover: Exporting GitBook Docs as Clean Markdown with Rust"
-headerImageCaption: "The docs are already markdown — you just have to ask for them politely."
-date: "2026-10-01"
-excerpt: "How doc-scraper-rs exports GitBook docs as a clean markdown tree with llms.txt and AGENTS.md sidecars — one request per page, no HTML parsing, and a content-based fallback for soft 404s."
+title: 'Exporting GitBook Docs as Clean Markdown with Rust'
+category: 'project'
+tags: ['rust', 'open source', 'llm', 'cli', 'scraping']
+headerImage: '/images/blog/cover-doc-scraper.webp'
+headerImageAlt: 'Article cover: Exporting GitBook Docs as Clean Markdown with Rust'
+headerImageCaption: 'The docs are already markdown — you just have to ask for them politely.'
+date: '2026-10-01'
+excerpt: 'How doc-scraper-rs exports GitBook docs as a clean markdown tree with llms.txt and AGENTS.md sidecars — one request per page, no HTML parsing, and a content-based fallback for soft 404s.'
 ---
 
 Every documentation site I wanted to feed to an LLM had the same problem: the good markdown was already there, and every scraper I tried insisted on taking the scenic route through the HTML to get it.
 
 GitBook's Next.js-rendered sites expose every page twice. Once as a fully-rendered React app — 380 to 770 KB of HTML with a hydration payload, a "Copy page" button, a feedback widget, and a Ctrl-K modal baked in. And once more as a clean `text/markdown` payload at the same URL with `.md` appended. Most scrapers hit the HTML and try to parse the result. [doc-scraper-rs](https://github.com/dibakarsutradhar/doc-scraper-rs) hits the markdown endpoint instead: one HTTP request per page, no browser, no HTML parsing, no chrome leaking into the output. What lands on disk is what the author wrote.
 
-![Pipeline diagram: sitemap, the .md endpoint, a content-based soft-404 check, and the mirror tree with sidecars](/images/blog/diagrams/diagram-doc-scraper-pipeline.webp "From sitemap to LLM-ready corpus | wide")
+![Pipeline diagram: sitemap, the .md endpoint, a content-based soft-404 check, and the mirror tree with sidecars](/images/blog/diagrams/diagram-doc-scraper-pipeline.webp 'From sitemap to LLM-ready corpus | wide')
 
 The result is a mirror tree — `<output>/<url-path>/<slug>.md`, shaped exactly like the site — plus a structured `index.md`, and three sidecars aimed directly at the AI toolchain: an [`llms.txt`](https://llmstxt.org/) catalog, an `llms-full.txt` corpus, and an `AGENTS.md` that Claude Code, Cursor, and Copilot pick up automatically.
 
@@ -28,7 +28,7 @@ doc-scraper https://docs.strata.markets
 
 The first real design problem wasn't fetching — it was trusting the fetch. When a GitBook page exists in the sitemap but its `.md` route isn't wired up, GitBook doesn't return a 404. It returns **HTTP 200** with a "Page Not Found" markdown stub as the body. On the wire, that response looks completely healthy.
 
-So the fallback has to be content-based. The detection is a regex anchored to the heading line — `^\s*#\s+page not found\b`, case-insensitive, multiline — which is deliberately strict. Documentation *about* error pages legitimately contains the phrase "page not found" in prose, and a loose match would eat real pages. The regex only fires when it's the first heading, i.e. when it *is* the page:
+So the fallback has to be content-based. The detection is a regex anchored to the heading line — `^\s*#\s+page not found\b`, case-insensitive, multiline — which is deliberately strict. Documentation _about_ error pages legitimately contains the phrase "page not found" in prose, and a loose match would eat real pages. The regex only fires when it's the first heading, i.e. when it _is_ the page:
 
 ```rust
 static PAGE_NOT_FOUND: LazyLock<Regex> =
@@ -39,13 +39,13 @@ When the stub is detected, the scraper falls back to the bare HTML URL, reusing 
 
 ## Mintlify: same trick, different lies
 
-Once the GitBook path worked, Mintlify turned out to expose the *same* `text/markdown` endpoint — the only structural difference is the sitemap. GitBook serves a `<sitemapindex>` pointing at `sitemap-pages.xml`; Mintlify serves a flat `<urlset>` in `/sitemap.xml`. That made auto-detection trivial: parse the sitemap, look at its shape, and you know whose lies you're dealing with.
+Once the GitBook path worked, Mintlify turned out to expose the _same_ `text/markdown` endpoint — the only structural difference is the sitemap. GitBook serves a `<sitemapindex>` pointing at `sitemap-pages.xml`; Mintlify serves a flat `<urlset>` in `/sitemap.xml`. That made auto-detection trivial: parse the sitemap, look at its shape, and you know whose lies you're dealing with.
 
-Because the lies are different. Mintlify prepends a three-line doc-index banner to every `.md` response — which is stripped by walking the lines literally, and if *anything* doesn't line up, the body is returned untouched so legitimate content is never accidentally stripped. And where GitBook's stubs fall back to HTML, Mintlify stubs are surfaced as errors instead: Mintlify stub pages have no useful content, and falling back would dump the SPA shell into the mirror tree. The stub heuristic is conservative on purpose — fewer than 100 bytes **and** no `# ` heading — so a short-but-real page is never misclassified.
+Because the lies are different. Mintlify prepends a three-line doc-index banner to every `.md` response — which is stripped by walking the lines literally, and if _anything_ doesn't line up, the body is returned untouched so legitimate content is never accidentally stripped. And where GitBook's stubs fall back to HTML, Mintlify stubs are surfaced as errors instead: Mintlify stub pages have no useful content, and falling back would dump the SPA shell into the mirror tree. The stub heuristic is conservative on purpose — fewer than 100 bytes **and** no `# ` heading — so a short-but-real page is never misclassified.
 
 ## Politeness is a concurrency problem
 
-The fetch fan-out is a Tokio semaphore — 20 concurrent requests by default — with a per-request politeness delay applied *before every primary attempt*, and bounded retries with exponential backoff on 5xx and 429. The subtlety is that the delay and the backoff stack: the effective per-request floor is the larger of the configured delay and the backoff sequence capped at 5× the delay. User-supplied negative delays are clamped to zero so neither sleep path can go negative — the kind of bug you find by writing the test that asserts the clamp.
+The fetch fan-out is a Tokio semaphore — 20 concurrent requests by default — with a per-request politeness delay applied _before every primary attempt_, and bounded retries with exponential backoff on 5xx and 429. The subtlety is that the delay and the backoff stack: the effective per-request floor is the larger of the configured delay and the backoff sequence capped at 5× the delay. User-supplied negative delays are clamped to zero so neither sleep path can go negative — the kind of bug you find by writing the test that asserts the clamp.
 
 The payoff, measured against a 34-page GitBook site on an old Intel MacBook Pro with default settings: ~172 KB of clean markdown in ~1.3 seconds — about 26 pages per second, and ~36/s with the delay off, peaking near 48/s warm. A scraper with a headless browser would still be loading its first page.
 
