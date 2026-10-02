@@ -44,49 +44,63 @@ export default function ProjectsPage() {
 					<div className="mt-8 space-y-14">
 						{PROJECTS.map((project, index) => (
 							<article key={project.name}>
-								<div className="flex items-baseline gap-4">
-									<span className="text-sm font-medium text-accent tabular-nums" aria-hidden="true">
-										{String(index + 1).padStart(2, '0')}
-									</span>
-									<div>
-										<h3 className="m-0 text-lg font-semibold tracking-tight">
-											{project.href ? (
-												<Link href={project.href} className="transition-colors hover:text-accent">
-													{project.name}
-												</Link>
-											) : (
-												project.name
-											)}
-										</h3>
-										<p className="mt-1 text-xs tracking-wide text-muted">
-											{project.org}
-											{project.period ? ` · ${project.period}` : ''}
-										</p>
-										<p className="mt-1 text-xs tracking-wide text-accent/80">{project.stack}</p>
-										{(project.urls?.length || project.href) && (
-											<p className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1">
-												{project.urls?.map((link) => (
-													<a
-														key={link.href}
-														href={link.href}
-														target="_blank"
-														rel="noopener noreferrer"
-														className="text-xs text-muted transition-colors hover:text-accent"
-													>
-														{link.label} <span aria-hidden="true">↗</span>
-													</a>
-												))}
-												{project.href && (
-													<Link
-														href={project.href}
-														className="text-xs text-accent transition-opacity hover:opacity-80"
-													>
-														blog write-up <span aria-hidden="true">↗</span>
+								<div className="flex items-start justify-between gap-4">
+									<div className="flex items-baseline gap-4">
+										<span
+											className="text-sm font-medium text-accent tabular-nums"
+											aria-hidden="true"
+										>
+											{String(index + 1).padStart(2, '0')}
+										</span>
+										<div>
+											<h3 className="m-0 text-lg font-semibold tracking-tight">
+												{project.href ? (
+													<Link href={project.href} className="transition-colors hover:text-accent">
+														{project.name}
 													</Link>
+												) : (
+													project.name
 												)}
+											</h3>
+											<p className="mt-1 text-xs tracking-wide text-muted">
+												{project.org}
+												{project.period ? ` · ${project.period}` : ''}
 											</p>
-										)}
+											<p className="mt-1 text-xs tracking-wide text-accent/80">{project.stack}</p>
+											{(project.urls?.length || project.href) && (
+												<p className="mt-1.5 flex flex-wrap gap-x-4 gap-y-1">
+													{project.urls?.map((link) => (
+														<a
+															key={link.href}
+															href={link.href}
+															target="_blank"
+															rel="noopener noreferrer"
+															className="text-xs text-muted transition-colors hover:text-accent"
+														>
+															{link.label} <span aria-hidden="true">↗</span>
+														</a>
+													))}
+													{project.href && (
+														<Link
+															href={project.href}
+															className="text-xs text-accent transition-opacity hover:opacity-80"
+														>
+															blog write-up <span aria-hidden="true">↗</span>
+														</Link>
+													)}
+												</p>
+											)}
+										</div>
 									</div>
+									{project.logo && (
+										<img
+											src={project.logo}
+											alt=""
+											width={48}
+											height={48}
+											className="h-12 w-12 shrink-0 rounded-xl ring-1 ring-line-soft"
+										/>
+									)}
 								</div>
 
 								<div className="mt-4 space-y-3 text-[15px] leading-relaxed">

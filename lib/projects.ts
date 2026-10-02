@@ -3,6 +3,8 @@ export type Project = {
 	org: string;
 	period?: string;
 	stack: string;
+	/** Square logo, served from /public (e.g. '/images/project-logos/Jemeti.png'). */
+	logo?: string;
 	/** What it is and why it exists — the readable layer. */
 	summary: string[];
 	/** The architecture decisions, tradeoffs, and numbers — behind the summary. */
@@ -22,6 +24,7 @@ export const PROJECTS: Project[] = [
 		org: 'Founder',
 		period: '2026',
 		stack: 'Rust · Axum · PostgreSQL · SvelteKit · AWS · Terraform',
+		logo: '/images/logos/Jemeti.png',
 		summary: [
 			'An operating system for vehicle workshops — a multi-tenant SaaS covering the whole business: job cards, customers, inventory, point of sale, accounting, payroll, customer messaging, subscriptions. I designed and built it solo, from an empty repo to AWS production, in under five months.'
 		],
@@ -39,6 +42,7 @@ export const PROJECTS: Project[] = [
 		org: 'Co-founder',
 		period: '2025 – 2026',
 		stack: 'TypeScript · SvelteKit · Cloudflare Workers · tRPC · Supabase · PostgreSQL',
+		logo: '/images/logos/invoicelab.webp',
 		summary: [
 			'An AI-powered invoicing SaaS for freelancers and small businesses: branded invoices in minutes — from a form or by pasting free text — with share links, view analytics, and a clear draft-to-paid lifecycle. I co-founded it and built the product end to end.'
 		],
@@ -83,6 +87,7 @@ export const PROJECTS: Project[] = [
 		org: 'MC² Finance',
 		period: '2025 – 2026',
 		stack: 'TypeScript · Cloudflare Workers · D1 · R2 · Vectorize · AI Gateway',
+		logo: '/images/logos/raisolo.webp',
 		summary: [
 			'An AI news and content-intelligence platform: it reads everything — RSS, newsletters, podcasts, YouTube, the press — recognizes when sources are covering the same storyline, and turns the signal into personalized briefings and founder-ready LinkedIn posts. I was the second engineer on a two-person team and owned the backend: the ingestion pipeline, the clustering engine, and the AI infrastructure.'
 		],
@@ -100,6 +105,7 @@ export const PROJECTS: Project[] = [
 		org: 'MC² Finance',
 		period: '2025',
 		stack: 'TypeScript · Cloudflare Workers · MCP · PostgreSQL · Drizzle · Typesense',
+		logo: '/images/logos/yieldfinder.ico',
 		summary: [
 			'The data layer behind YieldFinder.ai: a pipeline that pulls DeFi vault and yield data from across the ecosystem into one coherent dataset, and an MCP server that lets AI agents query it — so an assistant can answer "where should I park stablecoins" from live data instead of stale training data. I built the pipeline and the agent-facing tools end to end.'
 		],
@@ -119,6 +125,7 @@ export const PROJECTS: Project[] = [
 		org: 'MC² Finance',
 		period: '2025',
 		stack: 'TypeScript · Cloudflare Workers · Durable Objects · MCP · GPT-4o · AI Gateway',
+		logo: '/images/logos/mc2finance.webp',
 		summary: [
 			"The AI assistant embedded in MC²'s DeFi terminal: traders ask about tokens, wallets, and vaults in plain language, and Albert pulls the right data, analyzes it, and answers with the risks stated up front. I built it from an early scaffold into a production assistant, as part of the team behind the terminal."
 		],
@@ -135,6 +142,7 @@ export const PROJECTS: Project[] = [
 		org: 'MC² Finance',
 		period: '2024 – 2025',
 		stack: 'Rust · TypeScript · AWS · Cloudflare Workers · Apache Pulsar · Flink · PostgreSQL',
+		logo: '/images/logos/mc2finance.webp',
 		summary: [
 			'The real-time data engine at the heart of MC² — the pipeline that watches wallets across the major EVM chains and Solana, and turns raw on-chain activity into the signals, portfolio histories, and profit-and-loss the product runs on. I led the data team behind it.'
 		],
@@ -153,6 +161,7 @@ export const PROJECTS: Project[] = [
 		period: '2024 – 2025',
 		stack:
 			'TypeScript · Cloudflare Workers · Durable Objects · Workflows · PostgreSQL · TimescaleDB',
+		logo: '/images/logos/mc2finance.webp',
 		summary: [
 			"The platform behind MC²'s DeFi terminal: the app, its public and wallet-authenticated APIs, and the backend services computing everything a user saw — portfolio returns, token security scores, whale discovery, yield opportunities. I was the core backend engineer: the ROI engines, the portfolio services, and the API layer were mine to build."
 		],
@@ -170,6 +179,7 @@ export const PROJECTS: Project[] = [
 		org: 'Dosier',
 		period: '2022 – 2023',
 		stack: 'Solidity · IPFS · ERC-4337',
+		logo: '/images/logos/dolpin.svg',
 		summary: [
 			'A storage platform where access control lives on-chain: content pinned to IPFS, permissions held by Solidity smart contracts, and wallets authenticated through ERC-4337. Contributed to a ~20% increase in active users.'
 		],
@@ -185,6 +195,7 @@ export const PROJECTS: Project[] = [
 		org: 'Signup.cash',
 		period: '2020 – 2021',
 		stack: 'Bitcoin Cash · SLP tokens · Cryptographic SDKs',
+		logo: '/images/logos/signupcash.webp',
 		summary: [
 			'A non-custodial BCH wallet plus an NFT/SLP token factory and the cryptographic SDKs behind them. Users hold the keys; we hold nothing. Performance work on the wallet and transaction backend drove ~40% adoption growth.'
 		],
@@ -199,6 +210,7 @@ export const PROJECTS: Project[] = [
 		name: 'DevSonket',
 		org: 'Open source',
 		stack: 'Community · Documentation',
+		logo: '/images/logos/devsonket.webp',
 		summary: [
 			'The largest Bengali open-source cheatsheet project — reference material that lets developers learn in their own language, used across Bangladesh and beyond.'
 		],
