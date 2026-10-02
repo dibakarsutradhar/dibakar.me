@@ -43,7 +43,7 @@ export default function ProjectsPage() {
 					</p>
 				</header>
 
-				<div className="mt-16 grid animate-[fadeIn_0.6s_ease-out_0.15s_both] gap-12 lg:grid-cols-[15rem_1fr] lg:gap-16">
+				<div className="mt-16 grid animate-[fadeIn_0.6s_ease-out_0.15s_both] grid-cols-[minmax(0,1fr)] gap-12 lg:grid-cols-[15rem_1fr] lg:gap-16">
 					{/* Left rail — companies/clients, one bracket per employer */}
 					<aside className="self-start lg:sticky lg:top-16">
 						<SectionLabel>Clients</SectionLabel>
