@@ -1,10 +1,89 @@
+/**
+ * A company / client I worked for — the left-side bracket. Every project
+ * belongs to exactly one client via `clientId`.
+ */
+export type Client = {
+	id: string;
+	name: string;
+	/** My role there, shown under the client name. */
+	role: string;
+	period?: string;
+	/** Where the work was based, e.g. 'Switzerland, Remote'. */
+	location?: string;
+	/** Square logo, served from /public (e.g. '/images/logos/Jemeti.png'). */
+	logo?: string;
+	url?: string;
+};
+
+/** Newest first — drives the left rail and the grouping on the projects page. */
+export const CLIENTS: Client[] = [
+	{
+		id: 'jemeti',
+		name: 'Jemeti',
+		role: 'Founder',
+		period: '2026',
+		location: 'Dhaka, Bangladesh',
+		logo: '/images/logos/Jemeti.png',
+		url: 'https://jemeti.com/'
+	},
+	{
+		id: 'invoicelab',
+		name: 'Invoice Lab',
+		role: 'Co-founder',
+		period: '2025 – 2026',
+		location: 'Malaysia, Remote',
+		logo: '/images/logos/invoicelab.webp',
+		url: 'https://invoisos.com/'
+	},
+	{
+		id: 'mc2finance',
+		name: 'MC² Finance',
+		role: 'Senior Software Engineer',
+		period: '2024 – 2026',
+		location: 'Switzerland, Remote',
+		logo: '/images/logos/mc2finance.webp',
+		url: 'https://mc2.fi'
+	},
+	{
+		id: 'dosier',
+		name: 'Dosier',
+		role: 'Software Engineer',
+		period: '2022 – 2023',
+		location: 'United States, Remote',
+		logo: '/images/logos/dosier.webp',
+		url: 'https://www.producthunt.com/products/dolpin'
+	},
+	{
+		id: 'quickdesk',
+		name: 'QuickDesk',
+		role: 'Full Stack Developer',
+		period: '2021 – 2022',
+		location: 'Singapore, Remote',
+		logo: '/images/logos/qdacademy.webp',
+		url: 'https://theqdacademy.com/'
+	},
+	{
+		id: 'signupcash',
+		name: 'Signup.cash',
+		role: 'Software Engineer',
+		period: '2020 – 2021',
+		location: 'Kuala Lumpur, Malaysia',
+		logo: '/images/logos/signupcash.webp',
+		url: 'https://github.com/signupcash'
+	},
+	{
+		id: 'open-source',
+		name: 'Open Source',
+		role: 'Maintainer & Contributor'
+	}
+];
+
 export type Project = {
 	name: string;
-	org: string;
+	/** Which client bracket this project belongs to (see CLIENTS). */
+	clientId: string;
 	period?: string;
 	stack: string;
-	/** Square logo, served from /public (e.g. '/images/project-logos/Jemeti.png'). */
-	logo?: string;
 	/** What it is and why it exists — the readable layer. */
 	summary: string[];
 	/** The architecture decisions, tradeoffs, and numbers — behind the summary. */
@@ -21,10 +100,9 @@ export type Project = {
 export const PROJECTS: Project[] = [
 	{
 		name: 'Jemeti OS',
-		org: 'Founder',
+		clientId: 'jemeti',
 		period: '2026',
 		stack: 'Rust · Axum · PostgreSQL · SvelteKit · AWS · Terraform',
-		logo: '/images/logos/Jemeti.png',
 		summary: [
 			'An operating system for vehicle workshops — a multi-tenant SaaS covering the whole business: job cards, customers, inventory, point of sale, accounting, payroll, customer messaging, subscriptions. I designed and built it solo, from an empty repo to AWS production, in under five months.'
 		],
@@ -39,10 +117,9 @@ export const PROJECTS: Project[] = [
 	},
 	{
 		name: 'Invoice OS',
-		org: 'Co-founder',
+		clientId: 'invoicelab',
 		period: '2025 – 2026',
 		stack: 'TypeScript · SvelteKit · Cloudflare Workers · tRPC · Supabase · PostgreSQL',
-		logo: '/images/logos/invoicelab.webp',
 		summary: [
 			'An AI-powered invoicing SaaS for freelancers and small businesses: branded invoices in minutes — from a form or by pasting free text — with share links, view analytics, and a clear draft-to-paid lifecycle. I co-founded it and built the product end to end.'
 		],
@@ -61,7 +138,7 @@ export const PROJECTS: Project[] = [
 	},
 	{
 		name: 'doc-scraper-rs',
-		org: 'Open source',
+		clientId: 'open-source',
 		period: '2026',
 		stack: 'Rust · Tokio · reqwest · llms.txt · AGENTS.md',
 		summary: [
@@ -84,10 +161,9 @@ export const PROJECTS: Project[] = [
 
 	{
 		name: 'Raisolo',
-		org: 'MC² Finance',
+		clientId: 'mc2finance',
 		period: '2025 – 2026',
 		stack: 'TypeScript · Cloudflare Workers · D1 · R2 · Vectorize · AI Gateway',
-		logo: '/images/logos/raisolo.webp',
 		summary: [
 			'An AI news and content-intelligence platform: it reads everything — RSS, newsletters, podcasts, YouTube, the press — recognizes when sources are covering the same storyline, and turns the signal into personalized briefings and founder-ready LinkedIn posts. I was the second engineer on a two-person team and owned the backend: the ingestion pipeline, the clustering engine, and the AI infrastructure.'
 		],
@@ -102,10 +178,9 @@ export const PROJECTS: Project[] = [
 	},
 	{
 		name: 'YieldFinder — MCP server & DeFi data pipeline',
-		org: 'MC² Finance',
+		clientId: 'mc2finance',
 		period: '2025',
 		stack: 'TypeScript · Cloudflare Workers · MCP · PostgreSQL · Drizzle · Typesense',
-		logo: '/images/logos/yieldfinder.ico',
 		summary: [
 			'The data layer behind YieldFinder.ai: a pipeline that pulls DeFi vault and yield data from across the ecosystem into one coherent dataset, and an MCP server that lets AI agents query it — so an assistant can answer "where should I park stablecoins" from live data instead of stale training data. I built the pipeline and the agent-facing tools end to end.'
 		],
@@ -122,10 +197,9 @@ export const PROJECTS: Project[] = [
 	},
 	{
 		name: 'Albert — AI assistant for a DeFi terminal',
-		org: 'MC² Finance',
+		clientId: 'mc2finance',
 		period: '2025',
 		stack: 'TypeScript · Cloudflare Workers · Durable Objects · MCP · GPT-4o · AI Gateway',
-		logo: '/images/logos/mc2finance.webp',
 		summary: [
 			"The AI assistant embedded in MC²'s DeFi terminal: traders ask about tokens, wallets, and vaults in plain language, and Albert pulls the right data, analyzes it, and answers with the risks stated up front. I built it from an early scaffold into a production assistant, as part of the team behind the terminal."
 		],
@@ -139,10 +213,9 @@ export const PROJECTS: Project[] = [
 	},
 	{
 		name: 'MC² ETL - Real-time portfolio analytics pipeline',
-		org: 'MC² Finance',
+		clientId: 'mc2finance',
 		period: '2024 – 2025',
 		stack: 'Rust · TypeScript · AWS · Cloudflare Workers · Apache Pulsar · Flink · PostgreSQL',
-		logo: '/images/logos/mc2finance.webp',
 		summary: [
 			'The real-time data engine at the heart of MC² — the pipeline that watches wallets across the major EVM chains and Solana, and turns raw on-chain activity into the signals, portfolio histories, and profit-and-loss the product runs on. I led the data team behind it.'
 		],
@@ -157,11 +230,10 @@ export const PROJECTS: Project[] = [
 	},
 	{
 		name: 'MC² Studio',
-		org: 'MC² Finance',
+		clientId: 'mc2finance',
 		period: '2024 – 2025',
 		stack:
 			'TypeScript · Cloudflare Workers · Durable Objects · Workflows · PostgreSQL · TimescaleDB',
-		logo: '/images/logos/mc2finance.webp',
 		summary: [
 			"The platform behind MC²'s DeFi terminal: the app, its public and wallet-authenticated APIs, and the backend services computing everything a user saw — portfolio returns, token security scores, whale discovery, yield opportunities. I was the core backend engineer: the ROI engines, the portfolio services, and the API layer were mine to build."
 		],
@@ -175,11 +247,25 @@ export const PROJECTS: Project[] = [
 		urls: [{ label: 'mc2.fi', href: 'https://mc2.fi' }]
 	},
 	{
+		name: 'CRM & sales browser extension',
+		clientId: 'quickdesk',
+		period: '2021 – 2022',
+		stack: 'JavaScript · React · Chrome Extension · REST APIs',
+		summary: [
+			"A customer-relationship platform for sales teams where conversations happen in real time — WhatsApp messaging and voice calls carried by the CRM's APIs and browser-based tools — with a Chrome extension that brought CRM context and actions into the browser wherever reps were already working. I built the APIs, the tooling, and the extension."
+		],
+		details: [
+			"The CRM's center of gravity was live communication: customer conversations moved over WhatsApp and voice calls, and the platform carried both — backend APIs for the message and call flows, and browser-based tools so agents could respond without switching context.",
+			"The Chrome extension met reps where they already worked. Built in React, it surfaced CRM data and actions directly inside the pages they used during outreach, backed by supporting endpoints I added to the CRM's API layer.",
+			'The pairing — live channels inside the CRM, CRM inside the browser — contributed to a 30% improvement in customer conversion.'
+		],
+		urls: [{ label: 'theqdacademy.com', href: 'https://theqdacademy.com/' }]
+	},
+	{
 		name: 'Dolpin IPFS',
-		org: 'Dosier',
+		clientId: 'dosier',
 		period: '2022 – 2023',
 		stack: 'Solidity · IPFS · ERC-4337',
-		logo: '/images/logos/dolpin.svg',
 		summary: [
 			'A storage platform where access control lives on-chain: content pinned to IPFS, permissions held by Solidity smart contracts, and wallets authenticated through ERC-4337. Contributed to a ~20% increase in active users.'
 		],
@@ -191,26 +277,25 @@ export const PROJECTS: Project[] = [
 		urls: [{ label: 'dolpin ipfs', href: 'https://www.producthunt.com/products/dolpin' }]
 	},
 	{
-		name: 'Non-custodial Bitcoin Cash wallet',
-		org: 'Signup.cash',
+		name: 'Signup — non-custodial Bitcoin Cash wallet',
+		clientId: 'signupcash',
 		period: '2020 – 2021',
-		stack: 'Bitcoin Cash · SLP tokens · Cryptographic SDKs',
-		logo: '/images/logos/signupcash.webp',
+		stack: 'JavaScript · Bitcoin Cash · SLP / NFT1 tokens · React · IPFS',
 		summary: [
-			'A non-custodial BCH wallet plus an NFT/SLP token factory and the cryptographic SDKs behind them. Users hold the keys; we hold nothing. Performance work on the wallet and transaction backend drove ~40% adoption growth.'
+			'A non-custodial Bitcoin Cash wallet and dApp platform — the "MetaMask of Bitcoin Cash": users hold their own keys, dApps integrate through an embeddable SDK, and an ecosystem app mints NFT collections entirely from the browser.'
 		],
 		details: [
-			'Non-custodial means the failure modes are all yours: key derivation, signing, and transaction construction had to be correct without any server-side safety net.',
-			"The SDKs put that cryptography in third parties' hands — versioned APIs, documented SLP token metadata, and a token factory that made minting NFT/SLP tokens a few calls instead of a protocol implementation.",
-			'The adoption win came from latency: profiling and tuning the wallet and transaction backend until everyday operations felt instant.'
+			'The wallet isolates all cryptography in a signing web worker and exposes it to dApps through a postMessage/popup protocol — the dApp asks, the user approves in the popup, the wallet signs. It handles SLP type-1 fungible tokens and NFT1 Group/Child pairs, and payments are authorized through budgeted, time-limited spend tokens: signed with wallet-derived entropy, enforced per-session against the live BCH price, and settled as Schnorr-signed P2PKH transactions over Electrum servers.',
+			'My build was the NFT/SLP factory on top: a four-step wizard — wallet-popup login, the NFT group (parent collection), mintable children with metadata and images pinned to IPFS, then review. I integrated the provider SDK while its NFT-genesis APIs were still unreleased, so the app stays fully keyless: the popup signs, the dApp receives only a BCH address.',
+			"The hard frontend problem was wizard state: one session holding a parent form plus any number of repeatable child forms, each with independent validation and image handling. A multi-entity form architecture let children be added, edited, and removed without the parent's state drifting.",
+			'Working both sides paid off at integration: knowing how the spend tokens, price enforcement, and settlement actually behaved meant the factory could ride the SDK before its documentation existed. The wallet shipped working NFT1 issuance; the factory covered the full flow from login to review, keyless end to end.'
 		],
 		urls: [{ label: 'signupcash', href: 'https://github.com/signupcash' }]
 	},
 	{
 		name: 'DevSonket',
-		org: 'Open source',
+		clientId: 'open-source',
 		stack: 'Community · Documentation',
-		logo: '/images/logos/devsonket.webp',
 		summary: [
 			'The largest Bengali open-source cheatsheet project — reference material that lets developers learn in their own language, used across Bangladesh and beyond.'
 		],
