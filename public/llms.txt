@@ -1,0 +1,43 @@
+# dibakar
+
+> Personal site of Dibakar Sutra Dhar — a senior software engineer building AI inference and distributed systems. Rust, TypeScript, Cloudflare Workers, AWS, and data infrastructure. Writing about software engineering, web3, and AI engineering.
+
+Dibakar is a senior software engineer based in Dhaka, Bangladesh, working remotely with teams across Switzerland, the US, Singapore, and Malaysia. He builds distributed backends, high-performance Rust systems, data pipelines, and AI-powered products end to end — from system design through deployment and production operations. He is currently building Jemeti, a multi-tenant workshop-management platform, and recently shipped Invoice OS, an AI-powered invoicing SaaS.
+
+## Core pages
+
+- [Home](https://dibakar.me/): Hero page with role and current status — building Jemeti, released Invoice OS.
+- [About](https://dibakar.me/about/): Background, current interests, technology stack, and contact details.
+- [Projects](https://dibakar.me/projects/): The work done for each company and client, with architecture decisions and tradeoffs.
+- [Blog](https://dibakar.me/blog/): Notes on software engineering, web3, and AI engineering.
+
+## Projects
+
+- [Jemeti OS](https://dibakar.me/projects/#jemeti): A multi-tenant SaaS operating system for vehicle workshops — job cards, inventory, point of sale, accounting, payroll. Built solo from empty repo to AWS production in under five months. Rust, Axum, PostgreSQL, SvelteKit, Terraform. ([jemeti.com](https://jemeti.com/))
+- [Invoice OS](https://dibakar.me/projects/#invoicelab): An AI-powered invoicing SaaS for freelancers and small businesses — branded invoices, share links, view analytics, and a draft-to-paid lifecycle. Co-founded and built end to end. TypeScript, SvelteKit, Cloudflare Workers, tRPC, Supabase. ([invoisos.com](https://invoisos.com/))
+- [doc-scraper-rs](https://dibakar.me/projects/#open-source): A Rust CLI that exports GitBook and Mintlify docs as a clean markdown mirror tree, with llms.txt, llms-full.txt, and AGENTS.md sidecars for LLM ingestion. ([GitHub](https://github.com/dibakarsutradhar/doc-scraper-rs), [crates.io](https://crates.io/crates/doc-scraper-rs), [blog write-up](https://dibakar.me/blog/01-10-2026-Exporting-GitBook-Docs-as-Markdown-in-Rust/))
+- [Raisolo](https://dibakar.me/projects/#mc2finance): An AI news and content-intelligence platform — ingests RSS, newsletters, podcasts, and video, clusters overlapping coverage into a knowledge graph, and produces personalized briefings. Backend, ingestion pipeline, and clustering engine. Cloudflare Workers, D1, R2, Vectorize. ([raisolo.com](https://www.raisolo.com))
+- [YieldFinder — MCP server & DeFi data pipeline](https://dibakar.me/projects/#mc2finance): The DeFi vault and yield data layer behind YieldFinder.ai, plus an MCP server that lets AI agents query it. TypeScript, Cloudflare Workers, MCP, PostgreSQL, Drizzle. ([yieldfinder.ai](https://yieldfinder.ai/), [mcp.mc2.fi](https://mcp.mc2.fi))
+- [Albert — AI assistant for a DeFi terminal](https://dibakar.me/projects/#mc2finance): The plain-language AI assistant embedded in MC²'s DeFi terminal, returning token, wallet, and vault analysis with risks stated up front. Durable Objects, MCP, GPT-4o. ([mc2.fi](https://mc2.fi))
+- [MC² ETL — real-time portfolio analytics pipeline](https://dibakar.me/projects/#mc2finance): The real-time data engine watching wallets across major EVM chains and Solana, turning on-chain activity into signals, portfolio history, and PnL. Rust, TypeScript, AWS, Pulsar, Flink. ([mc2.fi](https://mc2.fi))
+- [MC² Studio](https://dibakar.me/projects/#mc2finance): The platform behind MC²'s DeFi terminal — portfolio returns, token security scores, whale discovery, and yield opportunities. Core backend engineer for the ROI engines, portfolio services, and API layer. Cloudflare Workers, Durable Objects, TimescaleDB. ([mc2.fi](https://mc2.fi))
+- [CRM & sales browser extension](https://dibakar.me/projects/#quickdesk): A real-time CRM for sales teams with WhatsApp and voice, plus a React Chrome extension that brought CRM context into the browser. JavaScript, React, REST APIs.
+- [Dolpin IPFS](https://dibakar.me/projects/#dosier): An IPFS storage platform with on-chain access control — content pinned to IPFS, permissions held by Solidity contracts, ERC-4337 wallet auth. ([Product Hunt](https://www.producthunt.com/products/dolpin))
+- [Signup — non-custodial Bitcoin Cash wallet](https://dibakar.me/projects/#signupcash): A non-custodial Bitcoin Cash wallet and dApp platform, with an SLP/NFT1 browser-based collection factory. JavaScript, Bitcoin Cash, React, IPFS. ([GitHub](https://github.com/signupcash))
+- [DevSonket](https://dibakar.me/projects/#open-source): The largest Bengali open-source cheatsheet project. Community and documentation. ([GitHub](https://github.com/devsonket/devsonket.github.io))
+
+## Writing
+
+- [Exporting GitBook Docs as Clean Markdown with Rust](https://dibakar.me/blog/01-10-2026-Exporting-GitBook-Docs-as-Markdown-in-Rust/): How doc-scraper-rs exports GitBook docs as a clean markdown tree with llms.txt and AGENTS.md sidecars — one request per page, no HTML parsing, and a content-based fallback for soft 404s. (2026-10-01)
+
+## Optional
+
+- [Full corpus (llms-full.txt)](https://dibakar.me/llms-full.txt): Everything above as one markdown document — every project and every published blog post in full.
+- [Résumé (PDF)](https://dibakar.me/Dibakar_Sutra_Dhar_Senior_SWE.pdf)
+- [GitHub](https://github.com/dibakarsutradhar)
+- [LinkedIn](https://www.linkedin.com/in/dibakarsutradhar)
+- [Medium](https://medium.com/@imdibakar)
+- [X](https://x.com/d1bakar)
+- [crates.io](https://crates.io/users/dibakarsutradhar)
+- [Product Hunt](https://www.producthunt.com/@dibakar)
+- [Email](mailto:iamdibakardipu@gmail.com)
