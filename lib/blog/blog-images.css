@@ -5,7 +5,8 @@
  * because post bodies are rendered by a mdsvex component: Svelte's scoped
  * styles never reach that markup, so every rule here is global.
  *
- * The dark palette matches the blog layout, which is dark in both site themes.
+ * Colours come from the site theme tokens (--muted, --card, ...) so captions and
+ * placeholders stay legible in both light and dark mode.
  */
 
 /* --- Images ------------------------------------------------------------ */
@@ -43,7 +44,7 @@ a.blog-image__zoom:focus-visible {
 	font-size: 0.875rem;
 	line-height: 1.6;
 	text-align: center;
-	color: rgba(228, 230, 235, 0.55);
+	color: var(--muted);
 }
 
 /* "A caption | half" — a smaller image, centred in the text column. */
