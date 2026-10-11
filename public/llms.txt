@@ -28,6 +28,7 @@ Dibakar is a senior software engineer based in Dhaka, Bangladesh, working remote
 
 ## Writing
 
+- [Back of the Envelope Estimations](https://dibakar.me/blog/11-10-2026-Back-of-the-Envelope-Estimations/): The numbers worth memorizing for a fast sanity check — powers of two, the latency of common operations, and availability in nines — and how to size a system like X (Twitter) from a few rough assumptions. (2026-10-11)
 - [Scale from Zero to Millions of Users](https://dibakar.me/blog/07-10-2026-Scale-from-Zero-to-Millions-of-Users/): A walk through how a single-server app grows into a system serving millions — load balancing, database replication, caching, CDNs, a stateless web tier, multiple data centers, message queues, and sharding. (2026-10-07)
 - [Exporting GitBook Docs as Clean Markdown with Rust](https://dibakar.me/blog/01-10-2026-Exporting-GitBook-Docs-as-Markdown-in-Rust/): How doc-scraper-rs exports GitBook docs as a clean markdown tree with llms.txt and AGENTS.md sidecars — one request per page, no HTML parsing, and a content-based fallback for soft 404s. (2026-10-01)
 - [Internet Blackout and Dark Days](https://dibakar.me/blog/25-07-2024-Internet-Blackout-and-Dark-Days/): Internet Blackout and loss of 200+ young students. (2024-07-25)

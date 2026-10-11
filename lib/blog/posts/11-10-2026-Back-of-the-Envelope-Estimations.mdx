@@ -1,0 +1,150 @@
+---
+title: 'Back of the Envelope Estimations'
+category: 'system design'
+tags:
+  [
+    'system design',
+    'estimation',
+    'capacity planning',
+    'latency',
+    'availability',
+    'scalability'
+  ]
+headerImage: '/images/blog/system-design/cover-back-of-envelope.webp'
+headerImageAlt: 'Cover illustration for "Back of the Envelope Estimations"'
+headerImageCaption: 'A few numbers, a handful of assumptions, and a napkin.'
+date: '2026-10-11'
+excerpt: 'The numbers worth memorizing for a fast sanity check — powers of two, the latency of common operations, and availability in nines — and how to use them to size a system like X (Twitter) from a few rough assumptions.'
+---
+
+Most system design questions never ask for an exact number. They ask whether an idea can work. Back-of-the-envelope estimation is the arithmetic you do on a napkin before writing any code: how much storage a feature needs, how many requests per second a service must survive, and whether the network can keep up.
+
+You are not trying to be precise. You are trying to be right within an order of magnitude, fast. That takes three things — fluency in units, a rough sense of latency, and a feel for what "available" really means — plus the discipline to write your assumptions down. Here are the numbers worth having at hand.
+
+## Power of two
+
+Everything starts with units. A byte is a sequence of 8 bits, and an ASCII character uses one byte of memory (8 bits). Once the powers of two are second nature, a figure like "30 TB per day" stops being a string of characters and becomes something you can feel.
+
+| Power | Approximate Value | Full Name  | Short Name |
+| ----- | ----------------- | ---------- | ---------- |
+| 10    | 1 Thousand        | 1 Kilobyte | 1 KB       |
+| 20    | 1 Million         | 1 Megabyte | 1 MB       |
+| 30    | 1 Billion         | 1 Gigabyte | 1 GB       |
+| 40    | 1 Trillion        | 1 Terabyte | 1 TB       |
+| 50    | 1 Quadrillion     | 1 Petabyte | 1 PB       |
+
+The "Power" column is the exponent on two: a kilobyte is 2^10 bytes (1,024), a megabyte is 2^20, and so on. The approximate-value column rounds those to powers of ten because that is the point — a kilobyte is "about a thousand" bytes. That rounding is not sloppiness; it is the whole method. Get comfortable dropping the trailing digits and multiplying in round numbers.
+
+## Latency numbers every engineer should know
+
+A rough sense of how long common operations take is what turns an estimate into a design decision. The table below, popularized by Jeff Dean, is the one to keep in your head.
+
+| Operation Name                                   | Time                    |
+| ------------------------------------------------ | ----------------------- |
+| L1 cache reference                               | 0.5 ns                  |
+| Branch mispredict                                | 5 ns                    |
+| L2 cache reference                               | 7 ns                    |
+| Mutex lock/unlock                                | 100 ns                  |
+| Main memory reference                            | 100 ns                  |
+| Compress 1K bytes with Zippy                     | 10,000 ns = 10 µs       |
+| Send 2K bytes over 1 Gbps network                | 20,000 ns = 20 µs       |
+| Read 1 MB sequentially from memory               | 250,000 ns = 250 µs     |
+| Round trip within the same datacenter            | 500,000 ns = 500 µs     |
+| Disk seek                                        | 10,000,000 ns = 10 ms   |
+| Read 1 MB sequentially from the network          | 10,000,000 ns = 10 ms   |
+| Read 1 MB sequentially from disk                 | 30,000,000 ns = 30 ms   |
+| Send packet CA (California) -> Netherlands -> CA | 150,000,000 ns = 150 ms |
+
+First, the units, because mixing them up is the fastest way to be off by a thousand:
+
+- ns = nanosecond, 1 ns = 10^-9 seconds
+- µs = microsecond, 1 µs = 10^-6 seconds = 1,000 ns
+- ms = millisecond, 1 ms = 10^-3 seconds = 1,000 µs = 1,000,000 ns
+
+Now the lessons hiding in the table:
+
+- **Memory is fast; disk is slow.** A main memory reference costs about 100 ns. A disk seek costs 10 ms — roughly a hundred thousand times more. Keep hot data in memory.
+- **Sequential beats random.** Reading 1 MB sequentially from disk takes about 30 ms; doing it as random seeks would be far worse. Databases and log-structured storage are built around this.
+- **The network is not always the bottleneck.** Reading 1 MB from the network (10 ms) is actually faster than reading the same megabyte from disk (30 ms) in a datacenter. When something is slow, check whether the real cost is the round trips, not the bytes.
+- **Distance shows up as latency.** A round trip within the same datacenter is about 500 µs. One that crosses an ocean and comes back is 150 ms — 300 times slower. Chatty, cross-region APIs are how a design quietly becomes unusable.
+- **Compression is often cheap.** Compressing 1 KB with Zippy costs about 10 µs. If it lets you send less data, it usually pays for itself.
+
+## Availability numbers
+
+High availability is the ability of a system to stay continuously operational for a desirably long period of time. It is measured as a percentage, where 100% would mean a service with zero downtime — a target, never a destination.
+
+A **service level agreement (SLA)** is the commonly used term for what a service provider promises around that target. Uptime is traditionally measured in nines: the more nines, the better.
+
+| Availability % | Downtime per day    | Downtime per year |
+| -------------- | ------------------- | ----------------- |
+| 99%            | 14.40 minutes       | 3.65 days         |
+| 99.9%          | 1.44 minutes        | 8.77 hours        |
+| 99.99%         | 8.64 seconds        | 52.60 minutes     |
+| 99.999%        | 864.00 milliseconds | 5.26 minutes      |
+| 99.9999%       | 86.40 milliseconds  | 31.56 seconds     |
+
+Read the table as a budget. Three nines (99.9%) allows roughly 8.77 hours of downtime in a year; five nines (99.999%) allows about 5.26 minutes. Every additional nine cuts the allowed downtime by roughly ten times, and costs disproportionately more to reach — redundancy, multiple data centers, and heavy automation are what buy it. Knowing which nine you actually need is as important as knowing how to hit it.
+
+## A worked example: estimating X (Twitter)
+
+Reading tables is easy; the skill is combining them. Here is the classic exercise from Alex Xu's *System Design Interview*: size X (formerly Twitter) from a handful of assumptions.
+
+Start by writing the assumptions down — an estimate is only as trustworthy as the inputs it sits on:
+
+- 300 million monthly active users
+- 50% of users use X daily
+- Users post 2 tweets per day on average
+- 10% of tweets contain media
+- Data is stored for 5 years
+
+### Query per second (QPS)
+
+First convert "users" into "requests". Daily active users:
+
+```
+DAU = 300 million * 50% = 150 million
+```
+
+Each active user posts two tweets a day, so average write traffic is:
+
+```
+Tweets QPS = 150 million * 2 / 24 hours / 3600 seconds ≈ 3,500
+```
+
+That is the average. Real systems are designed for the peak, and peak traffic is commonly estimated at twice the average:
+
+```
+Peak QPS = 2 * QPS ≈ 7,000
+```
+
+### Storage
+
+Now the other half: how much do we have to keep? This estimate covers media only. Break a tweet into its parts to get an average size:
+
+- `tweet_id` — 64 bytes
+- `text` — 140 bytes
+- `media` — 1 MB
+
+Compared with the media, the text and the id round to nothing, so media dominates the total:
+
+```
+Media Storage = 150 million * 2 * 10% * 1 MB = 30 TB per day
+```
+
+Over the five-year retention window, with 365 days a year:
+
+```
+5-year media storage = 30 TB * 365 * 5 ≈ 55 PB
+```
+
+In a few lines of kindergarten arithmetic, a vague product description has become concrete requirements: a service that must handle about 7,000 peak writes per second and a data store holding roughly 55 petabytes over five years. Those two numbers are enough to rule designs in or out — and neither took a calculator.
+
+## The method, in short
+
+The individual numbers matter less than the habit of estimating. The moves are always the same:
+
+- **Write the assumptions down.** Vague inputs produce vague answers, and an explicit list is what makes an estimate reviewable and easy to correct.
+- **Convert before you multiply.** Get everything into the same unit — seconds, bytes, requests — before the arithmetic starts.
+- **Multiply in powers of ten.** Round aggressively. You are after the exponent, not the digits.
+- **Design for the peak.** Average traffic is a starting point; peak traffic (often around 2×) is what the system has to survive.
+- **Sanity-check the result.** If the answer says you need ten thousand servers or a petabyte a day, pause and check the assumptions before believing it.
