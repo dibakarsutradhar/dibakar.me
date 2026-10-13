@@ -20,5 +20,11 @@
 			"database_id": "b822fdaf-a1bb-4213-8e74-ffd1d5dc5b9f"
 		}
 	],
-	"routes": [{ "pattern": "api.dibakar.me", "custom_domain": true }]
+	"routes": [{ "pattern": "api.dibakar.me", "custom_domain": true }],
+  "observability": {
+    "logs": {
+      "enabled": true,
+      "invocation_logs": true
+    }
+  }
 }
