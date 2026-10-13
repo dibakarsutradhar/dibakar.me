@@ -5,6 +5,7 @@ import BlogLightbox from '@/components/blog/BlogLightbox';
 import Comments from '@/components/blog/Comments';
 import MermaidRenderer from '@/components/blog/MermaidRenderer';
 import ScrollToTop from '@/components/blog/ScrollToTop';
+import ShareButtons from '@/components/blog/ShareButtons';
 import { renderPostHtml } from '@/lib/blog/markdown';
 import { getPost, getAllPosts } from '@/lib/blog/posts';
 import { getImageMeta } from '@/lib/blog/image-manifest.js';
@@ -139,6 +140,7 @@ export default async function PostPage({ params }: Props) {
 
 				{/* Footer */}
 				<footer className="mt-16 border-t border-line-soft pt-8">
+					<ShareButtons url={`${SITE_URL}/blog/${post.slug}`} title={post.title} />
 					<div className="flex items-center justify-between">
 						<div className="flex flex-wrap gap-2">
 							{post.tags.map((tag) => (
