@@ -20,8 +20,6 @@ headerImageCaption: 'Three generations, one data model.'
 excerpt: 'An engineering retrospective on rebuilding a DeFi data platform, from Pulsar and Flink to Rust services and Cloudflare Workers, while keeping the underlying data model stable.'
 ---
 
-_An engineering retrospective on rebuilding a DeFi data platform, from Pulsar and Flink to Rust services and Cloudflare Workers, while keeping the underlying data model stable._
-
 MC² Finance provides analytics for cryptocurrency portfolios across EVM-compatible blockchains and Solana. The platform indexes wallet activity, normalizes transactions, identifies buys, sells and swaps, and calculates portfolio performance, including realized profit and loss.
 
 The data pipeline behind these features has to handle more than just transaction volume. Blockchain data comes from external providers with different APIs, rate limits and failure modes. Historical indexing can involve thousands of transactions for a single wallet, while active wallets continue generating new activity. The system must also recover from interrupted jobs without duplicating transactions or corrupting portfolio calculations.
