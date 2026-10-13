@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import BlogLightbox from '@/components/blog/BlogLightbox';
+import Comments from '@/components/blog/Comments';
 import ScrollToTop from '@/components/blog/ScrollToTop';
 import { renderPostHtml } from '@/lib/blog/markdown';
 import { getPost, getAllPosts } from '@/lib/blog/posts';
@@ -171,6 +172,8 @@ export default async function PostPage({ params }: Props) {
 					</div>
 				</footer>
 			</article>
+
+			<Comments slug={post.slug} />
 
 			<BlogLightbox />
 

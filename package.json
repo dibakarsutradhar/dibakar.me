@@ -13,7 +13,10 @@
 		"logos": "bun scripts/generate-logo-derivatives.mjs",
 		"images:art": "bun scripts/generate-blog-art.mjs",
 		"dino": "bun scripts/generate-dino-hero.mjs",
-		"format": "prettier --write ."
+		"format": "prettier --write .",
+		"deploy": "bun run build && bunx wrangler deploy",
+		"db:migrate:local": "bunx wrangler d1 migrations apply dibakar-me-comments --local",
+		"db:migrate:remote": "bunx wrangler d1 migrations apply dibakar-me-comments --remote"
 	},
 	"dependencies": {
 		"clsx": "^2.1.1",
@@ -32,6 +35,7 @@
 		"unified": "^11.0.5"
 	},
 	"devDependencies": {
+		"@cloudflare/workers-types": "^4.20251004.0",
 		"@tailwindcss/postcss": "^4.1.13",
 		"@types/node": "^24.5.2",
 		"@types/react": "^19.1.13",
@@ -39,6 +43,7 @@
 		"gifenc": "^1.0.3",
 		"prettier-plugin-tailwindcss": "^0.8.1",
 		"tailwindcss": "^4.1.13",
-		"typescript": "^5.9.2"
+		"typescript": "^5.9.2",
+		"wrangler": "^4.40.0"
 	}
 }
