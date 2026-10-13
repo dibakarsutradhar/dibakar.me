@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import BlogLightbox from '@/components/blog/BlogLightbox';
+import ScrollToTop from '@/components/blog/ScrollToTop';
 import { renderPostHtml } from '@/lib/blog/markdown';
 import { getPost, getAllPosts } from '@/lib/blog/posts';
 import { getImageMeta } from '@/lib/blog/image-manifest.js';
@@ -172,6 +173,8 @@ export default async function PostPage({ params }: Props) {
 			</article>
 
 			<BlogLightbox />
+
+			<ScrollToTop />
 
 			{/* Hidden at runtime; present so crawlers see structured article data. */}
 			<script
