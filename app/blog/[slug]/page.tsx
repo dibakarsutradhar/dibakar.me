@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import BlogLightbox from '@/components/blog/BlogLightbox';
 import Comments from '@/components/blog/Comments';
+import MermaidRenderer from '@/components/blog/MermaidRenderer';
 import ScrollToTop from '@/components/blog/ScrollToTop';
 import { renderPostHtml } from '@/lib/blog/markdown';
 import { getPost, getAllPosts } from '@/lib/blog/posts';
@@ -176,6 +177,8 @@ export default async function PostPage({ params }: Props) {
 			<Comments slug={post.slug} />
 
 			<BlogLightbox />
+
+			<MermaidRenderer />
 
 			<ScrollToTop />
 

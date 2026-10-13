@@ -15,6 +15,7 @@ import remarkGfm from 'remark-gfm';
 import remarkParse from 'remark-parse';
 import remarkRehype from 'remark-rehype';
 import { unified } from 'unified';
+import { rehypeMermaid } from './rehype-mermaid.js';
 import { rehypePictures } from './rehype-pictures.js';
 
 const processor = unified()
@@ -23,6 +24,7 @@ const processor = unified()
 	// Hand-written HTML in a post passes through to the output.
 	.use(remarkRehype, { allowDangerousHtml: true })
 	.use(rehypeRaw)
+	.use(rehypeMermaid)
 	.use(rehypePictures)
 	.use(rehypeStringify);
 

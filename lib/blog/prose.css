@@ -89,6 +89,28 @@
 	line-height: 1.7;
 }
 
+/* Mermaid placeholders (rehype-mermaid.js): not code, so no card chrome —
+   the rendered SVG centers itself and never overflows the column. */
+.prose pre.mermaid {
+	background: transparent;
+	border: none;
+	padding: 0;
+	text-align: center;
+}
+
+.prose .mermaid svg {
+	max-width: 100%;
+	height: auto;
+}
+
+/* The zoom link MermaidRenderer wraps around a rendered diagram. It must be
+   a block: the SVG inside is width="100%", which cannot resolve against a
+   shrink-to-fit inline parent and collapses to the 300px default. */
+.prose .blog-diagram__zoom {
+	display: block;
+	cursor: zoom-in;
+}
+
 .prose blockquote {
 	border-left: 3px solid var(--accent);
 	padding-left: 1rem;
