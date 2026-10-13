@@ -42,6 +42,23 @@ const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 const TEST_SECRET_RE = /^([123])x0+AA$/;
 const TURNSTILE_VERIFY_URL = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
 
+// Browser origins allowed to call the API. Requests presenting any other
+// Origin are rejected; requests without an Origin header (curl, same-origin
+// calls) pass — Origin is anti-CSRF hygiene, not authentication; Turnstile
+// is what actually gates writes.
+const ALLOWED_ORIGINS = new Set(['https://dibakar.me', 'https://www.dibakar.me']);
+
+function originAllowed(origin: string | null, requestOrigin: string): boolean {
+	return !origin || origin === requestOrigin || ALLOWED_ORIGINS.has(origin);
+}
+
+function withCors(response: Response, origin: string): Response {
+	const headers = new Headers(response.headers);
+	headers.set('access-control-allow-origin', origin);
+	headers.set('vary', 'Origin');
+	return new Response(response.body, { status: response.status, headers });
+}
+
 function json(data: unknown, status: number): Response {
 	return new Response(JSON.stringify(data), {
 		status,
@@ -156,11 +173,36 @@ export default {
 		const url = new URL(request.url);
 
 		if (url.pathname === '/api/comments') {
+			const origin = request.headers.get('origin');
+
+			if (request.method === 'OPTIONS') {
+				return withCors(
+					new Response(null, {
+						status: 204,
+						headers: {
+							'access-control-allow-methods': 'GET, POST, OPTIONS',
+							'access-control-allow-headers': 'content-type',
+							'access-control-max-age': '86400'
+						}
+					}),
+					origin ?? ''
+				);
+			}
+
+			if (!originAllowed(origin, url.origin)) {
+				return json({ error: 'Origin not allowed' }, 403);
+			}
+
 			try {
-				if (request.method === 'GET') return await listComments(url, env);
-				if (request.method === 'POST') return await createComment(request, env);
+				if (request.method === 'GET') {
+					return withCors(await listComments(url, env), origin ?? '');
+				}
+				if (request.method === 'POST') {
+					return withCors(await createComment(request, env), origin ?? '');
+				}
 				return json({ error: 'Method not allowed' }, 405);
-			} catch {
+			} catch (error) {
+				console.error('API error:', error);
 				return json({ error: 'Something went wrong' }, 500);
 			}
 		}

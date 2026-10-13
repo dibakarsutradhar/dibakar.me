@@ -1,9 +1,9 @@
-// Cloudflare Worker config: serves the static export in ./out and the
-// comments API from the same Worker (same-origin, no CORS).
+// Cloudflare Worker config: hosts the comments API on api.dibakar.me.
+// The site itself stays on the dibakar-me Pages project; the Worker accepts
+// only browser origins dibakar.me / www.dibakar.me (plus same-origin calls).
 //
-// After `wrangler d1 create dibakar-me-comments`, paste the returned
-// database_id below. The Turnstile secret is not stored here — set it once
-// with `wrangler secret put TURNSTILE_SECRET_KEY`.
+// The Turnstile secret is not stored here — set it once with
+// `wrangler secret put TURNSTILE_SECRET_KEY`.
 {
 	"name": "dibakar-me",
 	"main": "worker/index.ts",
@@ -17,8 +17,8 @@
 		{
 			"binding": "DB",
 			"database_name": "dibakar-me-comments",
-			"database_id": "b822fdaf-a1bb-4213-8e74-ffd1d5dc5b9f",
-			"remote": true
+			"database_id": "b822fdaf-a1bb-4213-8e74-ffd1d5dc5b9f"
 		}
-	]
+	],
+	"routes": [{ "pattern": "api.dibakar.me", "custom_domain": true }]
 }

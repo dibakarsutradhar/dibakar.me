@@ -13,7 +13,7 @@ import type { FormEvent } from 'react';
  *
  * Submissions are gated by a Cloudflare Turnstile widget (loaded from its own
  * script only when this section is on screen) and stored via D1 behind
- * /api/comments on the same Worker that serves the site.
+ * /api/comments on the api.dibakar.me Worker.
  */
 
 interface Comment {
@@ -35,6 +35,10 @@ type LoadState = 'idle' | 'loading' | 'error' | 'ready';
 const SITE_KEY =
 	process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ||
 	(process.env.NODE_ENV !== 'production' ? '1x00000000000000000000AA' : '');
+
+// Empty in dev (same-origin `wrangler dev`); set to the Worker URL for
+// production builds via .env.production.local.
+const API_BASE = process.env.NEXT_PUBLIC_COMMENTS_API_URL ?? '';
 
 interface TurnstileOptions {
 	sitekey: string;
@@ -75,7 +79,7 @@ export default function Comments({ slug }: { slug: string }) {
 	const loadComments = useCallback(async () => {
 		setLoadState((state) => (state === 'ready' ? state : 'loading'));
 		try {
-			const response = await fetch(`/api/comments?slug=${encodeURIComponent(slug)}`);
+			const response = await fetch(`${API_BASE}/api/comments?slug=${encodeURIComponent(slug)}`);
 			if (!response.ok) throw new Error(`Status ${response.status}`);
 			const data = (await response.json()) as { comments?: Comment[] };
 			setComments(data.comments ?? []);
@@ -156,7 +160,7 @@ export default function Comments({ slug }: { slug: string }) {
 		setPosting(true);
 		setFeedback(null);
 		try {
-			const response = await fetch('/api/comments', {
+			const response = await fetch(`${API_BASE}/api/comments`, {
 				method: 'POST',
 				headers: { 'content-type': 'application/json' },
 				body: JSON.stringify({
