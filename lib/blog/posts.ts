@@ -20,7 +20,7 @@ import { readdirSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import matter from 'gray-matter';
 import type { BlogFrontmatter, BlogMeta, BlogPost } from './types';
-import { getSlugFromPath, normalizePostMeta } from './utils';
+import { estimateReadingTime, getSlugFromPath, normalizePostMeta } from './utils';
 
 const POSTS_DIR = join(process.cwd(), 'lib/blog/posts');
 
@@ -35,7 +35,7 @@ const DRAFTS_VISIBLE = process.env.NODE_ENV !== 'production';
 const SEARCH_TEXT_MAX = 20000;
 
 /** Reduces a post's markdown source to searchable plain text. */
-export function toPlainText(source: string): string {
+export function toPlainText(source: string, max = SEARCH_TEXT_MAX): string {
 	return (
 		source
 			// YAML frontmatter; its fields are indexed separately.
@@ -50,7 +50,7 @@ export function toPlainText(source: string): string {
 			.replace(/&[a-z]+;/gi, ' ')
 			.replace(/\s+/g, ' ')
 			.trim()
-			.slice(0, SEARCH_TEXT_MAX)
+			.slice(0, max)
 	);
 }
 
@@ -85,7 +85,16 @@ const rawPosts = readRawPosts();
 /** All posts, newest first, each carrying the plain text used by search. */
 export function getAllPosts(): BlogMeta[] {
 	return rawPosts
-		.map((post) => normalizePostMeta(post.slug, post.frontmatter, toPlainText(post.content)))
+		.map((post) => {
+			// Reading time counts the whole post, not the search-truncated text.
+			const plainText = toPlainText(post.content, Number.POSITIVE_INFINITY);
+			return normalizePostMeta(
+				post.slug,
+				post.frontmatter,
+				plainText.slice(0, SEARCH_TEXT_MAX),
+				estimateReadingTime(plainText)
+			);
+		})
 		.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 }
 
@@ -94,5 +103,13 @@ export function getPost(slug: string): BlogPost | null {
 	const post = rawPosts.find((candidate) => candidate.slug === slug);
 	if (!post) return null;
 
-	return { ...normalizePostMeta(slug, post.frontmatter), content: post.content };
+	return {
+		...normalizePostMeta(
+			slug,
+			post.frontmatter,
+			'',
+			estimateReadingTime(toPlainText(post.content, Number.POSITIVE_INFINITY))
+		),
+		content: post.content
+	};
 }

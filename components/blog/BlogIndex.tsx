@@ -235,6 +235,12 @@ export default function BlogIndex({ posts }: { posts: BlogMeta[] }) {
 												{post.category}
 											</span>
 											<span className="text-muted">{shortDate(post.date)}</span>
+											<span
+												className="text-muted"
+												aria-label={`${post.readingTime} minute read`}
+											>
+												{post.readingTime} min read
+											</span>
 											{post.draft && (
 												<span className="rounded-full border border-dashed border-line px-3 py-1 text-muted">
 													draft

@@ -11,7 +11,8 @@ export function getSlugFromPath(path: string): string {
 export function normalizePostMeta(
 	slug: string,
 	metadata: BlogFrontmatter,
-	searchText = ''
+	searchText = '',
+	readingTime = 0
 ): BlogMeta {
 	return {
 		slug,
@@ -25,6 +26,7 @@ export function normalizePostMeta(
 		headerImageCaption: metadata.headerImageCaption || '',
 		date: metadata.date || '',
 		excerpt: metadata.excerpt || '',
+		readingTime,
 		draft: metadata.draft === true,
 		searchText
 	};
@@ -38,6 +40,15 @@ export function formatDate(dateStr: string): string {
 		month: 'long',
 		day: 'numeric'
 	});
+}
+
+/** Average adult reading speed, in words per minute. */
+const WORDS_PER_MINUTE = 200;
+
+/** Estimates a post's reading time, in whole minutes (minimum 1). */
+export function estimateReadingTime(text: string): number {
+	const words = text.trim().split(/\s+/).filter(Boolean).length;
+	return Math.max(1, Math.ceil(words / WORDS_PER_MINUTE));
 }
 
 /**

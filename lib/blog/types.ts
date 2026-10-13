@@ -29,6 +29,8 @@ export interface BlogMeta {
 	headerImageCaption: string;
 	date: string;
 	excerpt: string;
+	/** Estimated reading time in whole minutes (minimum 1). */
+	readingTime: number;
 	/** True while the post is a draft; always false in production builds. */
 	draft: boolean;
 	/**

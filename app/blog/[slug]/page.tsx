@@ -76,6 +76,7 @@ export default async function PostPage({ params }: Props) {
 					<div className="mb-4 flex flex-wrap items-center gap-3 text-sm">
 						<span className="rounded-full bg-accent/10 px-3 py-1 text-accent">{post.category}</span>
 						<span className="text-muted">{formatDate(post.date)}</span>
+						<span className="text-muted">{post.readingTime} min read</span>
 						{post.draft && (
 							<span className="rounded-full border border-dashed border-line px-3 py-1 text-muted">
 								draft — not visible in production
@@ -182,6 +183,7 @@ export default async function PostPage({ params }: Props) {
 						headline: post.title,
 						description: post.excerpt,
 						datePublished: post.date,
+						timeRequired: `PT${post.readingTime}M`,
 						author: { '@type': 'Person', name: SITE_TITLE, url: SITE_URL },
 						mainEntityOfPage: `${SITE_URL}/blog/${post.slug}`,
 						...(post.headerImage && { image: `${SITE_URL}${post.headerImage}` })
