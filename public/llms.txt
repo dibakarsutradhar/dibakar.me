@@ -39,7 +39,7 @@ Dibakar is a senior software engineer based in Dhaka, Bangladesh, working remote
 ## Optional
 
 - [Full corpus (llms-full.txt)](https://dibakar.me/llms-full.txt): Everything above as one markdown document — every project and every published blog post in full.
-- [Résumé (PDF)](https://dibakar.me/Dibakar_Sutra_Dhar_Senior_SWE.pdf)
+- [Résumé (PDF)](https://dibakar.me/dibakar-backend.pdf)
 - [GitHub](https://github.com/dibakarsutradhar)
 - [LinkedIn](https://www.linkedin.com/in/dibakarsutradhar)
 - [Medium](https://medium.com/@imdibakar)

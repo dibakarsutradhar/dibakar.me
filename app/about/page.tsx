@@ -54,7 +54,7 @@ const ELSEWHERE = [
 	{ label: 'GitHub', href: 'https://github.com/dibakarsutradhar' },
 	{ label: 'LinkedIn', href: 'https://www.linkedin.com/in/dibakarsutradhar' },
 	{ label: 'Medium', href: 'https://medium.com/@imdibakar' },
-	{ label: 'résumé', href: '/Dibakar_Sutra_Dhar_Senior_SWE.pdf' }
+	{ label: 'résumé', href: '/dibakar-backend.pdf' }
 ];
 
 /** Small-caps section label shared by every block on the page. */
