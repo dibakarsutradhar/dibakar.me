@@ -174,7 +174,13 @@ export const PROJECTS: Project[] = [
 			'All model traffic ran through a gateway layer I built: provider failover, per-task model routing, and per-user usage and cost tracking. Model choices came from an eval harness rather than intuition — production extraction scored against a reference model and a judge — which is what decided which model handled which content type. Later I built the autonomous agent that operates on the knowledge base (browsing, drafting, refining, publishing) and the daily personalized newsletter.',
 			"It shipped in production at raisolo.com, and the backend remained the platform's foundation after my tenure — the features that followed were built on top of the pipeline and clustering engine."
 		],
-		urls: [{ label: 'raisolo', href: 'https://www.raisolo.com' }]
+		urls: [
+			{ label: 'raisolo', href: 'https://www.raisolo.com' },
+			{
+				label: 'article: one gateway, one eval',
+				href: 'https://dibakar.me/blog/16-10-2026-One-Gateway-One-Eval-Designing-the-LLM-Workflow-Layer-of-a-News-Intelligence-Platform/'
+			}
+		]
 	},
 	{
 		name: 'YieldFinder — MCP server & DeFi data pipeline',
@@ -226,7 +232,13 @@ export const PROJECTS: Project[] = [
 			'The engineering depth sat at the ends of the pipeline. On the way in: checkpoint-based resume so a wallet catches up cleanly after downtime, and self-pacing runs so a wallet with more history than one pass allows resumes where it left off. On the way out: FIFO token lots and weighted-average-cost profit derived from raw transfers. Underneath it all: capacity design that treated the database as the bottleneck, sized for a sustained stream of on-chain actions with a documented path to scale it tenfold.',
 			'This pipeline fed everything the product knew about a wallet — portfolio pages, trading signals, the analytics behind the assistant — and it kept running while the platform around it was rebuilt, which is the quiet job of a data plane.'
 		],
-		urls: [{ label: 'mc2.fi', href: 'https://mc2.fi' }]
+		urls: [
+			{ label: 'mc2.fi', href: 'https://mc2.fi' },
+			{
+				label: 'article: 3 generations of a DeFi data pipeline',
+				href: 'https://dibakar.me/blog/13-10-2026-From-Pulsar-to-Workers-Three-Generations-of-a-DeFi-Data-Pipeline/'
+			}
+		]
 	},
 	{
 		name: 'MC² Studio',
