@@ -10,6 +10,7 @@
  * into captioned figures, galleries, and zoom links (see rehype-pictures.js).
  */
 import rehypeRaw from 'rehype-raw';
+import rehypeSlug from 'rehype-slug';
 import rehypeStringify from 'rehype-stringify';
 import remarkGfm from 'remark-gfm';
 import remarkParse from 'remark-parse';
@@ -24,6 +25,7 @@ const processor = unified()
 	// Hand-written HTML in a post passes through to the output.
 	.use(remarkRehype, { allowDangerousHtml: true })
 	.use(rehypeRaw)
+	.use(rehypeSlug)
 	.use(rehypeMermaid)
 	.use(rehypePictures)
 	.use(rehypeStringify);

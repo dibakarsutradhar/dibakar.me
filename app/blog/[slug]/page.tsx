@@ -6,9 +6,11 @@ import Comments from '@/components/blog/Comments';
 import MermaidRenderer from '@/components/blog/MermaidRenderer';
 import ScrollToTop from '@/components/blog/ScrollToTop';
 import ShareButtons from '@/components/blog/ShareButtons';
+import TableOfContents from '@/components/blog/TableOfContents';
 import { renderPostHtml } from '@/lib/blog/markdown';
 import { getPost, getAllPosts } from '@/lib/blog/posts';
 import { getImageMeta } from '@/lib/blog/image-manifest.js';
+import { extractHeadings } from '@/lib/blog/toc';
 import { formatDate } from '@/lib/blog/utils';
 import { SITE_TITLE, SITE_URL } from '@/lib/site';
 
@@ -48,101 +50,62 @@ export default async function PostPage({ params }: Props) {
 	if (!post) notFound();
 
 	const html = await renderPostHtml(post.content);
+	const toc = extractHeadings(html);
 	const cover = getImageMeta(post.headerImage);
 
 	return (
 		<>
-			<article className="mx-auto max-w-3xl px-6 py-16">
-				{/* Back link */}
-				<Link
-					href="/blog"
-					className="mb-8 inline-flex items-center gap-2 text-muted transition-colors hover:text-fg"
-				>
-					<svg
-						className="h-4 w-4"
-						fill="none"
-						stroke="currentColor"
-						viewBox="0 0 24 24"
-						aria-hidden="true"
-					>
-						<path
-							strokeLinecap="round"
-							strokeLinejoin="round"
-							strokeWidth="2"
-							d="M15 19l-7-7 7-7"
-						/>
-					</svg>
-					Back to blog
-				</Link>
-
-				{/* Header */}
-				<header className="mb-12">
-					<div className="mb-4 flex flex-wrap items-center gap-3 text-sm">
-						<span className="rounded-full bg-accent/10 px-3 py-1 text-accent">{post.category}</span>
-						<span className="text-muted">{formatDate(post.date)}</span>
-						<span className="text-muted">{post.readingTime} min read</span>
-						{post.draft && (
-							<span className="rounded-full border border-dashed border-line px-3 py-1 text-muted">
-								draft — not visible in production
-							</span>
-						)}
-					</div>
-
-					<h1 className="mb-6 text-4xl leading-tight font-bold tracking-tight md:text-5xl">
-						{post.title}
-					</h1>
-
-					<p className="text-xl text-muted">{post.excerpt}</p>
-
-					<div className="mt-6 flex flex-wrap gap-2">
-						{post.tags.map((tag) => (
-							<span
-								key={tag}
-								className="rounded-full border border-line-soft px-3 py-1 text-sm text-muted"
-							>
-								#{tag}
-							</span>
-						))}
-					</div>
-				</header>
-
-				{/* Cover image: the one image above the fold, so load it eagerly and
-				    at a higher priority than the body images. */}
-				{post.headerImage && (
-					<figure className="blog-figure mb-12">
-						<a
-							href={post.headerImage}
-							target="_blank"
-							rel="noopener"
-							className="blog-image__zoom"
-							data-zoomable="true"
-							aria-label="View the cover image full size"
-						>
-							<img
-								src={post.headerImage}
-								alt={post.headerImageAlt}
-								className="blog-image"
-								width={cover?.width}
-								height={cover?.height}
-								loading="eager"
-								fetchPriority="high"
-								decoding="async"
-							/>
-						</a>
-						{post.headerImageCaption && (
-							<figcaption className="blog-figure__caption">{post.headerImageCaption}</figcaption>
-						)}
-					</figure>
+			<div className="mx-auto w-full max-w-7xl xl:grid xl:grid-cols-[minmax(0,1fr)_minmax(0,48rem)_minmax(0,1fr)]">
+				{toc.length > 0 && (
+					<aside className="sticky top-10 hidden max-h-[calc(100vh-5rem)] self-start overflow-y-auto xl:col-start-1 xl:row-start-1 xl:mr-8 xl:block xl:w-52 xl:justify-self-end">
+						<TableOfContents items={toc} />
+					</aside>
 				)}
+				<article className="mx-auto max-w-3xl px-6 py-16 xl:col-start-2 xl:row-start-1">
+					{/* Back link */}
+					<Link
+						href="/blog"
+						className="mb-8 inline-flex items-center gap-2 text-muted transition-colors hover:text-fg"
+					>
+						<svg
+							className="h-4 w-4"
+							fill="none"
+							stroke="currentColor"
+							viewBox="0 0 24 24"
+							aria-hidden="true"
+						>
+							<path
+								strokeLinecap="round"
+								strokeLinejoin="round"
+								strokeWidth="2"
+								d="M15 19l-7-7 7-7"
+							/>
+						</svg>
+						Back to blog
+					</Link>
 
-				{/* Content — rendered HTML from the markdown pipeline. */}
-				<div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: html }} />
+					{/* Header */}
+					<header className="mb-12">
+						<div className="mb-4 flex flex-wrap items-center gap-3 text-sm">
+							<span className="rounded-full bg-accent/10 px-3 py-1 text-accent">
+								{post.category}
+							</span>
+							<span className="text-muted">{formatDate(post.date)}</span>
+							<span className="text-muted">{post.readingTime} min read</span>
+							{post.draft && (
+								<span className="rounded-full border border-dashed border-line px-3 py-1 text-muted">
+									draft — not visible in production
+								</span>
+							)}
+						</div>
 
-				{/* Footer */}
-				<footer className="mt-16 border-t border-line-soft pt-8">
-					<ShareButtons url={`${SITE_URL}/blog/${post.slug}`} title={post.title} />
-					<div className="flex items-center justify-between">
-						<div className="flex flex-wrap gap-2">
+						<h1 className="mb-6 text-4xl leading-tight font-bold tracking-tight md:text-5xl">
+							{post.title}
+						</h1>
+
+						<p className="text-xl text-muted">{post.excerpt}</p>
+
+						<div className="mt-6 flex flex-wrap gap-2">
 							{post.tags.map((tag) => (
 								<span
 									key={tag}
@@ -152,29 +115,78 @@ export default async function PostPage({ params }: Props) {
 								</span>
 							))}
 						</div>
-						<Link
-							href="/blog"
-							className="inline-flex items-center gap-2 text-muted transition-colors hover:text-fg"
-						>
-							All posts
-							<svg
-								className="h-4 w-4"
-								fill="none"
-								stroke="currentColor"
-								viewBox="0 0 24 24"
-								aria-hidden="true"
+					</header>
+
+					{/* Cover image: the one image above the fold, so load it eagerly and
+				    at a higher priority than the body images. */}
+					{post.headerImage && (
+						<figure className="blog-figure mb-12">
+							<a
+								href={post.headerImage}
+								target="_blank"
+								rel="noopener"
+								className="blog-image__zoom"
+								data-zoomable="true"
+								aria-label="View the cover image full size"
 							>
-								<path
-									strokeLinecap="round"
-									strokeLinejoin="round"
-									strokeWidth="2"
-									d="M9 5l7 7-7 7"
+								<img
+									src={post.headerImage}
+									alt={post.headerImageAlt}
+									className="blog-image"
+									width={cover?.width}
+									height={cover?.height}
+									loading="eager"
+									fetchPriority="high"
+									decoding="async"
 								/>
-							</svg>
-						</Link>
-					</div>
-				</footer>
-			</article>
+							</a>
+							{post.headerImageCaption && (
+								<figcaption className="blog-figure__caption">{post.headerImageCaption}</figcaption>
+							)}
+						</figure>
+					)}
+
+					{/* Content — rendered HTML from the markdown pipeline. */}
+					<div className="prose max-w-none" dangerouslySetInnerHTML={{ __html: html }} />
+
+					{/* Footer */}
+					<footer className="mt-16 border-t border-line-soft pt-8">
+						<ShareButtons url={`${SITE_URL}/blog/${post.slug}`} title={post.title} />
+						<div className="flex items-center justify-between">
+							<div className="flex flex-wrap gap-2">
+								{post.tags.map((tag) => (
+									<span
+										key={tag}
+										className="rounded-full border border-line-soft px-3 py-1 text-sm text-muted"
+									>
+										#{tag}
+									</span>
+								))}
+							</div>
+							<Link
+								href="/blog"
+								className="inline-flex items-center gap-2 text-muted transition-colors hover:text-fg"
+							>
+								All posts
+								<svg
+									className="h-4 w-4"
+									fill="none"
+									stroke="currentColor"
+									viewBox="0 0 24 24"
+									aria-hidden="true"
+								>
+									<path
+										strokeLinecap="round"
+										strokeLinejoin="round"
+										strokeWidth="2"
+										d="M9 5l7 7-7 7"
+									/>
+								</svg>
+							</Link>
+						</div>
+					</footer>
+				</article>
+			</div>
 
 			<Comments slug={post.slug} />
 

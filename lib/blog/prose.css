@@ -32,6 +32,10 @@
 	margin-bottom: 0.5rem;
 }
 
+.prose :is(h1, h2, h3) {
+	scroll-margin-top: 1.5rem;
+}
+
 .prose p {
 	margin-bottom: 1.25rem;
 	line-height: 1.8;
