@@ -215,7 +215,13 @@ export const PROJECTS: Project[] = [
 			'The architecture was refactored as the product found its shape. The tool server started inside the app itself; as the design matured, it moved out to its own service, with the agent connecting to it as a client. That separation made the assistant more resilient — if remote tools were unavailable, the connection degraded quietly in the background and the assistant kept working.',
 			"It shipped in the terminal as the company's production assistant, and when the platform was later rearchitected, the decisions made here carried straight over — one agent per session, tools connected rather than hosted. For that successor I built the analytics layer, tracking the same user journey from both sides of the streaming connection."
 		],
-		urls: [{ label: 'mc2.fi', href: 'https://mc2.fi' }]
+		urls: [
+			{ label: 'mc2.fi', href: 'https://mc2.fi' },
+			{
+				label: 'article: designing the tool layer of a DeFi AI agent, albert',
+				href: 'https://dibakar.me/blog/18-10-2026-Albert-Designing-the-Tool-Layer-of-a-DeFi-AI-Agent/'
+			}
+		]
 	},
 	{
 		name: 'MC² ETL - Real-time portfolio analytics pipeline',
